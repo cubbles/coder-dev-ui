@@ -1,5 +1,5 @@
 {
-  "name": "coder-dev-ui",
+  "name": "cubx-coder-dev-ui",
   "version": "0.1.0",
   "description": "WebUi to visualize the structure of a (Cubbles) manifest.webpackage file on a browser",
   "main": "index.js",
