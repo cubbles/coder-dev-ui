@@ -139,7 +139,8 @@ module.exports = function(grunt) {
     },
     open: {
       dev: {
-        path: 'http://localhost/index.html?url=manifest/manifest.webpackage'
+        path: 'http://localhost/index.html?manifest=manifest/manifest.webpackage' +
+        '&schema=manifest/manifestWebpackage-8_3_0.schema'
       }
     }
   });
