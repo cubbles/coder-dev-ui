@@ -117,6 +117,14 @@ module.exports = function(grunt) {
           dest: '<%= dir.dist.root %>',
           expand: true
         }]
+      },
+      manifest: {
+        files: [{
+          cwd: '<%= dir.src.root %>',
+          src: ['manifest/**/*.*'],
+          dest: '<%= dir.dist.root %>',
+          expand: true
+        }]
       }
     },
     clean: ['<%= dir.dist.root %>'],
@@ -131,7 +139,7 @@ module.exports = function(grunt) {
     },
     open: {
       dev: {
-        path: 'http://localhost/index.html'
+        path: 'http://localhost/index.html?url=manifest/manifest.webpackage'
       }
     }
   });
