@@ -4,7 +4,7 @@
  *
  * Date: 2016-04-12
  */
-
+/* eslint-disable */
 /**
  * See README.md for requirements and usage info
  */
@@ -1924,7 +1924,7 @@ JSONEditor.defaults.editors.string = JSONEditor.AbstractEditor.extend({
   build: function() {
     var self = this, i;
     if(!this.options.compact) this.header = this.label = this.theme.getFormInputLabel(this.getTitle());
-    //if(this.schema.description) this.description = this.theme.getFormInputDescription(this.schema.description);
+    if(!this.jsoneditor.options.hide_descriptions && this.schema.description) this.description = this.theme.getFormInputDescription(this.schema.description);
 
     this.format = this.schema.format;
     if(!this.format && this.schema.media && this.schema.media.type) {
@@ -2687,10 +2687,10 @@ JSONEditor.defaults.editors.object = JSONEditor.AbstractEditor.extend({
 
 
       // Description
-      /*if(this.schema.description) {
+      if(!this.jsoneditor.options.hide_descriptions && this.schema.description) {
         this.description = this.theme.getDescription(this.schema.description);
         this.container.appendChild(this.description);
-      }*/
+      }
 
       // Validation error placeholder area
       this.error_holder = document.createElement('div');
@@ -3285,10 +3285,10 @@ JSONEditor.defaults.editors.array = JSONEditor.AbstractEditor.extend({
       this.container.appendChild(this.title);
       this.title_controls = this.theme.getHeaderButtonHolder();
       this.title.appendChild(this.title_controls);
-      /*if(this.schema.description) {
+      if(!this.jsoneditor.options.hide_descriptions && this.schema.description) {
         this.description = this.theme.getDescription(this.schema.description);
         this.container.appendChild(this.description);
-      }*/
+      }
       this.error_holder = document.createElement('div');
       this.container.appendChild(this.error_holder);
 
@@ -3960,10 +3960,10 @@ JSONEditor.defaults.editors.table = JSONEditor.defaults.editors.array.extend({
       this.container.appendChild(this.title);
       this.title_controls = this.theme.getHeaderButtonHolder();
       this.title.appendChild(this.title_controls);
-      /*if(this.schema.description) {
+      if(!this.jsoneditor.options.hide_descriptions && this.schema.description) {
         this.description = this.theme.getDescription(this.schema.description);
         this.container.appendChild(this.description);
-      }*/
+      }
       this.panel = this.theme.getIndentedPanel();
       this.container.appendChild(this.panel);
       this.error_holder = document.createElement('div');
@@ -4944,7 +4944,7 @@ JSONEditor.defaults.editors.select = JSONEditor.AbstractEditor.extend({
   build: function() {
     var self = this;
     if(!this.options.compact) this.header = this.label = this.theme.getFormInputLabel(this.getTitle());
-    //if(this.schema.description) this.description = this.theme.getFormInputDescription(this.schema.description);
+    if(!this.jsoneditor.options.hide_descriptions && this.schema.description) this.description = this.theme.getFormInputDescription(this.schema.description);
 
     if(this.options.compact) this.container.className += ' compact';
 
@@ -5289,7 +5289,7 @@ JSONEditor.defaults.editors.selectize = JSONEditor.AbstractEditor.extend({
   build: function() {
     var self = this;
     if(!this.options.compact) this.header = this.label = this.theme.getFormInputLabel(this.getTitle());
-    //if(this.schema.description) this.description = this.theme.getFormInputDescription(this.schema.description);
+    if(!this.jsoneditor.options.hide_descriptions && this.schema.description) this.description = this.theme.getFormInputDescription(this.schema.description);
 
     if(this.options.compact) this.container.className += ' compact';
 
@@ -5512,7 +5512,7 @@ JSONEditor.defaults.editors.multiselect = JSONEditor.AbstractEditor.extend({
   build: function() {
     var self = this, i;
     if(!this.options.compact) this.header = this.label = this.theme.getFormInputLabel(this.getTitle());
-    //if(this.schema.description) this.description = this.theme.getFormInputDescription(this.schema.description);
+    if(!this.jsoneditor.options.hide_descriptions && this.schema.description) this.description = this.theme.getFormInputDescription(this.schema.description);
 
     if((!this.schema.format && this.option_keys.length < 8) || this.schema.format === "checkbox") {
       this.input_type = 'checkboxes';
@@ -5941,7 +5941,7 @@ JSONEditor.defaults.editors.checkbox = JSONEditor.AbstractEditor.extend({
     if(!this.options.compact) {
       this.label = this.header = this.theme.getCheckboxLabel(this.getTitle());
     }
-    //if(this.schema.description) this.description = this.theme.getFormInputDescription(this.schema.description);
+    if(!this.jsoneditor.options.hide_descriptions && this.schema.description) this.description = this.theme.getFormInputDescription(this.schema.description);
     if(this.options.compact) this.container.className += ' compact';
 
     this.input = this.theme.getCheckbox();
@@ -5987,9 +5987,9 @@ JSONEditor.defaults.editors.arraySelectize = JSONEditor.AbstractEditor.extend({
     this.title.appendChild(this.title_controls);
     this.error_holder = document.createElement('div');
 
-    /*if(this.schema.description) {
+    if(!this.jsoneditor.options.hide_descriptions && this.schema.description) {
       this.description = this.theme.getDescription(this.schema.description);
-    }*/
+    }
 
     this.input = document.createElement('select');
     this.input.setAttribute('multiple', 'multiple');

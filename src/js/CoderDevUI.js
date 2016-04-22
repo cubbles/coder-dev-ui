@@ -26,6 +26,7 @@ CoderDevUI.prototype.loadEditor = function (schema) {
     no_additional_properties: true,
     disable_edit_json: true,
     disable_properties: true,
+    // hide_descriptions: true,
     schema: schema
   });
   this.loadManifest();
