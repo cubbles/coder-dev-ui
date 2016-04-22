@@ -2687,13 +2687,6 @@ JSONEditor.defaults.editors.object = JSONEditor.AbstractEditor.extend({
       spacer.style.clear = 'both';
       this.addproperty_holder.appendChild(spacer);
 
-
-      // Description
-      if(!this.jsoneditor.options.hide_descriptions && this.schema.description) {
-        this.description = this.theme.getDescription(this.schema.description);
-        this.container.appendChild(this.description);
-      }
-
       // Validation error placeholder area
       this.error_holder = document.createElement('div');
       this.container.appendChild(this.error_holder);
@@ -3288,9 +3281,10 @@ JSONEditor.defaults.editors.array = JSONEditor.AbstractEditor.extend({
       this.container.appendChild(this.title);
       this.title_controls = this.theme.getHeaderButtonHolder();
       this.title.appendChild(this.title_controls);
+      // Description
       if(!this.jsoneditor.options.hide_descriptions && this.schema.description) {
         this.description = this.theme.getDescription(this.schema.description);
-        this.container.appendChild(this.description);
+        this.title_controls.appendChild(this.description);
       }
       this.error_holder = document.createElement('div');
       this.container.appendChild(this.error_holder);
@@ -3769,7 +3763,7 @@ JSONEditor.defaults.editors.array = JSONEditor.AbstractEditor.extend({
   },
   addControls: function() {
     var self = this;
-    
+
     this.collapsed = false;
     this.toggle_button = this.getButton('','collapse',this.translate('button_collapse'));
     this.title_controls.appendChild(this.toggle_button);
@@ -3965,7 +3959,7 @@ JSONEditor.defaults.editors.table = JSONEditor.defaults.editors.array.extend({
       this.title.appendChild(this.title_controls);
       if(!this.jsoneditor.options.hide_descriptions && this.schema.description) {
         this.description = this.theme.getDescription(this.schema.description);
-        this.container.appendChild(this.description);
+        this.title_controls.appendChild(this.description);
       }
       this.panel = this.theme.getIndentedPanel();
       this.container.appendChild(this.panel);
@@ -6703,6 +6697,25 @@ JSONEditor.defaults.themes.bootstrap3 = JSONEditor.AbstractTheme.extend({
     var el = document.createElement('button');
     el.setAttribute('type', 'button');
     el.setAttribute('class', 'btn btn-default btn-xs');
+    el.setAttribute('data-toggle', 'popover');
+    el.setAttribute('title', 'Description');
+    el.setAttribute('data-placement', 'top');
+    el.setAttribute('data-content', text);
+    var icon = document.createElement('i');
+    icon.setAttribute('class', 'glyphicon glyphicon-info-sign');
+    el.appendChild(icon);
+    return el;
+  },
+  getDescription: function(text) {
+    /*
+     var el = document.createElement('p');
+     el.className = 'help-block';
+     el.innerHTML = text;
+     return el;
+     */
+    var el = document.createElement('button');
+    el.setAttribute('type', 'button');
+    el.setAttribute('class', 'btn btn-default');
     el.setAttribute('data-toggle', 'popover');
     el.setAttribute('title', 'Description');
     el.setAttribute('data-placement', 'top');

@@ -22,16 +22,12 @@ CoderDevUI.prototype.loadEditor = function (schema) {
   this.editor = new JSONEditor(document.getElementById(this.holderId), {
     theme: 'bootstrap3',
     iconlib: 'bootstrap3',
-    // disable_array_add: true,
-    // disable_array_delete: true,
     disable_array_reorder: true,
     no_additional_properties: true,
     disable_edit_json: true,
     disable_properties: true,
-    // hide_descriptions: true,
     schema: schema
   });
-  // this.loadManifest();
 };
 
 /**
@@ -65,6 +61,9 @@ CoderDevUI.prototype.loadSchema = function () {
     for (var prop in schema.properties.artifacts.properties) {
       schema.properties.artifacts.properties[prop].format = 'tabs';
     }
+    schema.properties.contributors.format = 'table';
+    schema.properties.author.format = 'grid';
+
     var artifactsCommonProps = ['runnables', 'endpoints'];
     for (var i in artifactsCommonProps) {
       schema.definitions.appArtifact.properties[artifactsCommonProps[i]].format = 'tabs';
@@ -76,7 +75,7 @@ CoderDevUI.prototype.loadSchema = function () {
     schema.definitions.compoundArtifact.properties.members.format = 'table';
     schema.definitions.compoundArtifact.properties.connections.format = 'tabs';
     schema.definitions.compoundArtifact.properties.inits.format = 'table';
-    schema.format = 'grid';
+    // schema.format = 'grid';
     self.loadEditor(schema);
   });
 };
