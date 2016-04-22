@@ -3985,7 +3985,7 @@ JSONEditor.defaults.editors.table = JSONEditor.defaults.editors.array.extend({
       var ce = tmp.getChildEditors();
       var order = tmp.property_order || Object.keys(ce);
       for(var i=0; i<order.length; i++) {
-        var th = self.theme.getTableHeaderCell(ce[order[i]].getTitle());
+        var th = self.theme.getTableHeaderCell(ce[order[i]].getTitle(), ce[order[i]].schema.description);
         if(ce[order[i]].options.hidden) th.style.display = 'none';
         self.header_row.appendChild(th);
       }
@@ -4239,7 +4239,7 @@ JSONEditor.defaults.editors.table = JSONEditor.defaults.editors.array.extend({
     // Buttons to delete row, move row up, and move row down
     if(!this.hide_delete_buttons) {
       self.rows[i].delete_button = this.getButton('','delete',this.translate('button_delete_row_title_short'));
-      self.rows[i].delete_button.className += ' delete';
+      self.rows[i].delete_button.className += ' btn-xs delete';
       self.rows[i].delete_button.setAttribute('data-i',i);
       self.rows[i].delete_button.addEventListener('click',function(e) {
         e.preventDefault();
@@ -6680,8 +6680,8 @@ JSONEditor.defaults.themes.bootstrap3 = JSONEditor.AbstractTheme.extend({
       if(label) {
         label.className += ' control-label';
         group.appendChild(label);
+        if(description) label.appendChild(description);
       }
-      if(description) group.appendChild(description);
       group.appendChild(input);
     }
 
@@ -6729,12 +6729,20 @@ JSONEditor.defaults.themes.bootstrap3 = JSONEditor.AbstractTheme.extend({
   },
   getTable: function() {
     var el = document.createElement('table');
-    el.className = 'table table-bordered';
+    el.className = 'table table-bordered table-condensed';
     el.style.width = 'auto';
     el.style.maxWidth = 'none';
     return el;
   },
-
+  getTableHeaderCell: function(text, description) {
+    var el = document.createElement('th');
+    el.textContent = text;
+    if(description){
+      var descriptionButton = this.getFormInputDescription(description);
+      el.appendChild(descriptionButton);
+    }
+    return el;
+  },
   addInputError: function(input,text) {
     if(!input.controlgroup) return;
     input.controlgroup.className += ' has-error';
