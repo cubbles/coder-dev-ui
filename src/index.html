@@ -5,11 +5,17 @@
     <title>@@PackageNamePretty</title>
     <link rel='stylesheet' href='css/bootstrap.min.css'>
     <script src="js/jsoneditor.js"></script>
+    <script src="js/jquery-1.12.3.min.js"></script>
     <script src="js/@@PackageName.js"></script>
 </head>
-<body onload="loadSchema()">
+<body>
 <h1>@@PackageNamePretty</h1>
 
 <div id='editor_holder' class="col-md-6"></div>
+
+<script>
+   var coderDevUi = new CoderDevUI();
+    coderDevUi.loadSchema();
+</script>
 </body>
 </html>
