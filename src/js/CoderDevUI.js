@@ -8,7 +8,9 @@
  * Load the coder DevUI
  * @constructor
  */
-var CoderDevUI = function () {};
+var CoderDevUI = function (holderId) {
+  this.holderId = holderId;
+};
 
 CoderDevUI.prototype.constructor = CoderDevUI;
 /**
@@ -17,11 +19,11 @@ CoderDevUI.prototype.constructor = CoderDevUI;
  */
 CoderDevUI.prototype.loadEditor = function (schema) {
   this.setEditorsOptions();
-  this.editor = new JSONEditor(document.getElementById('editor_holder'), {
+  this.editor = new JSONEditor(document.getElementById(this.holderId), {
     theme: 'bootstrap3',
     iconlib: 'bootstrap3',
-    disable_array_add: true,
-    disable_array_delete: true,
+    // disable_array_add: true,
+    // disable_array_delete: true,
     disable_array_reorder: true,
     no_additional_properties: true,
     disable_edit_json: true,

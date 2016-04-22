@@ -1,22 +1,21 @@
 /**
  * Created by ega on 20.04.2016.
  */
-module.exports = function(grunt) {
-
+module.exports = function (grunt) {
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
     dir: {
       dist: {
-        root:   'dist/',
-        js:     'dist/js',
-        css:    'deploy/css'
+        root: 'dist/',
+        js: 'dist/js',
+        css: 'deploy/css'
       },
       src: {
-        root:   'src/',
-        lib:    'src/lib/',
-        js:     'src/js/**/*.js',
-        css:    'src/css/',
-        index:  'src/index.html'
+        root: 'src/',
+        lib: 'src/lib/',
+        js: 'src/js/**/*.js',
+        css: 'src/css/',
+        index: 'src/index.html'
       }
     },
     concat: {
@@ -27,8 +26,7 @@ module.exports = function(grunt) {
               version: '<%= pkg.version %>',
               buildDate: '<%= grunt.template.today() %>'
             }
-          }//,
-          //sourceMap: true
+          }
         },
         src: ['<%= dir.src.js %>'],
         dest: '<%= dir.dist.js %>/<%= pkg.name %>.js'
@@ -132,8 +130,7 @@ module.exports = function(grunt) {
       root: {
         options: {
           port: 80,
-          base: './dist',
-          //livereload: true
+          base: './dist'
         }
       }
     },
@@ -158,5 +155,4 @@ module.exports = function(grunt) {
   grunt.registerTask('updatejs', ['concat', 'uglify']);
   grunt.registerTask('build', ['concat', 'uglify', 'replace', 'copy']);
   grunt.registerTask('default', ['clean', 'build', 'connect', 'open', 'watch']);
-
 };

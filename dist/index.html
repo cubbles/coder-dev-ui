@@ -10,20 +10,12 @@
 </head>
 <body>
 <h1>Coder Dev UI</h1>
-<input id="show_descritiptions" type="checkbox" onchange="showDescription()">Show descriptions
 <div id='editor_holder' class="col-md-6"></div>
+<div id='editor_holder2' class="col-md-6"></div>
 
 <script>
-    JSONEditor.defaults.options.hide_descriptions = true;
-    var coderDevUi = new CoderDevUI();
+    var coderDevUi = new CoderDevUI('editor_holder');
     coderDevUi.loadSchema();
-
-    function showDescription() {
-        document.getElementById("editor_holder").innerHTML = "";
-        JSONEditor.defaults.options.hide_descriptions = !document.getElementById('show_descritiptions').checked;
-        coderDevUi = new CoderDevUI();
-        coderDevUi.loadSchema();
-    }
 </script>
 </body>
 </html>
