@@ -31,7 +31,7 @@ CoderDevUI.prototype.loadEditor = function (schema) {
     // hide_descriptions: true,
     schema: schema
   });
-  this.loadManifest();
+  // this.loadManifest();
 };
 
 /**
@@ -49,6 +49,7 @@ CoderDevUI.prototype.loadManifest = function () {
   var self = this;
   $.getJSON(this.$_GET('manifest'), function (response) {
     self.editor.setValue(response);
+    $('[data-toggle="popover"]').popover();
   });
 };
 

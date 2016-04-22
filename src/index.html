@@ -6,16 +6,23 @@
     <link rel='stylesheet' href='css/bootstrap.min.css'>
     <script src="js/jsoneditor.js"></script>
     <script src="js/jquery-1.12.3.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
     <script src="js/@@PackageName.js"></script>
 </head>
 <body>
-<h1>@@PackageNamePretty</h1>
-<div id='editor_holder' class="col-md-6"></div>
-<div id='editor_holder2' class="col-md-6"></div>
-
-<script>
+<div class="container-fluid">
+    <div class="row">
+        <h1>@@PackageNamePretty</h1>
+    </div>
+    <div class="row">
+        <div id='editor_holder' class="col-md-6"></div>
+        <div id='graphic_holder' class="col-md-6"></div>
+    </div>
+</div>
+<script type="text/javascript">
     var coderDevUi = new CoderDevUI('editor_holder');
     coderDevUi.loadSchema();
+    coderDevUi.loadManifest();
 </script>
 </body>
 </html>
