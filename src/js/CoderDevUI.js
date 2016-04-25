@@ -64,11 +64,10 @@ CoderDevUI.prototype.loadSchema = function () {
     schema.properties.contributors.format = 'table';
     schema.properties.author.format = 'grid';
 
-    var artifactsCommonProps = ['runnables', 'endpoints'];
-    for (var i in artifactsCommonProps) {
-      schema.definitions.appArtifact.properties[artifactsCommonProps[i]].format = 'tabs';
-      schema.definitions.elementaryArtifact.properties[artifactsCommonProps[i]].format = 'tabs';
-      schema.definitions.compoundArtifact.properties[artifactsCommonProps[i]].format = 'tabs';
+    var artifacts = ['appArtifact', 'elementaryArtifact', 'compoundArtifact'];
+    for (var i in artifacts) {
+      schema.definitions[artifacts[i]].properties.runnables.format = 'table';
+      schema.definitions[artifacts[i]].properties.endpoints.format = 'tabs';
     }
     schema.definitions.elementaryArtifact.properties.slots.format = 'tabs';
     schema.definitions.compoundArtifact.properties.slots.format = 'tabs';
