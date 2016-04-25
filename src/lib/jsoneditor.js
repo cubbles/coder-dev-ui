@@ -2388,14 +2388,14 @@ JSONEditor.defaults.editors.object = JSONEditor.AbstractEditor.extend({
 
     // Sort editors by propertyOrder
     this.property_order = Object.keys(this.editors);
-    this.property_order = this.property_order.sort(function(a,b) {
+    /*this.property_order = this.property_order.sort(function(a,b) {
       var ordera = self.editors[a].schema.propertyOrder;
       var orderb = self.editors[b].schema.propertyOrder;
       if(typeof ordera !== "number") ordera = 1000;
       if(typeof orderb !== "number") orderb = 1000;
 
       return ordera - orderb;
-    });
+    });*/
 
     var container;
 
@@ -4032,7 +4032,6 @@ JSONEditor.defaults.editors.table = JSONEditor.defaults.editors.array.extend({
     if(!ignore) {
       ret.build();
       ret.postBuild();
-
       ret.controls_cell = row.appendChild(this.theme.getTableCell());
       ret.row = row;
       ret.table_controls = this.theme.getButtonHolder();
@@ -4439,6 +4438,7 @@ JSONEditor.defaults.editors.multiple = JSONEditor.AbstractEditor.extend({
     });
     self.refreshValue();
     self.refreshHeaderText();
+    if(self.editors[i].header) self.editors[i].header.appendChild(self.switcher);
   },
   buildChildEditor: function(i) {
     var self = this;
@@ -4476,7 +4476,8 @@ JSONEditor.defaults.editors.multiple = JSONEditor.AbstractEditor.extend({
     self.editors[i].build();
     self.editors[i].postBuild();
 
-    //if(self.editors[i].header) self.editors[i].header.style.display = 'none';
+    // if(self.editors[i].header) self.editors[i].header.style.display = 'none';
+
 
     self.editors[i].option = self.switcher_options[i];
 
@@ -4551,9 +4552,9 @@ JSONEditor.defaults.editors.multiple = JSONEditor.AbstractEditor.extend({
       self.onChange(true);
     });
 
+    //this.editor_holder = this.theme.getIndentedPanel();
     this.editor_holder = document.createElement('div');
     container.appendChild(this.editor_holder);
-    
       
     var validator_options = {};
     if(self.jsoneditor.options.custom_validators) {
@@ -6166,7 +6167,7 @@ JSONEditor.AbstractTheme = Class.extend({
     return el;
   },
   getHeader: function(text) {
-    var el = document.createElement('h3');
+    var el = document.createElement('label');
     if(typeof text === "string") {
       el.textContent = text;
     }
@@ -6209,7 +6210,7 @@ JSONEditor.AbstractTheme = Class.extend({
   getSwitcher: function(options) {
     var switcher = this.getSelectInput(options);
     switcher.style.backgroundColor = 'transparent';
-    switcher.style.display = 'none';
+    switcher.style.display = 'inline';
     switcher.style.fontStyle = 'italic';
     switcher.style.fontWeight = 'normal';
     switcher.style.height = 'auto';
