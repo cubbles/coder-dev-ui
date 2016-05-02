@@ -158,108 +158,137 @@ WebpackageViewer.prototype.addViewDataflowButtons = function () {
 WebpackageViewer.prototype.generateDataflowGraph = function (index, manifest) {
   var dataflowGraph = {id: 'root', children: []};
   var compoundComponent = manifest.artifacts.compoundComponents[index];
-  var rootComponentPorts = [];
 
-  var port;
-  for (var i in compoundComponent.slots) {
-    for (var j in compoundComponent.slots[i].direction) {
-      port = {
-        id: compoundComponent.slots[i].slotId + '_' + compoundComponent.slots[i].direction[j],
-        properties: {
-          portSide: (compoundComponent.slots[i].direction[j] === 'input') ? 'WEST' : 'EAST'
-        },
-        labels: [{text: compoundComponent.slots[i].slotId}],
-        width: 10
-        // labels: [{text: compoundComponent.slots[i].slotId +'_' +compoundComponent.slots[i].direction[j]}]
-      };
-      rootComponentPorts.push(port);
-    }
-  }
+  var rootComponentSlots = this.generateGraphMemberSlots(compoundComponent, '');
 
-  var childComponentId;
+  var rootComponent = this.generateGraphMember(
+    compoundComponent.artifactId,
+    0,
+    compoundComponent.artifactId,
+    130,
+    rootComponentSlots.slots,
+    40
+  );
+  rootComponent.children = this.generateGraphMembers(compoundComponent.members, manifest);
+
+  dataflowGraph.children.push(rootComponent);
+  dataflowGraph.edges = this.generateGraphConnections(compoundComponent.connections, compoundComponent.artifactId);
+  return dataflowGraph;
+};
+
+WebpackageViewer.prototype.generateGraphMembers = function (compoundMembers, manifest) {
+  var compoundId;
   var memberId;
-  var childComponent;
-  var childPorts;
-  var childPort;
-  var component;
-  var childComponents = [];
-  for (var k in compoundComponent.members) {
+  var graphMember;
+  var graphMemberSlots;
+  var compoundMember;
+  var graphMembers = [];
+  for (var k in compoundMembers) {
     // TODO: this/ and external components
-    childPorts = [];
-    childComponentId = compoundComponent.members[k].componentId.replace('this/', '');
-    memberId = compoundComponent.members[k].memberId;
-    component = this.searchComponentIn(childComponentId, manifest.artifacts.elementaryComponents);
-    if (!component) {
-      component = this.searchComponentIn(childComponentId, manifest.artifacts.compoundComponents);
+    compoundId = compoundMembers[k].componentId.replace('this/', '');
+    memberId = compoundMembers[k].memberId;
+    compoundMember = this.searchComponentIn(compoundId, manifest.artifacts.elementaryComponents);
+    if (!compoundMember) {
+      compoundMember = this.searchComponentIn(compoundId, manifest.artifacts.compoundComponents);
     }
-
-    var maxPortWidth = 0;
-    var portWidth;
-    for (var l in component.slots) {
-      for (var m in component.slots[l].direction) {
-        portWidth = component.slots[l].slotId.length * 5;
-        maxPortWidth = Math.max(portWidth, maxPortWidth);
-        childPort = {
-          id: component.slots[l].slotId + '_' + memberId + '_' + component.slots[l].direction[m],
-          properties: {
-            portSide: (component.slots[l].direction[m] === 'input') ? 'WEST' : 'EAST'
-          },
-          labels: [{
-            text: component.slots[l].slotId,
-            width: portWidth,
-            height: 10
-          }],
-          width: 2
-          // labels: [{text: component.slots[l].slotId + '_' + memberId + '_' + component.slots[l].direction[m]}]
-        };
-        childPorts.push(childPort);
-      }
-    }
-
-    var titleWidth = component.artifactId.length * 7;
-    childComponent = {
-      id: memberId,
-      labels: [{text: component.artifactId, width: titleWidth, height: 10}],
-      width: Math.max(maxPortWidth * 2 + 20, titleWidth),
-      height: childPorts.length * 15 + 40,
-      ports: childPorts,
-      properties: {
-        portConstraints: 'FIXED_SIDE',
-        portLabelPlacement: 'INSIDE',
-        nodeLabelPlacement: 'INSIDE H_CENTER V_TOP',
-        portAlignment: 'CENTER',
-        portSpacing: 13
-      }
-    };
-    childComponents.push(childComponent);
+    graphMemberSlots = this.generateGraphMemberSlots(compoundMember, memberId);
+    var titleWidth = compoundMember.artifactId.length * 7;
+    var graphMemberWidth = Math.max(graphMemberSlots.maxSlotWidth * 2 + 20, titleWidth);
+    graphMember = this.generateGraphMember(
+      memberId,
+      graphMemberWidth,
+      compoundMember.artifactId,
+      titleWidth,
+      graphMemberSlots.slots
+    );
+    graphMembers.push(graphMember);
   }
+  return graphMembers;
+};
 
+WebpackageViewer.prototype.generateGraphMember = function (memberId, width, label, labelWidth, slots, borderSpacing) {
+  var graphMeber = {
+    id: memberId,
+    labels: [{text: label, width: labelWidth, height: 10}],
+    width: width,
+    height: slots.length * 15 + 40,
+    ports: slots,
+    properties: {
+      portConstraints: 'FIXED_SIDE',
+      portLabelPlacement: 'INSIDE',
+      nodeLabelPlacement: 'INSIDE H_CENTER V_TOP',
+      portAlignment: 'CENTER',
+      portSpacing: 13,
+      borderSpacing: borderSpacing || 12
+    }
+  };
+  return graphMeber;
+};
+
+WebpackageViewer.prototype.generateGraphMemberSlots = function (compoundMember, memberId) {
+  var graphMemberSlots = [];
+  var graphMemberSlot;
+  var maxSlotWidth = 0;
+  var slotLabelWidth;
+  for (var l in compoundMember.slots) {
+    for (var m in compoundMember.slots[l].direction) {
+      slotLabelWidth = compoundMember.slots[l].slotId.length * 5;
+      maxSlotWidth = Math.max(slotLabelWidth, maxSlotWidth);
+      graphMemberSlot = this.generateGraphMemberSlot(
+        compoundMember.slots[l].slotId,
+        memberId,
+        compoundMember.slots[l].direction[m],
+        slotLabelWidth
+      );
+      graphMemberSlots.push(graphMemberSlot);
+    }
+  }
+  return {slots: graphMemberSlots, maxSlotWidth: maxSlotWidth};
+};
+
+WebpackageViewer.prototype.generateGraphMemberSlot = function (slotId, memberId, direction, slotWidth) {
+  var graphMemberSlot = {
+    id: slotId + '_' + memberId + '_' + direction,
+    properties: {
+      portSide: (direction === 'input') ? 'WEST' : 'EAST'
+    },
+    labels: [{
+      text: slotId,
+      width: slotWidth,
+      height: 10
+    }],
+    width: 2
+  };
+  return graphMemberSlot;
+};
+
+WebpackageViewer.prototype.generateGraphConnections = function (compoundConnections, compoundId) {
   var edge;
   var rootEdges = [];
-  for (var n in compoundComponent.connections) {
+  for (var n in compoundConnections) {
     var source;
     var sourcePort;
-    if (compoundComponent.connections[n].source.memberIdRef) {
-      source = compoundComponent.connections[n].source.memberIdRef;
-      sourcePort = compoundComponent.connections[n].source.slot + '_' + compoundComponent.connections[n].source.memberIdRef + '_' + 'output';
+    if (compoundConnections[n].source.memberIdRef) {
+      source = compoundConnections[n].source.memberIdRef;
+      sourcePort = compoundConnections[n].source.slot + '_' + compoundConnections[n].source.memberIdRef + '_' + 'output';
     } else {
-      source = compoundComponent.artifactId;
-      sourcePort = compoundComponent.connections[n].source.slot + '_' + 'input';
+      source = compoundId;
+      sourcePort = compoundConnections[n].source.slot + '_' + 'input';
     }
     var target;
     var targetPort;
-    if (compoundComponent.connections[n].destination.memberIdRef) {
-      target = compoundComponent.connections[n].destination.memberIdRef;
-      targetPort = compoundComponent.connections[n].destination.slot + '_' + compoundComponent.connections[n].destination.memberIdRef + '_' + 'input';
+    if (compoundConnections[n].destination.memberIdRef) {
+      target = compoundConnections[n].destination.memberIdRef;
+      targetPort = compoundConnections[n].destination.slot + '_' + compoundConnections[n].destination.memberIdRef + '_' + 'input';
     } else {
-      target = compoundComponent.artifactId;
-      targetPort = compoundComponent.connections[n].destination.slot + '_' + 'output';
+      target = compoundId;
+      targetPort = compoundConnections[n].destination.slot + '_' + 'output';
     }
     edge = {
-      id: compoundComponent.connections[n].connectionId,
+      id: compoundConnections[n].connectionId,
       labels: [{
-        text: compoundComponent.connections[n].connectionId,
-        width: compoundComponent.connections[n].connectionId.length * 5,
+        text: compoundConnections[n].connectionId,
+        width: compoundConnections[n].connectionId.length * 5,
         height: 10
       }],
       source: source,
@@ -269,25 +298,7 @@ WebpackageViewer.prototype.generateDataflowGraph = function (index, manifest) {
     };
     rootEdges.push(edge);
   }
-
-  var rootComponent = {
-    id: compoundComponent.artifactId,
-    labels: [{text: compoundComponent.artifactId, width: 130, height: 20}],
-    ports: rootComponentPorts,
-    properties: {
-      portConstraints: 'FIXED_SIDE',
-      portLabelPlacement: 'INSIDE',
-      nodeLabelPlacement: 'INSIDE,H_CENTER,V_TOP',
-      portAlignment: 'CENTER',
-      portSpacing: 13,
-      borderSpacing: 40
-    },
-    children: childComponents
-  };
-
-  dataflowGraph.children.push(rootComponent);
-  dataflowGraph.edges = rootEdges;
-  return dataflowGraph;
+  return rootEdges;
 };
 
 /**
