@@ -4,36 +4,39 @@
 /*global $, JSONEditor, location, d3, klay*/
 'use strict';
 /**
- * @Class CoderDevUI
- * Load the coder DevUI
+ * @Class WebpackageViewer
+ * Load the Webpackage Viewer
  * @constructor
+ * @param {string} structureHolderId Id of the html element that holds the structure view
+ * @param {string} dataflowHolderId Id of the html element that holds the dataflow view
  */
-var CoderDevUI = function (holderId, graphicHolderId) {
-  this.holderId = holderId;
-  this.graphicHolderId = graphicHolderId;
-  this.graphicWidth = 800;
-  this.graphicHeight = 500;
+var WebpackageViewer = function (structureHolderId, dataflowHolderId) {
+  this.structureHolderId = structureHolderId;
+  this.dataflowHolderId = dataflowHolderId;
+  this.dataflowViewWidth = 800;
+  this.dataflowViewHeight = 500;
   var self = this;
   var zoom = d3.behavior.zoom()
     .on('zoom', function () {
       self.svg.attr('transform', 'translate(' + d3.event.translate + ')' + ' scale(' + d3.event.scale + ')');
     });
-  this.svg = d3.select('#' + this.graphicHolderId).select('.modal-body')
+  this.svg = d3.select('#' + this.dataflowHolderId).select('.modal-body')
     .append('svg')
     .attr('width', '100%')
-    .attr('height', this.graphicHeight)
+    .attr('height', this.dataflowViewHeight)
     .call(zoom)
     .append('g');
 };
 
-CoderDevUI.prototype.constructor = CoderDevUI;
+WebpackageViewer.prototype.constructor = WebpackageViewer;
+
 /**
- * Load the json-editor and set its default parameters
- * @param {object} schema JSON schema of the editor
+ * Load the structureView which is a json-editor
+ * @param {object} schema JSON schema of the structureView
  */
-CoderDevUI.prototype.loadEditor = function (schema) {
-  this.setEditorsOptions();
-  this.editor = new JSONEditor(document.getElementById(this.holderId), {
+WebpackageViewer.prototype.loadStructureView = function (schema) {
+  this.setStructureViewOptions();
+  this.structureView = new JSONEditor(document.getElementById(this.structureHolderId), {
     theme: 'bootstrap3',
     iconlib: 'bootstrap3',
     disable_array_reorder: true,
@@ -46,9 +49,9 @@ CoderDevUI.prototype.loadEditor = function (schema) {
 };
 
 /**
- * Set the editors' default options.
+ * Set the json-editors' default options.
  */
-CoderDevUI.prototype.setEditorsOptions = function () {
+WebpackageViewer.prototype.setStructureViewOptions = function () {
   JSONEditor.defaults.editors.array.options.collapsed = true;
   JSONEditor.defaults.editors.table.options.collapsed = true;
 };
@@ -56,20 +59,20 @@ CoderDevUI.prototype.setEditorsOptions = function () {
 /**
  * Load the manifest.webpackage file retrieving its path from the url
  */
-CoderDevUI.prototype.loadManifest = function () {
+WebpackageViewer.prototype.loadManifest = function () {
   var self = this;
   $.getJSON(this.$_GET('webpackage'), function (response) {
-    self.editor.setValue(response);
+    self.structureView.setValue(response);
     $('[data-toggle="popover"]').popover();
-    self.addViewDiagramsButtons();
+    self.addViewDataflowButtons();
   });
 };
 
 /**
  * Load the JSON schema file retrieving its path from the url.
- *  Additionally add format to the schema for its representation
+ * Additionally add format to the schema for its representation
  */
-CoderDevUI.prototype.loadSchema = function () {
+WebpackageViewer.prototype.loadSchema = function () {
   var self = this;
   $.getJSON(this.$_GET('schema'), function (response) {
     var schema = response;
@@ -91,7 +94,7 @@ CoderDevUI.prototype.loadSchema = function () {
     schema.definitions.compoundArtifact.properties.connections.format = 'tabs';
     schema.definitions.compoundArtifact.properties.inits.format = 'table';
     // schema.format = 'grid';
-    self.loadEditor(schema);
+    self.loadStructureView(schema);
   });
 };
 
@@ -101,7 +104,7 @@ CoderDevUI.prototype.loadSchema = function () {
  * @param {string} param name of the parameter to read
  * @returns {*} the value of the parameter or an empty object if the parameter was not in the url
  */
-CoderDevUI.prototype.$_GET = function (param) {
+WebpackageViewer.prototype.$_GET = function (param) {
   var vars = {};
   window.location.href.replace(location.hash, '').replace(
     /[?&]+([^=&]+)=?([^&]*)?/gi, // regexp
@@ -117,43 +120,43 @@ CoderDevUI.prototype.$_GET = function (param) {
 };
 
 /**
- * Add a button to each compound components view, to display its diagram
+ * Add a button to each compound components view, to display its dataflow view
  */
-CoderDevUI.prototype.addViewDiagramsButtons = function () {
-  var compoundComponents = this.editor.getValue().artifacts.compoundComponents;
-  var graphicHolderId = this.graphicHolderId;
-  var viewDiagramButton;
-  var icon;
+WebpackageViewer.prototype.addViewDataflowButtons = function () {
+  var compoundComponents = this.structureView.getValue().artifacts.compoundComponents;
+  var dataflowHolderId = this.dataflowHolderId;
+  var viewDataflowButton;
+  var viewIcon;
   var compoundLabel;
   var self = this;
   for (var i in compoundComponents) {
-    viewDiagramButton = document.createElement('button');
-    viewDiagramButton.setAttribute('type', 'button');
-    viewDiagramButton.setAttribute('class', 'btn btn-primary');
-    viewDiagramButton.setAttribute('data-toggle', 'modal');
-    viewDiagramButton.setAttribute('data-compound-index', i);
-    icon = document.createElement('i');
-    icon.setAttribute('class', 'glyphicon glyphicon-eye-open');
-    viewDiagramButton.appendChild(icon);
-    viewDiagramButton.appendChild(document.createTextNode('View diagram'));
-    viewDiagramButton.onclick = function () {
-      var graphicHolder = $('#' + graphicHolderId);
-      self.drawGraph(self.generateGraph($(this).attr('data-compound-index'), self.editor.getValue()));
-      graphicHolder.modal('show');
+    viewDataflowButton = document.createElement('button');
+    viewDataflowButton.setAttribute('type', 'button');
+    viewDataflowButton.setAttribute('class', 'btn btn-primary');
+    viewDataflowButton.setAttribute('data-toggle', 'modal');
+    viewDataflowButton.setAttribute('data-compound-index', i);
+    viewIcon = document.createElement('i');
+    viewIcon.setAttribute('class', 'glyphicon glyphicon-eye-open');
+    viewDataflowButton.appendChild(viewIcon);
+    viewDataflowButton.appendChild(document.createTextNode('View diagram'));
+    viewDataflowButton.onclick = function () {
+      var dataflowHolder = $('#' + dataflowHolderId);
+      self.drawDataflow(self.generateDataflowGraph($(this).attr('data-compound-index'), self.structureView.getValue()));
+      dataflowHolder.modal('show');
     };
     compoundLabel = $('[data-schemapath="root.artifacts.compoundComponents.' + i + '"]').find('label:first');
-    compoundLabel.append(viewDiagramButton);
+    compoundLabel.append(viewDataflowButton);
   }
 };
 
 /**
- * Generate the KGraph for a compound component
+ * Generate the KGraph that represents to the dataflow of a compound component
  * @param {number} index Index of the compound component in compoundComponents array of manifest.artifacts
  * @param {object} manifest Manifest object contain in the manifest.webpackage file
- * @returns {{id: string, children: Array}} Kgraph to be used to build and display the diagram
+ * @returns {{id: string, children: Array}} Kgraph to be used to build and display the dataflow view
  */
-CoderDevUI.prototype.generateGraph = function (index, manifest) {
-  var graph = {id: 'root', children: []};
+WebpackageViewer.prototype.generateDataflowGraph = function (index, manifest) {
+  var dataflowGraph = {id: 'root', children: []};
   var compoundComponent = manifest.artifacts.compoundComponents[index];
   var rootComponentPorts = [];
 
@@ -282,18 +285,18 @@ CoderDevUI.prototype.generateGraph = function (index, manifest) {
     children: childComponents
   };
 
-  graph.children.push(rootComponent);
-  graph.edges = rootEdges;
-  return graph;
+  dataflowGraph.children.push(rootComponent);
+  dataflowGraph.edges = rootEdges;
+  return dataflowGraph;
 };
 
 /**
  * Search a component in a components list using its id
  * @param {string} componentId Id of the component to be searched
- * @param {array} componentsList Array where the component will be seacrhed
+ * @param {array} componentsList Array where the component will be searched
  * @returns {*}
  */
-CoderDevUI.prototype.searchComponentIn = function (componentId, componentsList) {
+WebpackageViewer.prototype.searchComponentIn = function (componentId, componentsList) {
   for (var i in componentsList) {
     if (componentsList[i].artifactId === componentId) {
       return componentsList[i];
@@ -303,14 +306,14 @@ CoderDevUI.prototype.searchComponentIn = function (componentId, componentsList) 
 };
 
 /**
- * Build and append all the graphic elements of the diagram described by a Kgraph
- * @param {object} graph JSON Kgraph to be displayed
+ * Build and append all the graphic elements of the dataflow view described by a Kgraph
+ * @param {object} dataflowGraph JSON Kgraph to be displayed
  */
-CoderDevUI.prototype.drawGraph = function (graph) {
+WebpackageViewer.prototype.drawDataflow = function (dataflowGraph) {
 // group
   var root = this.svg.append('g');
   var layouter = klay.d3kgraph()
-    .size([this.graphicWidth, this.graphicHeight])
+    .size([this.dataflowViewWidth, this.dataflowViewHeight])
     .transformGroup(root)
     .options({
       layoutHierarchy: true,
@@ -325,39 +328,39 @@ CoderDevUI.prototype.drawGraph = function (graph) {
 
   var self = this;
   layouter.on('finish', function (d) {
-    var nodes = layouter.nodes();
-    var links = layouter.links(nodes);
+    var components = layouter.nodes();
+    var connections = layouter.links(components);
 
-    var nodeData = root.selectAll('.node')
-      .data(nodes, function (d) { return d.id; });
+    var componentsData = root.selectAll('.node')
+      .data(components, function (d) { return d.id; });
 
-    var linkData = root.selectAll('.link')
-      .data(links, function (d) { return d.id; });
+    var connectionsData = root.selectAll('.link')
+      .data(connections, function (d) { return d.id; });
 
-    self.drawComponents(nodeData);
-    self.drawComponentsSlots(nodeData);
-    self.drawConnections(linkData);
+    self.drawComponents(componentsData);
+    self.drawComponentsSlots(componentsData);
+    self.drawConnections(connectionsData);
   });
 
-  layouter.kgraph(graph);
+  layouter.kgraph(dataflowGraph);
 };
 
 /**
  * Draw a square for each component and its id as label
  * @param {Object} componentsData Data of each component (D3)
  */
-CoderDevUI.prototype.drawComponents = function (componentsData) {
-  var node = componentsData.enter()
+WebpackageViewer.prototype.drawComponents = function (componentsData) {
+  var componentView = componentsData.enter()
     .append('g')
     .attr('class', function (d) {
       if (d.children) {
-        return 'node compound';
+        return 'componentView compound';
       } else {
-        return 'node leaf';
+        return 'componentView leaf';
       }
     });
 
-  var atoms = node.append('rect')
+  var atoms = componentView.append('rect')
     .attr('class', 'elementary')
     .attr('width', 10)
     .attr('height', 10);
@@ -366,14 +369,14 @@ CoderDevUI.prototype.drawComponents = function (componentsData) {
     .attr('width', function (d) { return d.width; })
     .attr('height', function (d) { return d.height; });
 
-  // Apply node positions
-  node.transition()
+  // Apply componentView positions
+  componentView.transition()
     .attr('transform', function (d) {
       return 'translate(' + (d.x || 0) + ' ' + (d.y || 0) + ')';
     });
 
   // Nodes labels
-  var nodeLabel = node.selectAll('.nodeLabel')
+  var componentViewLabel = componentView.selectAll('.componentViewLabel')
     .data(function (d) {
       return d.labels || [];
     })
@@ -382,12 +385,12 @@ CoderDevUI.prototype.drawComponents = function (componentsData) {
     .text(function (d) {
       return d.text;
     })
-    .attr('class', 'nodeLabel');
+    .attr('class', 'componentViewLabel');
 
-  nodeLabel.transition()
+  componentViewLabel.transition()
     .attr('height', function (d) { return d.height; });
 
-  nodeLabel.transition()
+  componentViewLabel.transition()
     .attr('x', function (d) { return d.x; })
     .attr('y', function (d) { return d.y + d.height; });
 };
@@ -396,29 +399,29 @@ CoderDevUI.prototype.drawComponents = function (componentsData) {
  * Draw the components' slots and their ids as labels
  * @param {Object} componentsData Data of each component (D3)
  */
-CoderDevUI.prototype.drawComponentsSlots = function (componentsData) {
-  // ports
-  var port = componentsData.selectAll('.port')
+WebpackageViewer.prototype.drawComponentsSlots = function (componentsData) {
+  // slots
+  var slotView = componentsData.selectAll('.slotView')
     .data(function (d) { return d.ports || []; })
     .enter()
     .append('g')
-    .attr('class', 'port');
+    .attr('class', 'slotView');
 
-  port.append('circle')
+  slotView.append('circle')
     .attr('class', 'portAtom');
-  port.transition()
+  slotView.transition()
     .attr('transform', function (d) {
       return 'translate(' + (d.x || 0) + ' ' + (d.y || 0) + ')';
     });
 
-  // ports labels
-  var portLabel = port.selectAll('.portLabel')
+  // slots labels
+  var slotViewLabel = slotView.selectAll('.slotViewLabel')
     .data(function (d) { return d.labels; })
     .enter()
     .append('text')
     .text(function (d) { return d.text; })
-    .attr('class', 'portLabel');
-  portLabel.transition()
+    .attr('class', 'slotViewLabel');
+  slotViewLabel.transition()
     .attr('x', function (d) {
       return d.x;
     })
@@ -429,10 +432,10 @@ CoderDevUI.prototype.drawComponentsSlots = function (componentsData) {
  * Draw the connections and their ids as labels
  * @param {Object} connectionData Data of each connection (D3)
  */
-CoderDevUI.prototype.drawConnections = function (connectionData) {
+WebpackageViewer.prototype.drawConnections = function (connectionData) {
   // build the arrow.
   this.svg.append('svg:defs').selectAll('marker')
-    .data(['end'])                 // define link/path types
+    .data(['end'])                 // define connectionView/path types
     .enter().append('svg:marker')    // add arrows
     .attr('id', String)
     .attr('class', 'arrowEnd')
@@ -445,21 +448,21 @@ CoderDevUI.prototype.drawConnections = function (connectionData) {
     .append('svg:path')
     .attr('d', 'M0,-5L10,0L0,5');
 
-  // Add arrows
-  var link = connectionData.enter()
+  // Add connections arrows
+  var connectionView = connectionData.enter()
     .append('path')
-    .attr('class', 'link')
+    .attr('class', 'connectionView')
     .attr('d', 'M0 0')
     .attr('marker-end', 'url(#end)');
 
-  // add edge labels
-  var linkLabel = connectionData.enter()
+  // Add connections labels
+  var connectionViewLabel = connectionData.enter()
     .append('text')
-    .attr('class', 'linkLabel')
+    .attr('class', 'connectionViewLabel')
     .text(function (d) { return d.labels[0].text || ''; });
 
-  // apply edge routes
-  link.transition().attr('d', function (d) {
+  // Apply connections routes
+  connectionView.transition().attr('d', function (d) {
     var path = '';
     path += 'M' + (d.sourcePoint.x + 3) + ' ' + d.sourcePoint.y + ' ';
     (d.bendPoints || []).forEach(function (bp, i) {
@@ -469,7 +472,7 @@ CoderDevUI.prototype.drawConnections = function (connectionData) {
     return path;
   });
 
-  linkLabel.transition()
+  connectionViewLabel.transition()
     .attr('x', function (d) { return d.labels[0].x; })
     .attr('y', function (d) { return d.labels[0].y + d.labels[0].height * 2.5; });
 };

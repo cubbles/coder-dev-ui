@@ -58,15 +58,6 @@ module.exports = function (grunt) {
         }
       }
     },
-    browserify: {
-      build: {
-        src: ['<%= dir.src.js %>'],
-        dest: '<%= dir.dist.js %>/<%= pkg.name %>.js',
-        options: {
-          require: ['json-editor']
-        }
-      }
-    },
     replace: {
       index: {
         options: {
@@ -77,7 +68,7 @@ module.exports = function (grunt) {
             },
             {
               match: 'PackageNamePretty',
-              replacement: 'Coder Dev UI'
+              replacement: 'Webpackage Viewer'
             }
           ]
         },
@@ -149,7 +140,6 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-clean');
-  grunt.loadNpmTasks('grunt-browserify');
   grunt.loadNpmTasks('grunt-replace');
   grunt.loadNpmTasks('grunt-open');
 
