@@ -14,7 +14,7 @@ module.exports = function (grunt) {
         root: 'src/',
         lib: 'src/lib/',
         js: 'src/js/**/*.js',
-        css: 'src/css/',
+        css: 'src/css/**/*.css',
         index: 'src/index.html'
       }
     },
@@ -136,8 +136,9 @@ module.exports = function (grunt) {
     },
     open: {
       dev: {
-        path: 'http://localhost/index.html?manifest=manifest/manifest.webpackage' +
-        '&schema=manifest/manifestWebpackage-8_3_0.schema'
+        path: 'http://localhost/index.html?' +
+        'schema=manifest/manifestWebpackage-8_3_0.schema' +
+        '&webpackage=https://cubbles.world/sandbox/com.incowia.demo.travel-planner@0.1.0-SNAPSHOT'
       }
     }
   });

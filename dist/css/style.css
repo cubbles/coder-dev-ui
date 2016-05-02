@@ -1,0 +1,35 @@
+.elementary {
+    fill: #fff;
+    stroke: #000;
+    stroke-width: 1px;
+    font-size: 12px;
+    font-weight: bold;
+
+}
+
+.node {
+}
+
+.link {
+    stroke: #000;
+    stroke-width: 1;
+    fill: none;
+}
+
+.arrowEnd {
+    stroke: #000;
+    stroke-width: 1;
+    fill: #000;
+}
+
+.portAtom {
+    stroke: #000;
+    stroke-width: 1;
+    fill: #fff;
+    fill-opacity: 0;
+    r: 5px;
+}
+.portLabel, .linkLabel{
+    font-size: 10px;
+    color: #000;
+}
