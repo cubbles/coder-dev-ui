@@ -361,7 +361,7 @@ WebpackageViewer.prototype.drawComponents = function (componentsData) {
     });
 
   var atoms = componentView.append('rect')
-    .attr('class', 'elementary')
+    .attr('class', 'componentViewAtom')
     .attr('width', 10)
     .attr('height', 10);
 
@@ -408,7 +408,7 @@ WebpackageViewer.prototype.drawComponentsSlots = function (componentsData) {
     .attr('class', 'slotView');
 
   slotView.append('circle')
-    .attr('class', 'portAtom');
+    .attr('class', 'slotViewAtom');
   slotView.transition()
     .attr('transform', function (d) {
       return 'translate(' + (d.x || 0) + ' ' + (d.y || 0) + ')';
