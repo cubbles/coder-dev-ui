@@ -200,10 +200,11 @@ WebpackageViewer.prototype.generateGraphMember = function (component, memberId, 
     properties: {
       portConstraints: 'FIXED_SIDE',
       portLabelPlacement: (optionals) ? optionals.portLabelPlacement : 'INSIDE',
-      nodeLabelPlacement: 'INSIDE H_CENTER V_TOP',
+      nodeLabelPlacement: 'V_TOP',
       portAlignment: 'CENTER',
       portSpacing: 3,
-      borderSpacing: (optionals) ? optionals.borderSpacing : 12
+      borderSpacing: (optionals) ? optionals.borderSpacing : 12,
+      labelSpacing: 6
     }
   };
   return graphMember;
@@ -464,8 +465,8 @@ WebpackageViewer.prototype.drawComponents = function (componentsData) {
     .attr('width', function (d) { return d.width; });
 
   componentViewLabel.transition()
-    .attr('x', function (d) { return d.x; })
-    .attr('y', function (d) { return d.y + d.height; });
+    .attr('x', function (d) { return d.x + 5; })
+    .attr('y', function (d) { return d.y + d.height + 5; });
 };
 
 /**
