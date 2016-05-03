@@ -15,17 +15,6 @@ var WebpackageViewer = function (structureHolderId, dataflowHolderId) {
   this.dataflowHolderId = dataflowHolderId;
   this.dataflowViewWidth = 800;
   this.dataflowViewHeight = 500;
-  var self = this;
-  var zoom = d3.behavior.zoom()
-    .on('zoom', function () {
-      self.svg.attr('transform', 'translate(' + d3.event.translate + ')' + ' scale(' + d3.event.scale + ')');
-    });
-  this.svg = d3.select('#' + this.dataflowHolderId).select('.modal-body')
-    .append('svg')
-    .attr('width', '100%')
-    .attr('height', this.dataflowViewHeight)
-    .call(zoom)
-    .append('g');
 };
 
 WebpackageViewer.prototype.constructor = WebpackageViewer;
@@ -153,20 +142,15 @@ WebpackageViewer.prototype.addViewDataflowButtons = function () {
  * Generate the KGraph that represents to the dataflow of a compound component
  * @param {number} index - Index of the compound component in compoundComponents array of manifest.artifacts
  * @param {object} manifest - Manifest object contain in the manifest.webpackage file
- * @returns {{id: string, children: Array}} Kgraph to be used to build and display the dataflow view
+ * @returns {{id: string, children: Array}} KGraph to be used to build and display the dataflow view
  */
 WebpackageViewer.prototype.generateDataflowGraph = function (index, manifest) {
   var dataflowGraph = {id: 'root', children: []};
   var compoundComponent = manifest.artifacts.compoundComponents[index];
 
-  var rootComponentSlots = this.generateGraphMemberSlots(compoundComponent, compoundComponent.artifactId);
-
   var rootComponent = this.generateGraphMember(
+    compoundComponent,
     compoundComponent.artifactId,
-    0,
-    compoundComponent.artifactId,
-    130,
-    rootComponentSlots.slots,
     {portLabelPlacement: 'OUTSIDE', borderSpacing: 40}
   );
   rootComponent.children = this.generateGraphMembers(compoundComponent.members, manifest);
@@ -180,34 +164,15 @@ WebpackageViewer.prototype.generateDataflowGraph = function (index, manifest) {
  * Generate a list of GraphMembers (KNodes) using a a list of components which belong to a compound component that
  * is defined in manifest
  * @param {Array} compoundMembers - Components which belong to a compound component
- * @param {object} manifest - Object representing the manifest where the compound component is defined
  * @returns {Array} List of GraphMembers (KNodes)
  */
-WebpackageViewer.prototype.generateGraphMembers = function (compoundMembers, manifest) {
-  var compoundId;
-  var memberId;
+WebpackageViewer.prototype.generateGraphMembers = function (compoundMembers) {
   var graphMember;
-  var graphMemberSlots;
-  var compoundMember;
+  var component;
   var graphMembers = [];
   for (var k in compoundMembers) {
-    // TODO: this/ and external components
-    compoundId = compoundMembers[k].componentId.replace('this/', '');
-    memberId = compoundMembers[k].memberId;
-    compoundMember = this.searchComponentIn(compoundId, manifest.artifacts.elementaryComponents);
-    if (!compoundMember) {
-      compoundMember = this.searchComponentIn(compoundId, manifest.artifacts.compoundComponents);
-    }
-    graphMemberSlots = this.generateGraphMemberSlots(compoundMember, memberId);
-    var titleWidth = compoundMember.artifactId.length * 7;
-    var graphMemberWidth = Math.max(graphMemberSlots.maxSlotWidth * 2 + 20, titleWidth);
-    graphMember = this.generateGraphMember(
-      memberId,
-      graphMemberWidth,
-      compoundMember.artifactId,
-      titleWidth,
-      graphMemberSlots.slots
-    );
+    component = this.componentDefinitionOfMember(compoundMembers[k]);
+    graphMember = this.generateGraphMember(component, compoundMembers[k].memberId);
     graphMembers.push(graphMember);
   }
   return graphMembers;
@@ -215,23 +180,23 @@ WebpackageViewer.prototype.generateGraphMembers = function (compoundMembers, man
 
 /**
  * Generate a GraphMember (KNode) that represents a Component
+ * @param {string} component - Component to be represented as GraphMember
  * @param {string} memberId - memberId of the component within a compoundComponent
- * @param {number} width - Width of the GraphMember as view
- * @param {string} label - Label to be used as title of the GraphMember
- * @param {number} labelWidth - Width of the label
- * @param {Array} slots Slots - contained by the component
  * @param {object[]} [optionals] - Optional parameters
  * @param {string} [optionals[].portLabelPlacement='INSIDE']- Placement of the slots for the node
  * @param {number} [optionals[].borderSpacing=12] - Optional parameters
  * @returns {object}
  */
-WebpackageViewer.prototype.generateGraphMember = function (memberId, width, label, labelWidth, slots, optionals) {
-  var graphMeber = {
+WebpackageViewer.prototype.generateGraphMember = function (component, memberId, optionals) {
+  var graphMemberSlots = this.generateGraphMemberSlots(component, memberId);
+  var titleWidth = component.artifactId.length * 7;
+
+  var graphMember = {
     id: memberId,
-    labels: [{text: label, width: labelWidth, height: 10}],
-    width: width,
-    height: slots.length * 15 + 40,
-    ports: slots,
+    labels: [{text: component.artifactId, width: titleWidth, height: 10}],
+    width: Math.max(graphMemberSlots.maxSlotWidth * 2 + 20, titleWidth),
+    height: graphMemberSlots.slots.length * 15 + 40,
+    ports: graphMemberSlots.slots,
     properties: {
       portConstraints: 'FIXED_SIDE',
       portLabelPlacement: (optionals) ? optionals.portLabelPlacement : 'INSIDE',
@@ -241,7 +206,7 @@ WebpackageViewer.prototype.generateGraphMember = function (memberId, width, labe
       borderSpacing: (optionals) ? optionals.borderSpacing : 12
     }
   };
-  return graphMeber;
+  return graphMember;
 };
 
 /**
@@ -352,6 +317,44 @@ WebpackageViewer.prototype.generateGraphConnection = function (compoundConnectio
 };
 
 /**
+ * Returns the component definition of a member from the same manifest or from a manifest located in a store
+ * @param {object} member - Member of a compound component
+ * @returns {object} Component from a manifest
+ */
+WebpackageViewer.prototype.componentDefinitionOfMember = function (member) {
+  // TODO: define how this url will be passed
+  var store = 'https://cubbles.world/sandbox/';
+  var componentArtifactId = member.componentId.substr(member.componentId.indexOf('/') + 1);
+  var component;
+  if (member.componentId.includes('this/')) {
+    component = this.searchComponentInManifest(componentArtifactId, this.structureView.getValue());
+  } else {
+    var self = this;
+    var manifestUrl = store + member.componentId.substr(0, member.componentId.indexOf('/'));
+    $.ajaxSetup({async: false});
+    $.getJSON(manifestUrl, function (response) {
+      component = self.searchComponentInManifest(componentArtifactId, response);
+    });
+    $.ajaxSetup({async: true});
+  }
+  return component;
+};
+
+/**
+ * Search a component in a determined manifest
+ * @param {string} componentArtifactId - Artifact id of the component
+ * @param {object} manifest - Manifest where the component will be searched
+ * @returns {object} Found component
+ */
+WebpackageViewer.prototype.searchComponentInManifest = function (componentArtifactId, manifest) {
+  var componentDefinition = this.searchComponentIn(componentArtifactId, manifest.artifacts.elementaryComponents);
+  if (!componentDefinition) {
+    componentDefinition = this.searchComponentIn(componentArtifactId, manifest.artifacts.compoundComponents);
+  }
+  return componentDefinition;
+};
+
+/**
  * Search a component in a components list using its id
  * @param {string} componentId - Id of the component to be searched
  * @param {Array} componentsList - Array where the component will be searched
@@ -372,6 +375,18 @@ WebpackageViewer.prototype.searchComponentIn = function (componentId, components
  */
 WebpackageViewer.prototype.drawDataflow = function (dataflowGraph) {
 // group
+  d3.select('#' + this.dataflowHolderId).select('.modal-body').html('');
+  var self = this;
+  var zoom = d3.behavior.zoom()
+    .on('zoom', function () {
+      self.svg.attr('transform', 'translate(' + d3.event.translate + ')' + ' scale(' + d3.event.scale + ')');
+    });
+  this.svg = d3.select('#' + this.dataflowHolderId).select('.modal-body')
+    .append('svg')
+    .attr('width', '100%')
+    .attr('height', this.dataflowViewHeight)
+    .call(zoom)
+    .append('g');
   var root = this.svg.append('g');
   var layouter = klay.d3kgraph()
     .size([this.dataflowViewWidth, this.dataflowViewHeight])
@@ -386,8 +401,6 @@ WebpackageViewer.prototype.drawDataflow = function (dataflowGraph) {
       crossMin: 'LAYER_SWEEP',
       algorithm: 'de.cau.cs.kieler.klay.layered'
     });
-
-  var self = this;
   layouter.on('finish', function (d) {
     var components = layouter.nodes();
     var connections = layouter.links(components);
@@ -487,7 +500,7 @@ WebpackageViewer.prototype.drawComponentsSlots = function (componentsData) {
     .attr('x', function (d) {
       return d.x;
     })
-    .attr('y', function (d) { return d.y - 2; });
+    .attr('y', function (d) { return d.y + 3; });
 };
 
 /**
