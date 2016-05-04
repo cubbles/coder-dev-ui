@@ -1,0 +1,72 @@
+{
+  "name": "cubx-webpackage-viewer-package",
+  "groupId": "com.incowia",
+  "version": "0.1.0-SNAPSHOT",
+  "modelVersion": "8.3.0",
+  "docType": "webpackage",
+  "author": {
+    "name": "Edwin Gamboa",
+    "email": "edwin.gamboa@incowia.com"
+  },
+  "license": "MIT",
+  "keywords": [],
+  "man": [],
+  "artifacts": {
+    "apps": [
+      {
+        "artifactId": "app",
+        "description": "This is a simple pre-generated app.",
+        "runnables": [
+          {
+            "name": "app",
+            "path": "/index.html",
+            "description": "Call this app as a simple demo."
+          }
+        ]
+      }
+    ],
+    "elementaryComponents": [
+      {
+        "artifactId": "cubx-webpackage-viewer",
+        "description": "WebUi to visualize the structure of a webpackage, using the manifest.webpackage file, and the Dataflow of its compound components on a browser",
+        "runnables": [
+          {
+            "name": "demo",
+            "path": "/demo/index.html",
+            "description": "Demo app..."
+          }
+        ],
+        "endpoints": [
+          {
+            "endpointId": "main",
+            "description": "This is recommended for you use with webcomponents.",
+            "resources": [
+              "cubx-webpackage-viewer.html"
+            ],
+            "dependencies": [
+              "cubx.core.rte@1.7.0/cubxpolymer/main"
+            ]
+          }
+        ],
+        "slots": [
+          {
+            "slotId": "schemaUrl",
+            "type": "string",
+            "direction": [
+              "input"
+            ]
+          },
+          {
+            "slotId": "manifestUrl",
+            "type": "string",
+            "direction": [
+              "input"
+            ]
+          }
+        ]
+      }
+    ],
+    "compoundComponents": [],
+    "utilities": []
+  }
+}
