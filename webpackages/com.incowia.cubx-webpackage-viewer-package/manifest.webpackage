@@ -12,19 +12,7 @@
   "keywords": [],
   "man": [],
   "artifacts": {
-    "apps": [
-      {
-        "artifactId": "app",
-        "description": "This is a simple pre-generated app.",
-        "runnables": [
-          {
-            "name": "app",
-            "path": "/index.html",
-            "description": "Call this app as a simple demo."
-          }
-        ]
-      }
-    ],
+    "apps": [],
     "elementaryComponents": [
       {
         "artifactId": "cubx-webpackage-viewer",
@@ -44,7 +32,9 @@
               "cubx-webpackage-viewer.html"
             ],
             "dependencies": [
-              "cubx.core.rte@1.7.0/cubxpolymer/main"
+              "cubx.core.rte@1.7.0/cubxpolymer/main",
+              "klayjsd3-0.3.5@1.0.2/klayjs-d3/html-import",
+              "cubx-json-editor-0.7.25@1.0.0/cubx-json-editor/html-import"
             ]
           }
         ],
@@ -54,14 +44,16 @@
             "type": "string",
             "direction": [
               "input"
-            ]
+            ],
+            "value": "https://raw.githubusercontent.com/cubbles/cubx-webpackage-document-api/master/lib/jsonSchema/manifestWebpackage-8.3.1.schema.json"
           },
           {
             "slotId": "manifestUrl",
             "type": "string",
             "direction": [
               "input"
-            ]
+            ],
+            "value": "https://cubbles.world/sandbox/com.incowia.basic-html-components@0.1.0-SNAPSHOT"
           }
         ]
       }
