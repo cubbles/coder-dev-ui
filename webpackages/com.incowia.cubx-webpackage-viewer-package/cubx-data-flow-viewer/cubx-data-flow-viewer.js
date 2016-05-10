@@ -38,7 +38,6 @@
      */
     cubxReady: function () {
       this.isCubxReady = true;
-      this.dataflowViewHeight = 500;
     },
 
     /**
@@ -298,13 +297,13 @@
         });
       this.svg = d3.select('#dataflow_view_holder')
         .append('svg')
-        .attr('width', '100%')
-        .attr('height', this.dataflowViewHeight)
+        .attr('width', this.getViewerWidth())
+        .attr('height', this.getViewerHeight())
         .call(zoom)
         .append('g');
       var root = this.svg.append('g');
       var layouter = klay.d3kgraph()
-        .size([this.dataflowViewWidth, this.dataflowViewHeight])
+        .size([this.dataflowViewWidth, this.getViewerHeight()])
         .transformGroup(root)
         .options({
           layoutHierarchy: true,

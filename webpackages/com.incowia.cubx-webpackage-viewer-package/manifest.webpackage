@@ -105,6 +105,22 @@
             "direction": [
               "input"
             ]
+          },
+          {
+            "slotId": "viewerWidth",
+            "type": "string",
+            "direction": [
+              "input"
+            ],
+            "value": "100%"
+          },
+          {
+            "slotId": "viewerHeight",
+            "type": "string",
+            "direction": [
+              "input"
+            ],
+            "value": "500"
           }
         ]
       }
