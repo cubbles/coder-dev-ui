@@ -15,7 +15,7 @@
     "apps": [],
     "elementaryComponents": [
       {
-        "artifactId": "cubx-webpackage-viewer",
+        "artifactId": "cubx-structure-viewer",
         "description": "WebUi to visualize the structure of a webpackage, using the manifest.webpackage file, and the Dataflow of its compound components on a browser",
         "runnables": [
           {
@@ -29,10 +29,10 @@
             "endpointId": "main",
             "description": "This is recommended for you use with webcomponents.",
             "resources": [
-              "cubx-webpackage-viewer.html"
+              "cubx-structure-viewer.html"
             ],
             "dependencies": [
-              "cubx.core.rte@1.7.0/cubxpolymer/main",
+              "cubx.core.rte@1.8.0-SNAPSHOT/cubxpolymer/main",
               "klayjsd3-0.3.5@1.0.2/klayjs-d3/html-import",
               "cubx-json-editor-0.7.25@1.0.0/cubx-json-editor/html-import"
             ]
@@ -44,21 +44,144 @@
             "type": "string",
             "direction": [
               "input"
-            ],
-            "value": "https://raw.githubusercontent.com/cubbles/cubx-webpackage-document-api/master/lib/jsonSchema/manifestWebpackage-8.3.1.schema.json"
+            ]
           },
           {
             "slotId": "manifestUrl",
             "type": "string",
             "direction": [
               "input"
+            ]
+          },
+          {
+            "slotId": "manifest",
+            "type": "object",
+            "direction": [
+              "output"
+            ]
+          },
+          {
+            "slotId": "currentCompoundComponent",
+            "type": "object",
+            "direction": [
+              "output"
+            ]
+          }
+        ]
+      },
+      {
+        "artifactId": "cubx-data-flow-viewer",
+        "description": "Viewer of compound components",
+        "runnables": [
+          {
+            "name": "demo",
+            "path": "/demo/index.html",
+            "description": "Demo app..."
+          }
+        ],
+        "endpoints": [
+          {
+            "endpointId": "main",
+            "description": "This is recommended for you use with webcomponents.",
+            "resources": [
+              "cubx-data-flow-viewer.html"
             ],
+            "dependencies": [
+              "cubx.core.rte@1.8.0-SNAPSHOT/cubxpolymer/main"
+            ]
+          }
+        ],
+        "slots": [
+          {
+            "slotId": "compoundComponent",
+            "type": "object",
+            "direction": [
+              "input"
+            ]
+          },
+          {
+            "slotId": "manifest",
+            "type": "object",
+            "direction": [
+              "input"
+            ]
+          }
+        ]
+      }
+    ],
+    "compoundComponents": [
+      {
+        "artifactId": "cubx-webpackage-viewer",
+        "description": "WebUi to visualize the structure of a webpackage, using the manifest.webpackage file, and the Dataflow of its compound components on a browser",
+        "runnables": [
+          {
+            "name": "demo",
+            "path": "/demo/index.html",
+            "description": "Demo app..."
+          }
+        ],
+        "endpoints": [
+          {
+            "endpointId": "main",
+            "resources": [
+              "css/cubx-webpackage-viewer.css",
+              "template.html"
+            ],
+            "dependencies": [
+              "this/cubx-data-flow-viewer/main",
+              "this/cubx-structure-viewer/main"
+            ]
+          }
+        ],
+        "members": [
+          {
+            "memberId": "dataFlowViewer",
+            "componentId": "this/cubx-data-flow-viewer"
+          },
+          {
+            "memberId": "structureViewer",
+            "componentId": "this/cubx-structure-viewer"
+          }
+        ],
+        "connections": [
+          {
+            "connectionId": "currentCompoundConnection",
+            "source": {
+              "memberIdRef": "structureViewer",
+              "slot": "currentCompoundComponent"
+            },
+            "destination": {
+              "memberIdRef": "dataFlowViewer",
+              "slot": "compoundComponent"
+            },
+            "repeatedValues": true
+          },
+          {
+            "connectionId": "manifestConnection",
+            "source": {
+              "memberIdRef": "structureViewer",
+              "slot": "manifest"
+            },
+            "destination": {
+              "memberIdRef": "dataFlowViewer",
+              "slot": "manifest"
+            }
+          }
+        ],
+        "inits": [
+          {
+            "slot": "schemaUrl",
+            "memberIdRef": "structureViewer",
+            "value": "https://raw.githubusercontent.com/cubbles/cubx-webpackage-document-api/master/lib/jsonSchema/manifestWebpackage-8.3.1.schema.json"
+          },
+          {
+            "slot": "manifestUrl",
+            "memberIdRef": "structureViewer",
             "value": "https://cubbles.world/sandbox/com.incowia.basic-html-components@0.1.0-SNAPSHOT"
           }
         ]
       }
     ],
-    "compoundComponents": [],
     "utilities": []
   }
 }

@@ -1,4 +1,4 @@
-/*global $, JSONEditor, location, d3, klay*/
+/*global $, d3, klay*/
 (function () {
   'use strict';
   /**
@@ -11,10 +11,10 @@
    * slot 'a': this.getA(); | this.setA(value)
    */
   CubxPolymer({
-    is: 'cubx-webpackage-viewer',
+    is: 'cubx-data-flow-viewer',
 
-    structureHolderId: 'structure_view_holder',
-    dataflowHolderId: 'dataflow_view_holder',
+    isCubxReady: false,
+
     /**
      * Manipulate an element’s local DOM when the element is created.
      */
@@ -37,164 +37,41 @@
      * Manipulate an element’s local DOM when the cubbles framework is initialized and ready to work.
      */
     cubxReady: function () {
-      this.dataflowViewWidth = 800;
+      this.isCubxReady = true;
       this.dataflowViewHeight = 500;
-      this.loadSchema();
-    },
-    /**
-     *  Observe the Cubbles-Component-Model: If value for slot 'schemaUrl' has changed ...
-     */
-    modelSlotSchemaUrlChanged: function (schemaUrl) {
-    },
-    /**
-     *  Observe the Cubbles-Component-Model: If value for slot 'manifestUrl' has changed ...
-     */
-    modelSlotManifestUrlChanged: function (manifestUrl) {
     },
 
     /**
-     * Load the structureView which is a json-editor
-     * @param {object} schema - JSON schema of the structureView
+     *  Observe the Cubbles-Component-Model: If value for slot 'compoundComponent' has changed ...
      */
-    loadStructureView: function (schema) {
-      this.setStructureViewOptions();
-      this.structureView = new JSONEditor(document.getElementById(this.structureHolderId), {
-        theme: 'bootstrap3',
-        iconlib: 'bootstrap3',
-        disable_array_reorder: true,
-        no_additional_properties: true,
-        disable_edit_json: true,
-        disable_properties: true,
-        keep_oneof_values: false,
-        schema: schema
-      });
+    modelCompoundComponentChanged: function (compoundComponent) {
+      // update the view
+      this.drawDataflow(this.generateDataflowGraph());
     },
-
     /**
-     * Set the json-editors' default options.
+     *  Observe the Cubbles-Component-Model: If value for slot 'manifest' has changed ...
      */
-    setStructureViewOptions: function () {
-      JSONEditor.defaults.editors.array.options.collapsed = true;
-      JSONEditor.defaults.editors.table.options.collapsed = true;
-    },
-
-    /**
-     * Load the manifest.webpackage file retrieving its path from the url
-     */
-    loadManifest: function () {
-      var self = this;
-      $.getJSON(this.getManifestUrl(), function (response) {
-        self.structureView.setValue(response);
-        $('[data-toggle="popover"]').popover();
-        self.addViewDataflowButtons();
-      });
-    },
-
-    /**
-     * Load the JSON schema file retrieving its path from the url.
-     * Additionally add format to the schema for its representation
-     */
-    loadSchema: function () {
-      var self = this;
-      $.getJSON(this.getSchemaUrl(), function (response) {
-        var schema = response;
-
-        for (var prop in schema.properties.artifacts.properties) {
-          schema.properties.artifacts.properties[prop].format = 'tabs';
-        }
-        schema.properties.contributors.format = 'table';
-        schema.properties.author.format = 'grid';
-
-        var artifacts = ['appArtifact', 'elementaryArtifact', 'compoundArtifact'];
-        for (var i in artifacts) {
-          schema.definitions[artifacts[i]].properties.runnables.format = 'table';
-          schema.definitions[artifacts[i]].properties.endpoints.format = 'tabs';
-        }
-        schema.definitions.elementaryArtifact.properties.slots.format = 'tabs';
-        schema.definitions.compoundArtifact.properties.slots.format = 'tabs';
-        schema.definitions.compoundArtifact.properties.members.format = 'table';
-        schema.definitions.compoundArtifact.properties.connections.format = 'tabs';
-        schema.definitions.compoundArtifact.properties.inits.format = 'table';
-
-        // Editors for not objects and arrays created by the user are not supported
-        // schema.definitions.compoundArtifactInitItem.properties.value.type = 'string';
-        // schema.definitions.elementaryArtifactSlotItem.properties.value.type = 'string';
-
-        self.loadStructureView(schema);
-        self.loadManifest();
-      });
-    },
-
-    /**
-     * Read url get parameters, similar to PHP.
-     * Source: https://www.creativejuiz.fr/blog/en/javascript-en/read-url-get-parameters-with-javascript
-     * @param {string} param - Name of the parameter to read
-     * @returns {*} the value of the parameter or an empty object if the parameter was not in the url
-     */
-    $_GET: function (param) {
-      var vars = {};
-      window.location.href.replace(location.hash, '').replace(
-        /[?&]+([^=&]+)=?([^&]*)?/gi, // regexp
-        function (m, key, value) { // callback
-          vars[key] = value !== undefined ? value : '';
-        }
-      );
-
-      if (param) {
-        return vars[param] ? vars[param] : null;
-      }
-      return vars;
-    },
-
-    /**
-     * Add a button to each compound components view, to display its dataflow view
-     */
-    addViewDataflowButtons: function () {
-      var compoundComponents = this.structureView.getValue().artifacts.compoundComponents;
-      var dataflowHolderId = this.dataflowHolderId;
-      var viewDataflowButton;
-      var viewIcon;
-      var compoundLabel;
-      var self = this;
-      for (var i in compoundComponents) {
-        viewDataflowButton = document.createElement('button');
-        viewDataflowButton.setAttribute('type', 'button');
-        viewDataflowButton.setAttribute('class', 'btn btn-primary');
-        viewDataflowButton.setAttribute('data-toggle', 'modal');
-        viewDataflowButton.setAttribute('data-compound-index', i);
-        viewIcon = document.createElement('i');
-        viewIcon.setAttribute('class', 'glyphicon glyphicon-eye-open');
-        viewDataflowButton.appendChild(viewIcon);
-        viewDataflowButton.appendChild(document.createTextNode('View diagram'));
-        viewDataflowButton.onclick = function () {
-          var dataflowHolder = $('#' + dataflowHolderId);
-          self.drawDataflow(self.generateDataflowGraph($(this).attr('data-compound-index'), self.structureView.getValue()));
-          dataflowHolder.modal('show');
-        };
-        compoundLabel = $('[data-schemapath="root.artifacts.compoundComponents.' + i + '"]').find('label:first');
-        compoundLabel.append(viewDataflowButton);
-      }
+    modelManifestChanged: function (manifest) {
+      // update the view
     },
 
     /**
      * Generate the KGraph that represents to the dataflow of a compound component
-     * @param {number} index - Index of the compound component in compoundComponents array of manifest.artifacts
-     * @param {object} manifest - Manifest object contain in the manifest.webpackage file
      * @returns {{id: string, children: Array}} KGraph to be used to build and display the dataflow view
      */
-    generateDataflowGraph: function (index, manifest) {
+    generateDataflowGraph: function () {
+      if (!this.isCubxReady) { return; }
       var dataflowGraph = {id: 'root', children: []};
-      var compoundComponent = manifest.artifacts.compoundComponents[index];
-
       var rootComponent = this.generateGraphMember(
-        compoundComponent,
-        compoundComponent.artifactId,
+        this.getCompoundComponent(),
+        this.getCompoundComponent().artifactId,
         {portLabelPlacement: 'OUTSIDE', borderSpacing: 40}
       );
-      rootComponent.children = this.generateGraphMembers(compoundComponent.members, manifest);
+      rootComponent.children = this.generateGraphMembers(this.getCompoundComponent().members, this.getManifest());
 
       dataflowGraph.children.push(rootComponent);
-      dataflowGraph.edges = this.generateGraphConnections(compoundComponent.connections, compoundComponent.artifactId);
+      dataflowGraph.edges = this.generateGraphConnections(this.getCompoundComponent().connections,
+        this.getCompoundComponent().artifactId);
       return dataflowGraph;
     },
 
@@ -365,7 +242,7 @@
       var componentArtifactId = member.componentId.substr(member.componentId.indexOf('/') + 1);
       var component;
       if (member.componentId.includes('this/')) {
-        component = this.searchComponentInManifest(componentArtifactId, this.structureView.getValue());
+        component = this.searchComponentInManifest(componentArtifactId, this.getManifest());
       } else {
         var self = this;
         var manifestUrl = store + member.componentId.substr(0, member.componentId.indexOf('/'));
@@ -412,14 +289,14 @@
      * @param {object} dataflowGraph - JSON KGraph to be displayed
      */
     drawDataflow: function (dataflowGraph) {
-  // group
-      d3.select('#' + this.dataflowHolderId).select('.modal-body').html('');
+      // group
+      d3.select('#dataflow_view_holder').html('');
       var self = this;
       var zoom = d3.behavior.zoom()
         .on('zoom', function () {
           self.svg.attr('transform', 'translate(' + d3.event.translate + ')' + ' scale(' + d3.event.scale + ')');
         });
-      this.svg = d3.select('#' + this.dataflowHolderId).select('.modal-body')
+      this.svg = d3.select('#dataflow_view_holder')
         .append('svg')
         .attr('width', '100%')
         .attr('height', this.dataflowViewHeight)
@@ -465,14 +342,14 @@
         .append('g')
         .attr('class', function (d) {
           if (d.children) {
-            return 'componentView compound cubx-webpackage-viewer';
+            return 'componentView compound cubx-data-flow-viewer';
           } else {
-            return 'componentView leaf cubx-webpackage-viewer';
+            return 'componentView leaf cubx-data-flow-viewer';
           }
         });
 
       var atoms = componentView.append('rect')
-        .attr('class', 'componentViewAtom cubx-webpackage-viewer');
+        .attr('class', 'componentViewAtom cubx-data-flow-viewer');
 
       // Apply componentView positions
       componentView.transition()
@@ -494,7 +371,7 @@
         .text(function (d) {
           return d.text;
         })
-        .attr('class', 'componentViewLabel cubx-webpackage-viewer');
+        .attr('class', 'componentViewLabel cubx-data-flow-viewer');
 
       componentViewLabel.transition()
         .attr('height', function (d) { return d.height; })
@@ -515,10 +392,10 @@
         .data(function (d) { return d.ports || []; })
         .enter()
         .append('g')
-        .attr('class', 'slotView cubx-webpackage-viewer');
+        .attr('class', 'slotView cubx-data-flow-viewer');
 
       slotView.append('circle')
-        .attr('class', 'slotViewAtom cubx-webpackage-viewer');
+        .attr('class', 'slotViewAtom cubx-data-flow-viewer');
 
       // slots labels
       slotView.selectAll('.slotViewLabel')
@@ -529,7 +406,7 @@
         .attr('text-anchor', function (d) { return (d.x > 0) ? 'start' : 'end'; })
         .attr('x', function (d) { return (d.x > 0) ? d.x + 3 : -7; })
         .attr('y', function (d) { return (d.y > 0) ? d.y - 10 : d.y + 3; })
-        .attr('class', 'slotViewLabel cubx-webpackage-viewer');
+        .attr('class', 'slotViewLabel cubx-data-flow-viewer');
 
       slotView.transition()
         .attr('transform', function (d) {
@@ -547,7 +424,7 @@
         .data(['end'])                 // define connectionView/path types
         .enter().append('svg:marker')    // add arrows
         .attr('id', String)
-        .attr('class', 'arrowEnd cubx-webpackage-viewer')
+        .attr('class', 'arrowEnd cubx-data-flow-viewer')
         .attr('viewBox', '0 -5 10 10')
         .attr('refX', 10)
         .attr('refY', 0)
@@ -560,14 +437,14 @@
       // Add connections arrows
       var connectionView = connectionData.enter()
         .append('path')
-        .attr('class', 'connectionView cubx-webpackage-viewer')
+        .attr('class', 'connectionView cubx-data-flow-viewer')
         .attr('d', 'M0 0')
         .attr('marker-end', 'url(#end)');
 
       // Add connections labels
       connectionData.enter()
         .append('text')
-        .attr('class', 'connectionViewLabel cubx-webpackage-viewer')
+        .attr('class', 'connectionViewLabel cubx-data-flow-viewer')
         .attr('text-anchor', 'middle')
         .attr('x', function (d) { return (d.sourcePoint.x + d.targetPoint.x) / 2; })
         .attr('y', function (d) { return d.labels[0].y + d.labels[0].height * 2.2; })

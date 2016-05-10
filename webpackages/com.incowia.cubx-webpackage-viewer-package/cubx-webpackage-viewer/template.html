@@ -1,0 +1,26 @@
+<template id="cubx-webpackage-viewer">
+    <div class="container">
+        <div class="row">
+            <h1>Webpackage Viewer</h1>
+        </div>
+        <div class="row">
+            <cubx-structure-viewer  member-id-ref="structureViewer" class="col-md-12"> </cubx-structure-viewer>
+        </div>
+        <div class="modal fade" id='dataflow_view_modal'>
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title">Dataflow</h4>
+                    </div>
+                    <div class="modal-body">
+                        <cubx-data-flow-viewer member-id-ref="dataFlowViewer"></cubx-data-flow-viewer>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
