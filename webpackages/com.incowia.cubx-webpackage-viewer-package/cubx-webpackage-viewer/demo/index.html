@@ -27,5 +27,13 @@
      <cubx-webpackage-viewer cubx-dependency="this/cubx-webpackage-viewer/main"></cubx-webpackage-viewer>
 </div>
 
+<script>
+    var webpackageViewer = document.getElementsByTagName('cubx-webpackage-viewer')[0];
+    var manifestUrl = "../../manifest.webpackage";
+    document.addEventListener('cifReady', function() {
+        webpackageViewer.setManifestUrl(manifestUrl);
+    });
+</script>
+
 </body>
 </html>

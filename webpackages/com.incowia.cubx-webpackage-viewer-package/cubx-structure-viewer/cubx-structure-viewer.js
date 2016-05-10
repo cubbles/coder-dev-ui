@@ -37,18 +37,20 @@
      * Manipulate an element’s local DOM when the cubbles framework is initialized and ready to work.
      */
     cubxReady: function () {
-      $('[data-toggle="popover"]').popover();
       this.loadSchema();
+      $('[data-toggle="popover"]').popover();
     },
     /**
      *  Observe the Cubbles-Component-Model: If value for slot 'schemaUrl' has changed ...
      */
     modelSlotSchemaUrlChanged: function (schemaUrl) {
+      this.loadSchema();
     },
     /**
      *  Observe the Cubbles-Component-Model: If value for slot 'manifestUrl' has changed ...
      */
     modelSlotManifestUrlChanged: function (manifestUrl) {
+      this.loadManifest();
     },
 
     /**
