@@ -109,14 +109,14 @@
         id: memberId,
         labels: [{text: component.artifactId, width: titleWidth, height: 10}],
         width: Math.max(graphMemberSlots.maxSlotWidth * 2 + 20, titleWidth),
-        height: graphMemberSlots.slots.length * 16 + 40,
+        height: graphMemberSlots.slots.length * 21 + 40,
         ports: graphMemberSlots.slots,
         properties: {
           portConstraints: 'FIXED_SIDE',
           portLabelPlacement: (optionals) ? optionals.portLabelPlacement : 'INSIDE',
           nodeLabelPlacement: 'V_TOP',
           portAlignment: 'CENTER',
-          portSpacing: 5,
+          portSpacing: 11,
           borderSpacing: (optionals) ? optionals.borderSpacing : 12
         }
       };
