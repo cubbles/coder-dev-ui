@@ -149,6 +149,22 @@
             ]
           }
         ],
+        "slots": [
+          {
+            "slotId": "schemaUrl",
+            "type": "string",
+            "direction": [
+              "input"
+            ]
+          },
+          {
+            "slotId": "manifestUrl",
+            "type": "string",
+            "direction": [
+              "input"
+            ]
+          }
+        ],
         "members": [
           {
             "memberId": "dataFlowViewer",
@@ -161,7 +177,27 @@
         ],
         "connections": [
           {
-            "connectionId": "currentCompoundConnection",
+            "connectionId": "manifestUrlCon",
+            "source": {
+              "slot": "manifestUrl"
+            },
+            "destination": {
+              "memberIdRef": "structureViewer",
+              "slot": "manifestUrl"
+            }
+          },
+          {
+            "connectionId": "schemaUrlCon",
+            "source": {
+              "slot": "schemaUrl"
+            },
+            "destination": {
+              "memberIdRef": "structureViewer",
+              "slot": "schemaUrl"
+            }
+          },
+          {
+            "connectionId": "currentCompoundCon",
             "source": {
               "memberIdRef": "structureViewer",
               "slot": "currentCompoundComponent"
@@ -173,7 +209,7 @@
             "repeatedValues": true
           },
           {
-            "connectionId": "manifestConnection",
+            "connectionId": "manifestCon",
             "source": {
               "memberIdRef": "structureViewer",
               "slot": "manifest"
@@ -187,13 +223,8 @@
         "inits": [
           {
             "slot": "schemaUrl",
-            "memberIdRef": "structureViewer",
-            "value": "https://raw.githubusercontent.com/cubbles/cubx-webpackage-document-api/master/lib/jsonSchema/manifestWebpackage-8.3.1.schema.json"
-          },
-          {
-            "slot": "manifestUrl",
-            "memberIdRef": "structureViewer",
-            "value": "../../manifest.webpackage"
+            "value": "https://raw.githubusercontent.com/cubbles/cubx-webpackage-document-api/master/lib/jsonSchema/manifestWebpackage-8.3.1.schema.json",
+            "memberIdRef": "structureViewer"
           }
         ]
       }
