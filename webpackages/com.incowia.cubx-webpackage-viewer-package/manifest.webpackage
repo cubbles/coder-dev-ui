@@ -33,7 +33,6 @@
             ],
             "dependencies": [
               "cubx.core.rte@1.8.0-SNAPSHOT/cubxpolymer/main",
-              "klayjsd3-0.3.5@1.0.2/klayjs-d3/html-import",
               "cubx-json-editor-0.7.25@1.0.0/cubx-json-editor/html-import"
             ]
           }
@@ -87,7 +86,8 @@
               "cubx-data-flow-viewer.html"
             ],
             "dependencies": [
-              "cubx.core.rte@1.8.0-SNAPSHOT/cubxpolymer/main"
+              "cubx.core.rte@1.8.0-SNAPSHOT/cubxpolymer/main",
+              "klayjsd3-0.3.5@1.0.2/klayjs-d3/html-import"
             ]
           }
         ],
@@ -177,7 +177,7 @@
           {
             "slot": "manifestUrl",
             "memberIdRef": "structureViewer",
-            "value": "https://cubbles.world/sandbox/com.incowia.basic-html-components@0.1.0-SNAPSHOT"
+            "value": "../../manifest.webpackage"
           }
         ]
       }
