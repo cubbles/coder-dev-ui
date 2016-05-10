@@ -3,8 +3,8 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>app</title>
-
+    <title>&lt;cubx-data-flow-viewer&gt; Demo</title>
+    <script src="https://code.jquery.com/jquery-2.2.3.min.js"></script>
     <script src="../../../cubx.core.rte@1.7.0/webcomponents/webcomponents-lite.js"></script>
 
     <!--
@@ -26,6 +26,18 @@
 <div cubx-core-crc>
      <cubx-data-flow-viewer cubx-dependency="this/cubx-data-flow-viewer/main"></cubx-data-flow-viewer>
 </div>
+
+<script>
+    var dataflowViewer = document.getElementsByTagName('cubx-data-flow-viewer')[0];
+    var manifestUrl = "../../manifest.webpackage";
+    document.addEventListener('cifReady', function() {
+        dataflowViewer.setViewerHeight(window.innerHeight);
+        $.getJSON(manifestUrl, function (response) {
+            dataflowViewer.setManifest(response);
+            dataflowViewer.setCompoundComponent(response.artifacts.compoundComponents[0]);
+        });
+    });
+</script>
 
 </body>
 </html>

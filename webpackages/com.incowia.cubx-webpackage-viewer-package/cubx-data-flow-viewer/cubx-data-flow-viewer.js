@@ -103,7 +103,7 @@
      */
     generateGraphMember: function (component, memberId, optionals) {
       var graphMemberSlots = this.generateGraphMemberSlots(component, memberId);
-      var titleWidth = component.artifactId.length * 7;
+      var titleWidth = component.artifactId.length * 8;
 
       var graphMember = {
         id: memberId,
@@ -136,7 +136,7 @@
       var slotLabelWidth;
       for (var l in compoundMember.slots) {
         for (var m in compoundMember.slots[l].direction) {
-          slotLabelWidth = compoundMember.slots[l].slotId.length * 5;
+          slotLabelWidth = compoundMember.slots[l].slotId.length * 6;
           maxSlotWidth = Math.max(slotLabelWidth, maxSlotWidth);
           graphMemberSlot = this.generateGraphMemberSlot(
             compoundMember.slots[l].slotId,
@@ -237,14 +237,13 @@
      */
     componentDefinitionOfMember: function (member) {
       // TODO: define how this url will be passed
-      var store = 'https://cubbles.world/sandbox/';
       var componentArtifactId = member.componentId.substr(member.componentId.indexOf('/') + 1);
       var component;
       if (member.componentId.includes('this/')) {
         component = this.searchComponentInManifest(componentArtifactId, this.getManifest());
       } else {
         var self = this;
-        var manifestUrl = store + member.componentId.substr(0, member.componentId.indexOf('/'));
+        var manifestUrl = '../../../' + member.componentId.substr(0, member.componentId.indexOf('/'));
         $.ajaxSetup({async: false});
         $.getJSON(manifestUrl, function (response) {
           component = self.searchComponentInManifest(componentArtifactId, response);
@@ -303,7 +302,7 @@
         .append('g');
       var root = this.svg.append('g');
       var layouter = klay.d3kgraph()
-        .size([this.dataflowViewWidth, this.getViewerHeight()])
+        .size([this.getViewerWidth, this.getViewerHeight()])
         .transformGroup(root)
         .options({
           layoutHierarchy: true,
@@ -328,7 +327,6 @@
         self.drawComponentsSlots(componentsData);
         self.drawConnections(connectionsData);
       });
-
       layouter.kgraph(dataflowGraph);
     },
 
