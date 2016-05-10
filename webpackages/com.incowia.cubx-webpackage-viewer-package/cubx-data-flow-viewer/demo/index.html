@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>&lt;cubx-data-flow-viewer&gt; Demo</title>
+    <title>&lt;cubx-data-flow-viewer&gt; Dataflow</title>
     <script src="https://code.jquery.com/jquery-2.2.3.min.js"></script>
     <script src="../../../cubx.core.rte@1.7.0/webcomponents/webcomponents-lite.js"></script>
 
@@ -23,8 +23,13 @@
     Place Cubbles-Component there as child element.
     Note: Currently there is only one element supported. This will change in future (@see PLAT-205).
 -->
-<div cubx-core-crc>
-     <cubx-data-flow-viewer cubx-dependency="this/cubx-data-flow-viewer/main"></cubx-data-flow-viewer>
+<div class="container">
+    <div class="row">
+        <h1>&lt;cubx-data-flow-viewer&gt; Dataflow</h1>
+    </div>
+    <div cubx-core-crc class="row">
+         <cubx-data-flow-viewer cubx-dependency="this/cubx-data-flow-viewer/main"></cubx-data-flow-viewer>
+    </div>
 </div>
 
 <script>
