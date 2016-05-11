@@ -4,11 +4,18 @@
         Get help: https://www.polymer-project.org/1.0/docs/devguide/styling.html#xscope-styling-details
         -->
         <style>
+            g#root {
+                fill-opacity: 0;
+            }
+
+            text.componentViewLabel {
+                font-size: medium;
+                font-weight: bold;
+            }
             .componentViewAtom {
                 fill: #fff;
                 stroke: #000;
                 stroke-width: 1px;
-                font-size: 14px;
             }
 
             .componentView {
@@ -30,7 +37,6 @@
                 stroke: #000;
                 stroke-width: 1;
                 fill: #fff;
-                fill-opacity: 0;
                 r: 5px;
             }
             .slotViewLabel, .connectionViewLabel{

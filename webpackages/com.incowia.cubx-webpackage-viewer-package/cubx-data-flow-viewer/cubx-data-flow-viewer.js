@@ -338,6 +338,9 @@
     drawComponents: function (componentsData) {
       var componentView = componentsData.enter()
         .append('g')
+        .attr('id', function (d) {
+          return d.id;
+        })
         .attr('class', function (d) {
           if (d.children) {
             return 'componentView compound cubx-data-flow-viewer';
@@ -347,7 +350,13 @@
         });
 
       var atoms = componentView.append('rect')
-        .attr('class', 'componentViewAtom cubx-data-flow-viewer');
+        .attr('class', function (d) {
+          if (d.id !== 'root') {
+            return 'componentViewAtom cubx-data-flow-viewer';
+          } else {
+            return '';
+          }
+        });
 
       // Apply componentView positions
       componentView.transition()
@@ -390,6 +399,9 @@
         .data(function (d) { return d.ports || []; })
         .enter()
         .append('g')
+        .attr('id', function (d) {
+          return d.id;
+        })
         .attr('class', 'slotView cubx-data-flow-viewer');
 
       slotView.append('circle')
@@ -435,6 +447,9 @@
       // Add connections arrows
       var connectionView = connectionData.enter()
         .append('path')
+        .attr('id', function (d) {
+          return d.id;
+        })
         .attr('class', 'connectionView cubx-data-flow-viewer')
         .attr('d', 'M0 0')
         .attr('marker-end', 'url(#end)');
