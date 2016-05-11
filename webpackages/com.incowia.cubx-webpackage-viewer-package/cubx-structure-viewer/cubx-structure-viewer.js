@@ -38,7 +38,6 @@
      */
     cubxReady: function () {
       this.loadSchema();
-      $('[data-toggle="popover"]').popover();
     },
     /**
      *  Observe the Cubbles-Component-Model: If value for slot 'schemaUrl' has changed ...
@@ -125,6 +124,7 @@
         // schema.definitions.elementaryArtifactSlotItem.properties.value.type = 'string';
         self.loadStructureView(schema);
         self.loadManifest();
+        $('[data-toggle="popover"]').popover();
       });
     },
 
