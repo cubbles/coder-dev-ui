@@ -303,7 +303,7 @@
         .append('g');
       var root = this.svg.append('g');
       var layouter = klay.d3kgraph()
-        .size([this.getViewerWidth, this.getViewerHeight()])
+        .size([this.getViewerWidth(), this.getViewerHeight()])
         .transformGroup(root)
         .options({
           layoutHierarchy: true,
