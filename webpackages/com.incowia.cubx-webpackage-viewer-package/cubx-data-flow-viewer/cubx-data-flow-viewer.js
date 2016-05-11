@@ -14,6 +14,12 @@
     is: 'cubx-data-flow-viewer',
 
     isCubxReady: false,
+    COMPONENT_LABEL_HEIGHT: 15,
+    COMPONENT_LABEL_LETTER_WIDTH: 8,
+    SPACE_BETWEEN_SLOT_LABELS: 10,
+    SLOT_HEIGHT: 25,
+    SLOT_INIT_Y: 50,
+    SLOT_LABEL_LETTER_WIDTH: 6,
 
     /**
      * Manipulate an element’s local DOM when the element is created.
@@ -104,13 +110,13 @@
      */
     generateGraphMember: function (component, memberId, optionals) {
       var graphMemberSlots = this.generateGraphMemberSlots(component, memberId);
-      var titleWidth = component.artifactId.length * 8;
+      var titleWidth = component.artifactId.length * this.COMPONENT_LABEL_LETTER_WIDTH;
 
       var graphMember = {
         id: memberId,
-        labels: [{text: component.artifactId, width: titleWidth, height: 10}],
-        width: Math.max(graphMemberSlots.maxSlotWidth * 2 + 20, titleWidth),
-        height: graphMemberSlots.slots.length * 21 + 40,
+        labels: [{text: component.artifactId, width: titleWidth, height: this.COMPONENT_LABEL_HEIGHT}],
+        width: Math.max(graphMemberSlots.maxSlotWidth * 2 + this.SPACE_BETWEEN_SLOT_LABELS, titleWidth),
+        height: graphMemberSlots.slots.length * this.SLOT_HEIGHT + this.SLOT_INIT_Y,
         ports: graphMemberSlots.slots,
         properties: {
           portConstraints: 'FIXED_SIDE',
@@ -137,7 +143,7 @@
       var slotLabelWidth;
       for (var l in compoundMember.slots) {
         for (var m in compoundMember.slots[l].direction) {
-          slotLabelWidth = compoundMember.slots[l].slotId.length * 6;
+          slotLabelWidth = compoundMember.slots[l].slotId.length * this.SLOT_LABEL_LETTER_WIDTH;
           maxSlotWidth = Math.max(slotLabelWidth, maxSlotWidth);
           graphMemberSlot = this.generateGraphMemberSlot(
             compoundMember.slots[l].slotId,

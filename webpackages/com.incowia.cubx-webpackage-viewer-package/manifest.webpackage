@@ -108,19 +108,19 @@
           },
           {
             "slotId": "viewerWidth",
-            "type": "number",
+            "type": "string",
             "direction": [
               "input"
             ],
-            "value": 700
+            "value": "100%"
           },
           {
             "slotId": "viewerHeight",
-            "type": "number",
+            "type": "string",
             "direction": [
               "input"
             ],
-            "value": 500
+            "value": "500"
           }
         ]
       }
