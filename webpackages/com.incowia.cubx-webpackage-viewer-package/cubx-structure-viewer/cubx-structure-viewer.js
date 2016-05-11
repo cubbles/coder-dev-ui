@@ -62,11 +62,13 @@
       this.structureView = new JSONEditor(document.getElementById(this.structureHolderId), {
         theme: 'bootstrap3',
         iconlib: 'bootstrap3',
-        disable_array_reorder: true,
         no_additional_properties: true,
+        keep_oneof_values: false,
+        disable_array_reorder: true,
         disable_edit_json: true,
         disable_properties: true,
-        keep_oneof_values: false,
+        disable_array_add: true,
+        disable_array_delete: true,
         schema: schema
       });
     },
@@ -86,6 +88,7 @@
       var self = this;
       $.getJSON(this.getManifestUrl(), function (response) {
         self.structureView.setValue(response);
+        self.structureView.disable();
         self.setManifest(response);
         self.addViewDataflowButtons();
       });
