@@ -41,10 +41,11 @@
     },
 
     /**
-     *  Observe the Cubbles-Component-Model: If value for slot 'compoundComponent' has changed ...
+     *  Observe the Cubbles-Component-Model: If value for slot 'componentArtifactId' has changed ...
      */
-    modelCompoundComponentChanged: function (compoundComponent) {
+    modelComponentArtifactIdChanged: function (componentArtifactId) {
       // update the view
+      this.compoundComponent = this.searchComponentInManifest(componentArtifactId, this.getManifest());
       this.drawDataflow(this.generateDataflowGraph());
     },
     /**
@@ -62,15 +63,15 @@
       if (!this.isCubxReady) { return; }
       var dataflowGraph = {id: 'root', children: []};
       var rootComponent = this.generateGraphMember(
-        this.getCompoundComponent(),
-        this.getCompoundComponent().artifactId,
+        this.compoundComponent,
+        this.compoundComponent.artifactId,
         {portLabelPlacement: 'OUTSIDE', borderSpacing: 40}
       );
-      rootComponent.children = this.generateGraphMembers(this.getCompoundComponent().members, this.getManifest());
+      rootComponent.children = this.generateGraphMembers(this.compoundComponent.members, this.getManifest());
 
       dataflowGraph.children.push(rootComponent);
-      dataflowGraph.edges = this.generateGraphConnections(this.getCompoundComponent().connections,
-        this.getCompoundComponent().artifactId);
+      dataflowGraph.edges = this.generateGraphConnections(this.compoundComponent.connections,
+        this.compoundComponent.artifactId);
       return dataflowGraph;
     },
 

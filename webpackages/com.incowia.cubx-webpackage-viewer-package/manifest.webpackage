@@ -60,8 +60,8 @@
             ]
           },
           {
-            "slotId": "currentCompoundComponent",
-            "type": "object",
+            "slotId": "currentComponentArtifactId",
+            "type": "string",
             "direction": [
               "output"
             ]
@@ -93,8 +93,8 @@
         ],
         "slots": [
           {
-            "slotId": "compoundComponent",
-            "type": "object",
+            "slotId": "componentArtifactId",
+            "type": "string",
             "direction": [
               "input"
             ]
@@ -197,14 +197,14 @@
             }
           },
           {
-            "connectionId": "currentCompoundCon",
+            "connectionId": "currentComponentIdCon",
             "source": {
               "memberIdRef": "structureViewer",
-              "slot": "currentCompoundComponent"
+              "slot": "currentComponentArtifactId"
             },
             "destination": {
               "memberIdRef": "dataFlowViewer",
-              "slot": "compoundComponent"
+              "slot": "componentArtifactId"
             },
             "repeatedValues": true
           },

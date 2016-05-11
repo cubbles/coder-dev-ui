@@ -4,8 +4,16 @@
 <head>
     <meta charset="UTF-8">
     <title>&lt;cubx-data-flow-viewer&gt; Dataflow</title>
-    <script src="https://code.jquery.com/jquery-2.2.3.min.js"></script>
     <script src="../../../cubx.core.rte@1.7.0/webcomponents/webcomponents-lite.js"></script>
+    <script>
+        window.cubx = {
+            CRCInit: {
+                rootDependencies: [
+                    "../../../jquery-2.1.4@1.0.0/jquery/html-import"
+                ]
+            }
+        }
+    </script>
 
     <!--
         Refer to the crc-loader artifact from a Cubbles-Base.
@@ -39,7 +47,7 @@
         dataflowViewer.setViewerHeight(window.innerHeight);
         $.getJSON(manifestUrl, function (response) {
             dataflowViewer.setManifest(response);
-            dataflowViewer.setCompoundComponent(response.artifacts.compoundComponents[0]);
+            dataflowViewer.setComponentArtifactId('cubx-webpackage-viewer');
         });
     });
 </script>

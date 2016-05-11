@@ -180,13 +180,12 @@
     },
 
     /**
-     * Generate the KGraph that represents to the dataflow of a compound component
+     * Updates the artifactId of the current compound component
      * @param {number} index - Index of the compound component in compoundComponents array of manifest.artifacts
      * @param {object} manifest - Manifest object contain in the manifest.webpackage file
-     * @returns {{id: string, children: Array}} KGraph to be used to build and display the dataflow view
      */
     updateCurrentCompound: function (index, manifest) {
-      this.setCurrentCompoundComponent(manifest.artifacts.compoundComponents[index]);
+      this.setCurrentComponentArtifactId(manifest.artifacts.compoundComponents[index].artifactId);
     }
   });
 }());
