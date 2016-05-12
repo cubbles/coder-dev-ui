@@ -162,7 +162,7 @@
       for (var i in compoundComponents) {
         viewDataflowButton = document.createElement('button');
         viewDataflowButton.setAttribute('type', 'button');
-        viewDataflowButton.setAttribute('class', 'btn btn-primary');
+        viewDataflowButton.setAttribute('class', 'btn btn-primary btn-view-diagram');
         viewDataflowButton.setAttribute('data-toggle', 'modal');
         viewDataflowButton.setAttribute('data-compound-index', i);
         viewIcon = document.createElement('i');
@@ -174,8 +174,7 @@
           self.updateCurrentCompound($(this).attr('data-compound-index'), self.structureView.getValue());
           dataflowHolder.modal('show');
         };
-        compoundLabel = $('[data-schemapath="root.artifacts.compoundComponents.' + i + '"]').find('label:first');
-        compoundLabel.append(viewDataflowButton);
+        compoundLabel = $('[data-schemapath="root.artifacts.compoundComponents.' + i + '"]').prepend(viewDataflowButton);
       }
     },
 
