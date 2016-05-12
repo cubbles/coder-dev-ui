@@ -90,6 +90,7 @@
         self.structureView.disable();
         self.setManifest(response);
         self.addViewDataflowButtons();
+        $('[data-toggle="popover"]').popover();
       });
     },
 
@@ -124,7 +125,6 @@
         // schema.definitions.elementaryArtifactSlotItem.properties.value.type = 'string';
         self.loadStructureView(schema);
         self.loadManifest();
-        $('[data-toggle="popover"]').popover();
       });
     },
 
