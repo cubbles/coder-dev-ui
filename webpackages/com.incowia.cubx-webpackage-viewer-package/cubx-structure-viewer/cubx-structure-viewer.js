@@ -157,7 +157,6 @@
       var dataflowHolderId = this.dataflowViewModalId;
       var viewDataflowButton;
       var viewIcon;
-      var compoundLabel;
       var self = this;
       for (var i in compoundComponents) {
         viewDataflowButton = document.createElement('button');
@@ -174,7 +173,7 @@
           self.updateCurrentCompound($(this).attr('data-compound-index'), self.structureView.getValue());
           dataflowHolder.modal('show');
         };
-        compoundLabel = $('[data-schemapath="root.artifacts.compoundComponents.' + i + '"]').prepend(viewDataflowButton);
+        $('[data-schemapath="root.artifacts.compoundComponents.' + i + '"]').prepend(viewDataflowButton);
       }
     },
 
