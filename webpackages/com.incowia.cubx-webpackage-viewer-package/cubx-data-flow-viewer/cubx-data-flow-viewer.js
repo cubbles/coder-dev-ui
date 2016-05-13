@@ -15,7 +15,7 @@
 
     isCubxReady: false,
     COMPONENT_LABEL_HEIGHT: 15,
-    COMPONENT_LABEL_LETTER_WIDTH: 8,
+    COMPONENT_LABEL_LETTER_WIDTH: 10,
     SPACE_BETWEEN_SLOT_LABELS: 10,
     SLOT_HEIGHT: 25,
     SLOT_INIT_Y: 50,
@@ -305,6 +305,7 @@
         .append('svg')
         .attr('width', this.getViewerWidth())
         .attr('height', this.getViewerHeight())
+        .attr('id', 'svg_element')
         .call(zoom)
         .append('g');
       var root = this.svg.append('g');
@@ -334,7 +335,19 @@
         self.drawComponentsSlots(componentsData);
         self.drawConnections(connectionsData);
       });
+      this.addTooltip();
       layouter.kgraph(dataflowGraph);
+    },
+
+    /**
+     * Add the SVG components necessary to support tooltips
+     */
+    addTooltip: function () {
+      d3.select('body')
+        .append('div')
+        .attr('class', 'tooltip cubx-data-flow-viewer')
+        .attr('id', 'tooltip')
+        .attr('visibility', 'hidden');
     },
 
     /**
@@ -411,7 +424,9 @@
         .attr('class', 'slotView cubx-data-flow-viewer');
 
       slotView.append('circle')
-        .attr('class', 'slotViewAtom cubx-data-flow-viewer');
+        .attr('class', 'slotViewAtom cubx-data-flow-viewer')
+        .attr('onmousemove', function (d) { return 'com_incowia_cubx_data_flow_viewer.showTooltip(evt, \"' + d.id + '\")'; })
+        .attr('onmouseout', 'com_incowia_cubx_data_flow_viewer.hideTooltip()');
 
       // slots labels
       slotView.selectAll('.slotViewLabel')

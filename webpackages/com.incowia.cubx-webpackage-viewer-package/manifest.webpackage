@@ -83,7 +83,8 @@
             "endpointId": "main",
             "description": "This is recommended for you use with webcomponents.",
             "resources": [
-              "cubx-data-flow-viewer.html"
+              "cubx-data-flow-viewer.html",
+              "jsFunctions.js"
             ],
             "dependencies": [
               "cubx.core.rte@1.8.0-SNAPSHOT/cubxpolymer/main",
