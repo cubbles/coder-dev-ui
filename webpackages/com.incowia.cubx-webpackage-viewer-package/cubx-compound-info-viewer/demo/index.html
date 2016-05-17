@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>&lt;cubx-compound-info-viewer&gt;</title>
+
+    <script src="../../../cubx.core.rte@1.7.0/webcomponents/webcomponents-lite.js"></script>
+    <script>
+        window.cubx = {
+            CRCInit: {
+                rootDependencies: [
+                    "../../../jquery-2.1.4@1.0.0/jquery/html-import"
+                ]
+            }
+        }
+    </script>
+
+    <!--
+        Refer to the crc-loader artifact from a Cubbles-Base.
+        Take care: All other dependencies are expected to be available within the same Base!
+
+        Want to add a 'main' -script to be executed after the dependencies have been loaded?
+        If yes, add the following attribute: data-crc-main="js/my-script.js"
+    -->
+    <script src="../../../cubx.core.rte@1.7.0/crc-loader/js/main.js" data-crcinit-loadcif="true"></script>
+
+</head>
+<body>
+<!--
+    The cubbles client-runtime-container is bound to the next element.
+    Place Cubbles-Component there as child element.
+    Note: Currently there is only one element supported. This will change in future (@see PLAT-205).
+-->
+<div cubx-core-crc>
+     <cubx-compound-info-viewer cubx-dependency="this/cubx-compound-info-viewer/main"></cubx-compound-info-viewer>
+</div>
+
+<script>
+    var compoundInfoViewer = document.getElementsByTagName('cubx-compound-info-viewer')[0];
+    var manifestUrl = "../../manifest.webpackage";
+    document.addEventListener('cifReady', function() {
+        $.getJSON(manifestUrl, function (response) {
+            var compoundComponent = response.artifacts.compoundComponents[0];
+            compoundInfoViewer.setCompoundComponent(compoundComponent);
+        });
+    });
+</script>
+
+</body>
+</html>

@@ -283,7 +283,8 @@
           {
             "endpointId": "main",
             "resources": [
-              "css/cubx-compound-docs-viewer.css"
+              "css/cubx-compound-docs-viewer.css",
+              "template.html"
             ],
             "dependencies": [
               "this/cubx-data-flow-viewer/main",
@@ -298,11 +299,18 @@
             "direction": [
               "input"
             ]
+          },
+          {
+            "slotId": "manifest",
+            "type": "object",
+            "direction": [
+              "input"
+            ]
           }
         ],
         "members": [
           {
-            "memberId": "dataflowViewer",
+            "memberId": "dataFlowViewer",
             "componentId": "this/cubx-data-flow-viewer"
           },
           {
@@ -312,19 +320,29 @@
         ],
         "connections": [
           {
-            "connectionId": "artifactIdCon",
+            "connectionId": "manifestCon",
             "source": {
-              "slot": "artifactId"
+              "slot": "manifest"
             },
             "destination": {
-              "memberIdRef": "dataflowViewer",
-              "slot": "artifactId"
+              "memberIdRef": "dataFlowViewer",
+              "slot": "manifest"
+            }
+          },
+          {
+            "connectionId": "componentArtifactIdCon",
+            "source": {
+              "slot": "componentArtifactId"
+            },
+            "destination": {
+              "memberIdRef": "dataFlowViewer",
+              "slot": "componentArtifactId"
             }
           },
           {
             "connectionId": "compoundComponentCon",
             "source": {
-              "memberIdRef": "dataflowViewer",
+              "memberIdRef": "dataFlowViewer",
               "slot": "compoundComponent"
             },
             "destination": {
@@ -333,12 +351,7 @@
             }
           }
         ],
-        "inits": [
-          {
-            "slot": "outdoor-temperature",
-            "value": 0
-          }
-        ]
+        "inits": []
       }
     ],
     "utilities": []
