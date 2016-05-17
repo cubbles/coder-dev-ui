@@ -338,18 +338,7 @@
         self.drawComponentsSlots(componentsData);
         self.drawConnections(connectionsData);
       });
-      this.addTooltip();
       layouter.kgraph(dataflowGraph);
-    },
-
-    /**
-     * Add the SVG components necessary to support tooltips
-     */
-    addTooltip: function () {
-      d3.select('#dataflow_view_holder')
-        .append('div')
-        .attr('class', 'tooltip cubx-data-flow-viewer')
-        .attr('id', 'tooltip');
     },
 
     /**
