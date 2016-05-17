@@ -13,6 +13,7 @@
   CubxPolymer({
     is: 'cubx-structure-viewer',
 
+    currentCompoundIndex: 0,
     structureHolderId: 'structure_view_holder',
     dataflowViewModalId: 'dataflow_view_modal',
     /**
@@ -169,12 +170,15 @@
         viewDataflowButton.appendChild(viewIcon);
         viewDataflowButton.appendChild(document.createTextNode('View diagram'));
         viewDataflowButton.onclick = function () {
-          var dataflowHolder = $('#' + dataflowHolderId);
-          self.updateCurrentCompound($(this).attr('data-compound-index'), self.structureView.getValue());
-          dataflowHolder.modal('show');
+          self.currentCompoundIndex = $(this).attr('data-compound-index');
+          $('#' + dataflowHolderId).modal('show');
         };
         $('[data-schemapath="root.artifacts.compoundComponents.' + i + '"]').prepend(viewDataflowButton);
       }
+
+      $('#dataflow_view_modal').on('shown.bs.modal', function () {
+        self.updateCurrentCompound(self.currentCompoundIndex, self.structureView.getValue());
+      });
     },
 
     /**

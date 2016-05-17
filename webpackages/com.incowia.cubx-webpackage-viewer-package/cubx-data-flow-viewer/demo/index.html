@@ -44,7 +44,6 @@
     var dataflowViewer = document.getElementsByTagName('cubx-data-flow-viewer')[0];
     var manifestUrl = "../../manifest.webpackage";
     document.addEventListener('cifReady', function() {
-        dataflowViewer.setViewerWidth(window.innerWidth * 0.9);
         dataflowViewer.setViewerHeight(window.innerHeight * 0.9);
         $.getJSON(manifestUrl, function (response) {
             dataflowViewer.setManifest(response);

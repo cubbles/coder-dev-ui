@@ -58,6 +58,7 @@
       }
       this.drawDataflow(this.generateDataflowGraph());
     },
+
     /**
      *  Observe the Cubbles-Component-Model: If value for slot 'manifest' has changed ...
      */
@@ -310,10 +311,12 @@
         .attr('height', this.getViewerHeight())
         .attr('id', 'svg_element')
         .call(zoom)
-        .append('g');
+        .append('g')
+        .attr('id', 'dataflow_view_holder_container');
+      var realWidth = $('#dataflow_view_holder').width();
       var root = this.svg.append('g');
       var layouter = klay.d3kgraph()
-        .size([this.getViewerWidth(), this.getViewerHeight()])
+        .size([realWidth, this.getViewerHeight()])
         .transformGroup(root)
         .options({
           layoutHierarchy: true,
@@ -327,7 +330,6 @@
       layouter.on('finish', function (d) {
         var components = layouter.nodes();
         var connections = layouter.links(components);
-
         var componentsData = root.selectAll('.node')
           .data(components, function (d) { return d.id; });
 
