@@ -1,11 +1,11 @@
-# cubx-webpackage-viewer 
+# cubx-webpackage-viewer
 This webpackage contains componentns to visualize the structure of a (Cubbles) webpackage using its manifest.webpackege config file, and the dataflow of its compound components.
 
 ## Components of the webpackage
 
 ### Elemenary components
 - **cubx-data-flow-viewer:** Viewer of compound components dataflow [Demo](https://cubbles.world/sandbox/com.incowia.cubx-webpackage-viewer-package@0.1.0-SNAPSHOT/cubx-data-flow-viewer/demo/index.html)
-- **cubx-compound-info-viewer:** Viewer of compound compoents information (sltos) [Demo](https://cubbles.world/sandbox/com.incowia.cubx-webpackage-viewer-package@0.1.0-SNAPSHOT/cubx-compound-info-viewer/demo/index.html)
+- **cubx-compound-info-viewer:** Viewer of compound components information (slots) [Demo](https://cubbles.world/sandbox/com.incowia.cubx-webpackage-viewer-package@0.1.0-SNAPSHOT/cubx-compound-info-viewer/demo/index.html)
 - - **cubx-structure-viewer:** Component to visualize the structure of a webpackage, using the manifest.webpackage file
 
 ### Compound Components

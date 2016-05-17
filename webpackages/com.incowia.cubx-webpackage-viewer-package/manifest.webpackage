@@ -16,7 +16,7 @@
     "elementaryComponents": [
       {
         "artifactId": "cubx-structure-viewer",
-        "description": "WebUi to visualize the structure of a webpackage, using the manifest.webpackage file, and the Dataflow of its compound components on a browser",
+        "description": "Component to visualize the structure of a webpackage using the manifest.webpackage file",
         "runnables": [
           {
             "name": "demo",
@@ -70,7 +70,7 @@
       },
       {
         "artifactId": "cubx-data-flow-viewer",
-        "description": "Viewer of compound components",
+        "description": "Viewer of compound components dataflow",
         "runnables": [
           {
             "name": "demo",
@@ -135,7 +135,7 @@
       },
       {
         "artifactId": "cubx-compound-info-viewer",
-        "description": "Viewer of compound compoents information (sltos and inits)",
+        "description": "Viewer of compound components information (slots)",
         "runnables": [
           {
             "name": "demo",
@@ -170,7 +170,7 @@
     "compoundComponents": [
       {
         "artifactId": "cubx-webpackage-viewer",
-        "description": "WebUi to visualize the structure of a webpackage, using the manifest.webpackage file, and the Dataflow of its compound components on a browser",
+        "description": "Component to visualize the structure of a webpackage and the dataflow of its compound components",
         "runnables": [
           {
             "name": "demo",
