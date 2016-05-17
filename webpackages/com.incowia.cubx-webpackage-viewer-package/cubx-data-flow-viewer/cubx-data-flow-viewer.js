@@ -51,7 +51,10 @@
      */
     modelComponentArtifactIdChanged: function (componentArtifactId) {
       // update the view
-      this.compoundComponent = this.searchComponentInManifest(componentArtifactId, this.getManifest());
+      var compoundComponent = this.searchComponentInManifest(componentArtifactId, this.getManifest());
+      if (compoundComponent) {
+        this.setCompoundComponent(compoundComponent);
+      }
       this.drawDataflow(this.generateDataflowGraph());
     },
     /**
@@ -69,15 +72,15 @@
       if (!this.isCubxReady) { return; }
       var dataflowGraph = {id: 'root', children: []};
       var rootComponent = this.generateGraphMember(
-        this.compoundComponent,
-        this.compoundComponent.artifactId,
+        this.getCompoundComponent(),
+        this.getCompoundComponent().artifactId,
         {portLabelPlacement: 'OUTSIDE', borderSpacing: 40}
       );
-      rootComponent.children = this.generateGraphMembers(this.compoundComponent.members, this.getManifest());
+      rootComponent.children = this.generateGraphMembers(this.getCompoundComponent().members, this.getManifest());
 
       dataflowGraph.children.push(rootComponent);
-      dataflowGraph.edges = this.generateGraphConnections(this.compoundComponent.connections,
-        this.compoundComponent.artifactId);
+      dataflowGraph.edges = this.generateGraphConnections(this.getCompoundComponent().connections,
+        this.getCompoundComponent().artifactId);
       return dataflowGraph;
     },
 
@@ -343,11 +346,10 @@
      * Add the SVG components necessary to support tooltips
      */
     addTooltip: function () {
-      d3.select('body')
+      d3.select('#dataflow_view_holder')
         .append('div')
         .attr('class', 'tooltip cubx-data-flow-viewer')
-        .attr('id', 'tooltip')
-        .attr('visibility', 'hidden');
+        .attr('id', 'tooltip');
     },
 
     /**

@@ -7,15 +7,15 @@
   window.com_incowia_cubx_data_flow_viewer = {
     showTooltip: function (evt, mouseovertext) {
       var tooltip = document.getElementById('tooltip');
-      tooltip.style.top = (evt.pageY - 10) + 'px';
-      tooltip.style.left = (evt.pageX + 10) + 'px';
+      tooltip.style.top = (evt.clientY + 12) + 'px';
+      tooltip.style.left = (evt.clientX + 12) + 'px';
       tooltip.textContent = mouseovertext;
-      tooltip.style.visibility = 'visible';
+      tooltip.style.display = 'block';
     },
 
     hideTooltip: function () {
       var tooltip = document.getElementById('tooltip');
-      tooltip.style.visibility = 'hidden';
+      tooltip.style.display = 'none';
     }
   };
 })();

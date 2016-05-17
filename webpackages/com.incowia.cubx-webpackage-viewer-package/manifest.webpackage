@@ -101,6 +101,13 @@
             ]
           },
           {
+            "slotId": "compoundComponent",
+            "type": "object",
+            "direction": [
+              "output"
+            ]
+          },
+          {
             "slotId": "manifest",
             "type": "object",
             "direction": [
@@ -122,6 +129,39 @@
               "input"
             ],
             "value": "500"
+          }
+        ]
+      },
+      {
+        "artifactId": "cubx-compound-info-viewer",
+        "description": "Viewer of compound compoents information (sltos and inits)",
+        "runnables": [
+          {
+            "name": "demo",
+            "path": "/demo/index.html",
+            "description": "Demo app..."
+          }
+        ],
+        "endpoints": [
+          {
+            "endpointId": "main",
+            "description": "This is recommended for you use with webcomponents.",
+            "resources": [
+              "cubx-compound-info-viewer.html"
+            ],
+            "dependencies": [
+              "cubx.core.rte@1.8.0-SNAPSHOT/cubxpolymer/main",
+              "bootstrap-3.3.5@1.0.3/bootstrap/html-import"
+            ]
+          }
+        ],
+        "slots": [
+          {
+            "slotId": "compoundComponent",
+            "type": "object",
+            "direction": [
+              "input"
+            ]
           }
         ]
       }
@@ -226,6 +266,77 @@
             "slot": "schemaUrl",
             "value": "https://raw.githubusercontent.com/cubbles/cubx-webpackage-document-api/master/lib/jsonSchema/manifestWebpackage-8.3.1.schema.json",
             "memberIdRef": "structureViewer"
+          }
+        ]
+      },
+      {
+        "artifactId": "cubx-compound-docs-viewer",
+        "description": "Component to visualize a compound component dataflow and information",
+        "runnables": [
+          {
+            "name": "demo",
+            "path": "/demo/index.html",
+            "description": "Demo app..."
+          }
+        ],
+        "endpoints": [
+          {
+            "endpointId": "main",
+            "resources": [
+              "css/cubx-compound-docs-viewer.css"
+            ],
+            "dependencies": [
+              "this/cubx-data-flow-viewer/main",
+              "this/cubx-compound-info-viewer/main"
+            ]
+          }
+        ],
+        "slots": [
+          {
+            "slotId": "componentArtifactId",
+            "type": "string",
+            "direction": [
+              "input"
+            ]
+          }
+        ],
+        "members": [
+          {
+            "memberId": "dataflowViewer",
+            "componentId": "this/cubx-data-flow-viewer"
+          },
+          {
+            "memberId": "compoundInfoViewer",
+            "componentId": "this/cubx-compound-info-viewer"
+          }
+        ],
+        "connections": [
+          {
+            "connectionId": "artifactIdCon",
+            "source": {
+              "slot": "artifactId"
+            },
+            "destination": {
+              "memberIdRef": "dataflowViewer",
+              "slot": "artifactId"
+            }
+          },
+          {
+            "connectionId": "compoundComponentCon",
+            "source": {
+              "memberIdRef": "dataflowViewer",
+              "slot": "compoundComponent"
+            },
+            "destination": {
+              "memberIdRef": "compoundInfoViewer",
+              "slot": "compoundComponent"
+            }
+          }
+        ],
+        "inits": [
+          {
+            "slot": "outdoor-temperature",
+            "value": 0
           }
         ]
       }
