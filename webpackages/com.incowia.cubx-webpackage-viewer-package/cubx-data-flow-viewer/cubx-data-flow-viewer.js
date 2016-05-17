@@ -19,7 +19,8 @@
     SPACE_BETWEEN_SLOT_LABELS: 10,
     SLOT_HEIGHT: 25,
     SLOT_INIT_Y: 50,
-    SLOT_LABEL_LETTER_WIDTH: 6,
+    SLOT_LABEL_LETTER_WIDTH: 7,
+    CONNECTION_LABEL_LETTER_WIDTH: 7,
 
     /**
      * Manipulate an element’s local DOM when the element is created.
@@ -229,7 +230,7 @@
         id: compoundConnection.connectionId,
         labels: [{
           text: compoundConnection.connectionId,
-          width: compoundConnection.connectionId.length * 5,
+          width: compoundConnection.connectionId.length * this.CONNECTION_LABEL_LETTER_WIDTH,
           height: 10
         }],
         source: source,
@@ -246,7 +247,6 @@
      * @returns {object} Component from a manifest
      */
     componentDefinitionOfMember: function (member) {
-      // TODO: define how this url will be passed
       var componentArtifactId = member.componentId.substr(member.componentId.indexOf('/') + 1);
       var component;
       if (member.componentId.includes('this/')) {
