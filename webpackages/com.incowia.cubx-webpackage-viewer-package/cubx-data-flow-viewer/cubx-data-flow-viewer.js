@@ -254,7 +254,10 @@
         component = this.searchComponentInManifest(componentArtifactId, this.getManifest());
       } else {
         var self = this;
-        var manifestUrl = '../../../' + member.componentId.substr(0, member.componentId.indexOf('/'));
+        // TODO: Use method from CRC
+        var manifestUrl = window.cubx.CRC._baseUrl + member.componentId.substr(0, member.componentId.indexOf('/'));
+        // var manifestUrl = '../../' + member.componentId.substr(0, member.componentId.indexOf('/'));
+        console.log(manifestUrl);
         $.ajaxSetup({async: false});
         $.getJSON(manifestUrl, function (response) {
           component = self.searchComponentInManifest(componentArtifactId, response);
