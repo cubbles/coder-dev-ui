@@ -155,7 +155,7 @@
      */
     addViewDataflowButtons: function () {
       var compoundComponents = this.structureView.getValue().artifacts.compoundComponents;
-      var dataflowHolderId = this.dataflowViewModalId;
+      var dataflowModalId = this.dataflowViewModalId;
       var viewDataflowButton;
       var viewIcon;
       var self = this;
@@ -171,7 +171,8 @@
         viewDataflowButton.appendChild(document.createTextNode('View diagram'));
         viewDataflowButton.onclick = function () {
           self.currentCompoundIndex = $(this).attr('data-compound-index');
-          $('#' + dataflowHolderId).modal('show');
+          $('#dataflow_view_holder').html('');
+          $('#' + dataflowModalId).modal('show');
         };
         $('[data-schemapath="root.artifacts.compoundComponents.' + i + '"]').prepend(viewDataflowButton);
       }
