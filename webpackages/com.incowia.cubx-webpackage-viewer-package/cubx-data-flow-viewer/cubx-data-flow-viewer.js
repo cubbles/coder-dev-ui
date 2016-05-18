@@ -281,6 +281,9 @@
      * @returns {object} Found component
      */
     searchComponentInManifest: function (componentArtifactId, manifest) {
+      if (!manifest.artifacts) {
+        console.error('The manifest has no artifacts');
+      }
       var componentDefinition = this.searchComponentIn(componentArtifactId, manifest.artifacts.elementaryComponents);
       if (!componentDefinition) {
         componentDefinition = this.searchComponentIn(componentArtifactId, manifest.artifacts.compoundComponents);
