@@ -52,11 +52,18 @@
      */
     modelComponentArtifactIdChanged: function (componentArtifactId) {
       // update the view
+      if (!this.getManifest()) {
+        console.error('The manifest should be set');
+        return;
+      }
       var compoundComponent = this.searchComponentInManifest(componentArtifactId, this.getManifest());
       if (compoundComponent) {
         this.setCompoundComponent(compoundComponent);
+        this.drawDataflow(this.generateDataflowGraph());
+      } else {
+        console.error('The component with ' + componentArtifactId + 'artifactId was not found');
+        return;
       }
-      this.drawDataflow(this.generateDataflowGraph());
     },
 
     /**
