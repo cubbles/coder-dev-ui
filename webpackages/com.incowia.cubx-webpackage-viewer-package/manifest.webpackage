@@ -1,7 +1,7 @@
 {
   "name": "cubx-webpackage-viewer-package",
   "groupId": "com.incowia",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "modelVersion": "8.3.0",
   "docType": "webpackage",
   "author": {
@@ -32,7 +32,7 @@
               "cubx-structure-viewer.html"
             ],
             "dependencies": [
-              "cubx.core.rte@1.8.0-SNAPSHOT/cubxpolymer/main",
+              "cubx.core.rte@1.8.0/cubxpolymer/main",
               "cubx-json-editor-0.7.25@1.0.1-SNAPSHOT/cubx-json-editor/html-import"
             ]
           }
@@ -87,7 +87,7 @@
               "jsFunctions.js"
             ],
             "dependencies": [
-              "cubx.core.rte@1.8.0-SNAPSHOT/cubxpolymer/main",
+              "cubx.core.rte@1.8.0/cubxpolymer/main",
               "klayjsd3-0.3.5@1.0.2/klayjs-d3/html-import",
               "jquery-2.1.4@1.0.0/jquery/html-import"
             ]
@@ -150,7 +150,7 @@
               "cubx-compound-info-viewer.html"
             ],
             "dependencies": [
-              "cubx.core.rte@1.8.0-SNAPSHOT/cubxpolymer/main",
+              "cubx.core.rte@1.8.0/cubxpolymer/main",
               "bootstrap-3.3.5@1.0.3/bootstrap/html-import"
             ]
           }
