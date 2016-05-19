@@ -6,7 +6,7 @@
       "debug": false
     },
     "release": {
-      "url": "https://www.cubbles.world/another-store",
+      "url": "https://www.cubbles.world/core",
       "proxy": "",
       "debug": false
     }
