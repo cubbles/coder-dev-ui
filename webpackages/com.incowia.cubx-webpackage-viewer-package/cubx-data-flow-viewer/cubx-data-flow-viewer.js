@@ -318,6 +318,9 @@
         .on('zoom', function () {
           self.svg.attr('transform', 'translate(' + d3.event.translate + ')' + ' scale(' + d3.event.scale + ')');
         });
+      if (!this.getViewerHeight()) {
+        this.setViewerHeight(window.innerHeight * 0.7);
+      }
       this.svg = d3.select('#dataflow_view_holder')
         .append('svg')
         .attr('width', this.getViewerWidth())

@@ -128,8 +128,7 @@
             "type": "string",
             "direction": [
               "input"
-            ],
-            "value": "500"
+            ]
           }
         ]
       },
@@ -352,7 +351,13 @@
             }
           }
         ],
-        "inits": []
+        "inits": [
+          {
+            "slot": "viewerHeight",
+            "value": "500px",
+            "memberIdRef": "dataFlowViewer"
+          }
+        ]
       }
     ],
     "utilities": []
