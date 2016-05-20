@@ -61,7 +61,7 @@
         this.setCompoundComponent(compoundComponent);
         this.drawDataflow(this.generateDataflowGraph());
       } else {
-        console.error('The component with ' + componentArtifactId + 'artifactId was not found');
+        console.error('The component with ' + componentArtifactId + ' artifactId was not found');
         return;
       }
     },
