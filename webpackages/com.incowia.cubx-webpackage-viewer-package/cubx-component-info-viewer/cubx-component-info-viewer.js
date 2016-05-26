@@ -10,7 +10,7 @@
    * slot 'a': this.getA(); | this.setA(value)
    */
   CubxPolymer({
-    is: 'cubx-compound-info-viewer',
+    is: 'cubx-component-info-viewer',
     isCubxReady: false,
 
     /**
@@ -39,9 +39,9 @@
     },
 
     /**
-     *  Observe the Cubbles-Component-Model: If value for slot 'compoundComponent' has changed ...
+     *  Observe the Cubbles-Component-Model: If value for slot 'component' has changed ...
      */
-    modelCompoundComponentChanged: function (compoundComponent) {
+    modelComponentChanged: function (component) {
       if (!this.isCubxReady) { return; }
       this.updateSlotsInformation();
     },
@@ -55,14 +55,14 @@
       var slotId;
       var type;
       var description;
-      for (var i in this.getCompoundComponent().slots) {
+      for (var i in this.getComponent().slots) {
         row = slotsInfoTable.insertRow(slotsInfoTable.rows.length);
         slotId = row.insertCell(0);
         type = row.insertCell(1);
         description = row.insertCell(2);
-        slotId.innerHTML = this.getCompoundComponent().slots[i].slotId;
-        type.innerHTML = this.getCompoundComponent().slots[i].type;
-        description.innerHTML = this.getCompoundComponent().slots[i].description || '';
+        slotId.innerHTML = this.getComponent().slots[i].slotId;
+        type.innerHTML = this.getComponent().slots[i].type;
+        description.innerHTML = this.getComponent().slots[i].description || '';
       }
     }
   });

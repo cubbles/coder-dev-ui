@@ -56,9 +56,9 @@
         console.error('The manifest should be set');
         return;
       }
-      var compoundComponent = this.searchComponentInManifest(componentArtifactId, this.getManifest());
-      if (compoundComponent) {
-        this.setCompoundComponent(compoundComponent);
+      var component = this.searchComponentInManifest(componentArtifactId, this.getManifest());
+      if (component) {
+        this.setComponent(component);
         this.drawDataflow(this.generateDataflowGraph());
       } else {
         console.error('The component with ' + componentArtifactId + ' artifactId was not found');
@@ -74,22 +74,22 @@
     },
 
     /**
-     * Generate the KGraph that represents to the dataflow of a compound component
+     * Generate the KGraph that represents to the dataflow of a component
      * @returns {{id: string, children: Array}} KGraph to be used to build and display the dataflow view
      */
     generateDataflowGraph: function () {
       if (!this.isCubxReady) { return; }
       var dataflowGraph = {id: 'root', children: []};
       var rootComponent = this.generateGraphMember(
-        this.getCompoundComponent(),
-        this.getCompoundComponent().artifactId,
+        this.getComponent(),
+        this.getComponent().artifactId,
         {portLabelPlacement: 'OUTSIDE', borderSpacing: 40}
       );
-      rootComponent.children = this.generateGraphMembers(this.getCompoundComponent().members, this.getManifest());
+      rootComponent.children = this.generateGraphMembers(this.getComponent().members, this.getManifest());
 
       dataflowGraph.children.push(rootComponent);
-      dataflowGraph.edges = this.generateGraphConnections(this.getCompoundComponent().connections,
-        this.getCompoundComponent().artifactId);
+      dataflowGraph.edges = this.generateGraphConnections(this.getComponent().connections,
+        this.getComponent().artifactId);
       return dataflowGraph;
     },
 

@@ -33,16 +33,16 @@
     Note: Currently there is only one element supported. This will change in future (@see PLAT-205).
 -->
 <div cubx-core-crc>
-     <cubx-compound-info-viewer cubx-dependency="this/cubx-compound-info-viewer/main"></cubx-compound-info-viewer>
+     <cubx-component-info-viewer cubx-dependency="this/cubx-component-info-viewer/main"></cubx-component-info-viewer>
 </div>
 
 <script>
-    var compoundInfoViewer = document.getElementsByTagName('cubx-compound-info-viewer')[0];
+    var componentInfoViewer = document.getElementsByTagName('cubx-component-info-viewer')[0];
     var manifestUrl = "../../manifest.webpackage";
     document.addEventListener('cifReady', function() {
         $.getJSON(manifestUrl, function (response) {
-            var compoundComponent = response.artifacts.compoundComponents[0];
-            compoundInfoViewer.setCompoundComponent(compoundComponent);
+            var component = response.artifacts.compoundComponents[0];
+            componentInfoViewer.setComponent(component);
         });
     });
 </script>

@@ -70,7 +70,7 @@
       },
       {
         "artifactId": "cubx-data-flow-viewer",
-        "description": "Viewer of compound components dataflow",
+        "description": "Viewer of components interface and dataflow for compound components",
         "runnables": [
           {
             "name": "demo",
@@ -102,7 +102,7 @@
             ]
           },
           {
-            "slotId": "compoundComponent",
+            "slotId": "component",
             "type": "object",
             "direction": [
               "output"
@@ -133,8 +133,8 @@
         ]
       },
       {
-        "artifactId": "cubx-compound-info-viewer",
-        "description": "Viewer of compound components information (slots)",
+        "artifactId": "cubx-component-info-viewer",
+        "description": "Viewer of components information (slots)",
         "runnables": [
           {
             "name": "demo",
@@ -147,7 +147,7 @@
             "endpointId": "main",
             "description": "This is recommended for you use with webcomponents.",
             "resources": [
-              "cubx-compound-info-viewer.html"
+              "cubx-component-info-viewer.html"
             ],
             "dependencies": [
               "cubx.core.rte@1.8.0/cubxpolymer/main",
@@ -157,7 +157,7 @@
         ],
         "slots": [
           {
-            "slotId": "compoundComponent",
+            "slotId": "component",
             "type": "object",
             "direction": [
               "input"
@@ -270,8 +270,8 @@
         ]
       },
       {
-        "artifactId": "cubx-compound-docs-viewer",
-        "description": "Component to visualize a compound component dataflow and information",
+        "artifactId": "cubx-component-docs-viewer",
+        "description": "Component to visualize a component and its interface details",
         "runnables": [
           {
             "name": "demo",
@@ -283,12 +283,12 @@
           {
             "endpointId": "main",
             "resources": [
-              "css/cubx-compound-docs-viewer.css",
+              "css/cubx-component-docs-viewer.css",
               "template.html"
             ],
             "dependencies": [
               "this/cubx-data-flow-viewer/main",
-              "this/cubx-compound-info-viewer/main"
+              "this/cubx-component-info-viewer/main"
             ]
           }
         ],
@@ -314,8 +314,8 @@
             "componentId": "this/cubx-data-flow-viewer"
           },
           {
-            "memberId": "compoundInfoViewer",
-            "componentId": "this/cubx-compound-info-viewer"
+            "memberId": "componentInfoViewer",
+            "componentId": "this/cubx-component-info-viewer"
           }
         ],
         "connections": [
@@ -340,14 +340,14 @@
             }
           },
           {
-            "connectionId": "compoundComponentCon",
+            "connectionId": "componentCon",
             "source": {
               "memberIdRef": "dataFlowViewer",
-              "slot": "compoundComponent"
+              "slot": "component"
             },
             "destination": {
-              "memberIdRef": "compoundInfoViewer",
-              "slot": "compoundComponent"
+              "memberIdRef": "componentInfoViewer",
+              "slot": "component"
             }
           }
         ],

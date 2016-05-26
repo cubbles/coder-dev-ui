@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>&lt;cubx-compound-docs-viewer&gt;</title>
+    <title>&lt;cubx-component-docs-viewer&gt;</title>
 
     <script src="../../../cubx.core.rte@1.8.0/webcomponents/webcomponents-lite.js"></script>
 
@@ -33,18 +33,18 @@
     Place Cubbles-Component there as child element.
     Note: Currently there is only one element supported. This will change in future (@see PLAT-205).
 -->
-<h1>&lt;cubx-compound-docs-viewer&gt; Docs</h1>
+<h1>&lt;cubx-component-docs-viewer&gt; Docs</h1>
 <div cubx-core-crc>
-     <cubx-compound-docs-viewer cubx-dependency="this/cubx-compound-docs-viewer/main"></cubx-compound-docs-viewer>
+     <cubx-component-docs-viewer cubx-dependency="this/cubx-component-docs-viewer/main"></cubx-component-docs-viewer>
 </div>
 
 <script>
-    var compoundDocsViewer = document.getElementsByTagName('cubx-compound-docs-viewer')[0];
+    var componentDocsViewer = document.getElementsByTagName('cubx-component-docs-viewer')[0];
     var manifestUrl = "../../manifest.webpackage";
     document.addEventListener('cifReady', function() {
         $.getJSON(manifestUrl, function (response) {
-            compoundDocsViewer.setManifest(response);
-            compoundDocsViewer.setComponentArtifactId('cubx-compound-docs-viewer');
+            componentDocsViewer.setManifest(response);
+            componentDocsViewer.setComponentArtifactId('cubx-component-docs-viewer');
         });
     });
 </script>
