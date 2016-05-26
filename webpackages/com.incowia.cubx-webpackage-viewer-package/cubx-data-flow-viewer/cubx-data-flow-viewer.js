@@ -330,9 +330,10 @@
         .append('g')
         .attr('id', 'dataflow_view_holder_container');
       var realWidth = $('#dataflow_view_holder').width();
+      var realHeight = $('#dataflow_view_holder').height();
       var root = this.svg.append('g');
       var layouter = klay.d3kgraph()
-        .size([realWidth, this.getViewerHeight()])
+        .size([realWidth, realHeight])
         .transformGroup(root)
         .options({
           layoutHierarchy: true,

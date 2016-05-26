@@ -1,7 +1,7 @@
 {
   "uploadConfigs": {
     "dev": {
-      "url": "https://www.cubbles.world/sandbox",
+      "url": "http://cubbles-base-dev/sandbox",
       "proxy": "",
       "debug": false
     },
