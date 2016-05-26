@@ -69,7 +69,7 @@
         ]
       },
       {
-        "artifactId": "cubx-data-flow-viewer",
+        "artifactId": "cubx-component-viewer",
         "description": "Viewer of components interface and dataflow for compound components",
         "runnables": [
           {
@@ -83,7 +83,7 @@
             "endpointId": "main",
             "description": "This is recommended for you use with webcomponents.",
             "resources": [
-              "cubx-data-flow-viewer.html",
+              "cubx-component-viewer.html",
               "jsFunctions.js"
             ],
             "dependencies": [
@@ -185,7 +185,7 @@
               "template.html"
             ],
             "dependencies": [
-              "this/cubx-data-flow-viewer/main",
+              "this/cubx-component-viewer/main",
               "this/cubx-structure-viewer/main"
             ]
           }
@@ -208,8 +208,8 @@
         ],
         "members": [
           {
-            "memberId": "dataFlowViewer",
-            "componentId": "this/cubx-data-flow-viewer"
+            "memberId": "componentViewer",
+            "componentId": "this/cubx-component-viewer"
           },
           {
             "memberId": "structureViewer",
@@ -244,7 +244,7 @@
               "slot": "currentComponentArtifactId"
             },
             "destination": {
-              "memberIdRef": "dataFlowViewer",
+              "memberIdRef": "componentViewer",
               "slot": "componentArtifactId"
             },
             "repeatedValues": true
@@ -256,7 +256,7 @@
               "slot": "manifest"
             },
             "destination": {
-              "memberIdRef": "dataFlowViewer",
+              "memberIdRef": "componentViewer",
               "slot": "manifest"
             }
           }
@@ -287,7 +287,7 @@
               "template.html"
             ],
             "dependencies": [
-              "this/cubx-data-flow-viewer/main",
+              "this/cubx-component-viewer/main",
               "this/cubx-component-info-viewer/main"
             ]
           }
@@ -310,8 +310,8 @@
         ],
         "members": [
           {
-            "memberId": "dataFlowViewer",
-            "componentId": "this/cubx-data-flow-viewer"
+            "memberId": "componentViewer",
+            "componentId": "this/cubx-component-viewer"
           },
           {
             "memberId": "componentInfoViewer",
@@ -325,7 +325,7 @@
               "slot": "manifest"
             },
             "destination": {
-              "memberIdRef": "dataFlowViewer",
+              "memberIdRef": "componentViewer",
               "slot": "manifest"
             }
           },
@@ -335,14 +335,14 @@
               "slot": "componentArtifactId"
             },
             "destination": {
-              "memberIdRef": "dataFlowViewer",
+              "memberIdRef": "componentViewer",
               "slot": "componentArtifactId"
             }
           },
           {
             "connectionId": "componentCon",
             "source": {
-              "memberIdRef": "dataFlowViewer",
+              "memberIdRef": "componentViewer",
               "slot": "component"
             },
             "destination": {
@@ -355,7 +355,7 @@
           {
             "slot": "viewerHeight",
             "value": "500px",
-            "memberIdRef": "dataFlowViewer"
+            "memberIdRef": "componentViewer"
           }
         ]
       }

@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>&lt;cubx-data-flow-viewer&gt; Dataflow</title>
+    <title>&lt;cubx-component-viewer&gt; Dataflow</title>
     <script src="../../../cubx.core.rte@1.8.0/webcomponents/webcomponents-lite.js"></script>
     <script>
         window.cubx = {
@@ -33,21 +33,21 @@
 -->
 <div class="container">
     <div class="row">
-        <h1>&lt;cubx-data-flow-viewer&gt; Dataflow</h1>
+        <h1>&lt;cubx-component-viewer&gt; Dataflow</h1>
     </div>
     <div cubx-core-crc class="row">
-         <cubx-data-flow-viewer cubx-dependency="this/cubx-data-flow-viewer/main"></cubx-data-flow-viewer>
+         <cubx-component-viewer cubx-dependency="this/cubx-component-viewer/main"></cubx-component-viewer>
     </div>
 </div>
 
 <script>
-    var dataflowViewer = document.getElementsByTagName('cubx-data-flow-viewer')[0];
+    var componentViewer = document.getElementsByTagName('cubx-component-viewer')[0];
     var manifestUrl = "../../manifest.webpackage";
     document.addEventListener('cifReady', function() {
-        dataflowViewer.setViewerHeight(window.innerHeight * 0.9);
+        componentViewer.setViewerHeight(window.innerHeight * 0.9);
         $.getJSON(manifestUrl, function (response) {
-            dataflowViewer.setManifest(response);
-            dataflowViewer.setComponentArtifactId('cubx-webpackage-viewer');
+            componentViewer.setManifest(response);
+            componentViewer.setComponentArtifactId('cubx-webpackage-viewer');
         });
     });
 </script>

@@ -3,7 +3,7 @@
  */
 (function () {
   'use strict';
-  // set namespace containing cubx-data-flow-viewer functions
+  // set namespace containing cubx-component-viewer functions
   window.com_incowia_cubx_data_flow_viewer = {
     showTooltip: function (evt, mouseovertext) {
       var tooltip = document.getElementById('info_tooltip');

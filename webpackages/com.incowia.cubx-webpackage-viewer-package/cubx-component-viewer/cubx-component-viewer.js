@@ -11,7 +11,7 @@
    * slot 'a': this.getA(); | this.setA(value)
    */
   CubxPolymer({
-    is: 'cubx-data-flow-viewer',
+    is: 'cubx-component-viewer',
 
     isCubxReady: false,
     COMPONENT_LABEL_HEIGHT: 15,
@@ -59,7 +59,7 @@
       var component = this.searchComponentInManifest(componentArtifactId, this.getManifest());
       if (component) {
         this.setComponent(component);
-        this.drawDataflow(this.generateDataflowGraph());
+        this.drawComponent(this.generateComponentGraph());
       } else {
         console.error('The component with ' + componentArtifactId + ' artifactId was not found');
         return;
@@ -74,12 +74,12 @@
     },
 
     /**
-     * Generate the KGraph that represents to the dataflow of a component
-     * @returns {{id: string, children: Array}} KGraph to be used to build and display the dataflow view
+     * Generate the KGraph that represents a component
+     * @returns {{id: string, children: Array}} KGraph to be used to build and display the component
      */
-    generateDataflowGraph: function () {
+    generateComponentGraph: function () {
       if (!this.isCubxReady) { return; }
-      var dataflowGraph = {id: 'root', children: []};
+      var componentGraph = {id: 'root', children: []};
       var rootComponent = this.generateGraphMember(
         this.getComponent(),
         this.getComponent().artifactId,
@@ -87,10 +87,10 @@
       );
       rootComponent.children = this.generateGraphMembers(this.getComponent().members, this.getManifest());
 
-      dataflowGraph.children.push(rootComponent);
-      dataflowGraph.edges = this.generateGraphConnections(this.getComponent().connections,
+      componentGraph.children.push(rootComponent);
+      componentGraph.edges = this.generateGraphConnections(this.getComponent().connections,
         this.getComponent().artifactId);
-      return dataflowGraph;
+      return componentGraph;
     },
 
     /**
@@ -307,12 +307,12 @@
     },
 
     /**
-     * Build and append all the graphic elements of the dataflow view described by a Kgraph
-     * @param {object} dataflowGraph - JSON KGraph to be displayed
+     * Build and append all the graphic elements of a component described by a Kgraph
+     * @param {object} componentGraph - JSON KGraph to be displayed
      */
-    drawDataflow: function (dataflowGraph) {
+    drawComponent: function (componentGraph) {
       // group
-      d3.select('#dataflow_view_holder').html('');
+      d3.select('#component_view_holder').html('');
       var self = this;
       var zoom = d3.behavior.zoom()
         .on('zoom', function () {
@@ -321,16 +321,16 @@
       if (!this.getViewerHeight()) {
         this.setViewerHeight(window.innerHeight * 0.7);
       }
-      this.svg = d3.select('#dataflow_view_holder')
+      this.svg = d3.select('#component_view_holder')
         .append('svg')
         .attr('width', this.getViewerWidth())
         .attr('height', this.getViewerHeight())
         .attr('id', 'svg_element')
         .call(zoom)
         .append('g')
-        .attr('id', 'dataflow_view_holder_container');
-      var realWidth = $('#dataflow_view_holder').width();
-      var realHeight = $('#dataflow_view_holder').height();
+        .attr('id', 'component_view_holder_container');
+      var realWidth = $('#component_view_holder').width();
+      var realHeight = $('#component_view_holder').height();
       var root = this.svg.append('g');
       var layouter = klay.d3kgraph()
         .size([realWidth, realHeight])
@@ -357,7 +357,7 @@
         self.drawComponentsSlots(componentsData);
         self.drawConnections(connectionsData);
       });
-      layouter.kgraph(dataflowGraph);
+      layouter.kgraph(componentGraph);
     },
 
     /**
@@ -372,16 +372,16 @@
         })
         .attr('class', function (d) {
           if (d.children) {
-            return 'componentView compound cubx-data-flow-viewer';
+            return 'componentView compound cubx-component-viewer';
           } else {
-            return 'componentView leaf cubx-data-flow-viewer';
+            return 'componentView leaf cubx-component-viewer';
           }
         });
 
       var atoms = componentView.append('rect')
         .attr('class', function (d) {
           if (d.id !== 'root') {
-            return 'componentViewAtom cubx-data-flow-viewer';
+            return 'componentViewAtom cubx-component-viewer';
           } else {
             return '';
           }
@@ -407,7 +407,7 @@
         .text(function (d) {
           return d.text;
         })
-        .attr('class', 'componentViewLabel cubx-data-flow-viewer');
+        .attr('class', 'componentViewLabel cubx-component-viewer');
 
       componentViewLabel.transition()
         .attr('height', function (d) { return d.height; })
@@ -431,10 +431,10 @@
         .attr('id', function (d) {
           return d.id;
         })
-        .attr('class', 'slotView cubx-data-flow-viewer');
+        .attr('class', 'slotView cubx-component-viewer');
 
       slotView.append('circle')
-        .attr('class', 'slotViewAtom cubx-data-flow-viewer')
+        .attr('class', 'slotViewAtom cubx-component-viewer')
         .attr('onmousemove', function (d) { return 'com_incowia_cubx_data_flow_viewer.showTooltip(evt, \"' + d.id + '\")'; })
         .attr('onmouseout', 'com_incowia_cubx_data_flow_viewer.hideTooltip()');
 
@@ -447,7 +447,7 @@
         .attr('text-anchor', function (d) { return (d.x > 0) ? 'start' : 'end'; })
         .attr('x', function (d) { return (d.x > 0) ? d.x + 3 : -7; })
         .attr('y', function (d) { return (d.y > 0) ? d.y - 10 : d.y + 3; })
-        .attr('class', 'slotViewLabel cubx-data-flow-viewer');
+        .attr('class', 'slotViewLabel cubx-component-viewer');
 
       slotView.transition()
         .attr('transform', function (d) {
@@ -465,7 +465,7 @@
         .data(['end'])                 // define connectionView/path types
         .enter().append('svg:marker')    // add arrows
         .attr('id', String)
-        .attr('class', 'arrowEnd cubx-data-flow-viewer')
+        .attr('class', 'arrowEnd cubx-component-viewer')
         .attr('viewBox', '0 -5 10 10')
         .attr('refX', 10)
         .attr('refY', 0)
@@ -481,14 +481,14 @@
         .attr('id', function (d) {
           return d.id;
         })
-        .attr('class', 'connectionView cubx-data-flow-viewer')
+        .attr('class', 'connectionView cubx-component-viewer')
         .attr('d', 'M0 0')
         .attr('marker-end', 'url(#end)');
 
       // Add connections labels
       connectionData.enter()
         .append('text')
-        .attr('class', 'connectionViewLabel cubx-data-flow-viewer')
+        .attr('class', 'connectionViewLabel cubx-component-viewer')
         .attr('text-anchor', 'middle')
         .attr('x', function (d) { return (d.sourcePoint.x + d.targetPoint.x) / 2; })
         .attr('y', function (d) { return d.labels[0].y + d.labels[0].height * 2.2; })
