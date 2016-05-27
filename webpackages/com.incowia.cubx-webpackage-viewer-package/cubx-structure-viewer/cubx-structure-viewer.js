@@ -177,12 +177,15 @@
       var viewIcon = document.createElement('i');
       viewIcon.setAttribute('class', 'glyphicon glyphicon-eye-open');
       viewDataflowButton.appendChild(viewIcon);
-      viewDataflowButton.appendChild(document.createTextNode('View diagram'));
+      var buttonText = (componentsType === 'compoundComponents') ? ' Dataflow view' : ' Interface view';
+      viewDataflowButton.appendChild(document.createTextNode(buttonText));
       viewDataflowButton.onclick = function () {
         self.currentComponentIndex = $(this).attr('data-compound-index');
         self.currentComponentsType = componentsType;
         $('#dataflow_view_holder').html('');
-        $('#' + self.componentViewModalId).modal('show');
+        var diagramContainer = $('#' + self.componentViewModalId);
+        diagramContainer.find('.modal-title').html(buttonText);
+        diagramContainer.modal('show');
       };
       $('[data-schemapath="root.artifacts.' + componentsType + '.' + componentIndex + '"]').prepend(viewDataflowButton);
     },
