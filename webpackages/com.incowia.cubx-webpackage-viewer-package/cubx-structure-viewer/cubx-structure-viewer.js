@@ -13,9 +13,9 @@
   CubxPolymer({
     is: 'cubx-structure-viewer',
 
-    currentCompoundIndex: 0,
+    currentComponentIndex: 0,
     structureHolderId: 'structure_view_holder',
-    dataflowViewModalId: 'dataflow_view_modal',
+    componentViewModalId: 'dataflow_view_modal',
     /**
      * Manipulate an element’s local DOM when the element is created.
      */
@@ -154,41 +154,45 @@
      * Add a button to each compound components view, to display its dataflow view
      */
     addViewDataflowButtons: function () {
-      var compoundComponents = this.structureView.getValue().artifacts.compoundComponents;
-      var dataflowModalId = this.dataflowViewModalId;
-      var viewDataflowButton;
-      var viewIcon;
       var self = this;
-      for (var i in compoundComponents) {
-        viewDataflowButton = document.createElement('button');
-        viewDataflowButton.setAttribute('type', 'button');
-        viewDataflowButton.setAttribute('class', 'btn btn-primary btn-view-diagram');
-        viewDataflowButton.setAttribute('data-toggle', 'modal');
-        viewDataflowButton.setAttribute('data-compound-index', i);
-        viewIcon = document.createElement('i');
-        viewIcon.setAttribute('class', 'glyphicon glyphicon-eye-open');
-        viewDataflowButton.appendChild(viewIcon);
-        viewDataflowButton.appendChild(document.createTextNode('View diagram'));
-        viewDataflowButton.onclick = function () {
-          self.currentCompoundIndex = $(this).attr('data-compound-index');
-          $('#dataflow_view_holder').html('');
-          $('#' + dataflowModalId).modal('show');
-        };
-        $('[data-schemapath="root.artifacts.compoundComponents.' + i + '"]').prepend(viewDataflowButton);
+      var types = ['compoundComponents', 'elementaryComponents'];
+      var artifacts = this.structureView.getValue().artifacts;
+      for (var i in types) {
+        for (var j in artifacts[types[i]]) {
+          this.createViewComponentButton(j, types[i]);
+        }
       }
-
       $('#dataflow_view_modal').on('shown.bs.modal', function () {
-        self.updateCurrentCompound(self.currentCompoundIndex, self.structureView.getValue());
+        self.updateCurrentComponent(self.structureView.getValue().artifacts[self.currentComponentsType][self.currentComponentIndex]);
       });
+    },
+
+    createViewComponentButton: function (componentIndex, componentsType) {
+      var self = this;
+      var viewDataflowButton = document.createElement('button');
+      viewDataflowButton.setAttribute('type', 'button');
+      viewDataflowButton.setAttribute('class', 'btn btn-primary btn-view-diagram');
+      viewDataflowButton.setAttribute('data-toggle', 'modal');
+      viewDataflowButton.setAttribute('data-compound-index', componentIndex);
+      var viewIcon = document.createElement('i');
+      viewIcon.setAttribute('class', 'glyphicon glyphicon-eye-open');
+      viewDataflowButton.appendChild(viewIcon);
+      viewDataflowButton.appendChild(document.createTextNode('View diagram'));
+      viewDataflowButton.onclick = function () {
+        self.currentComponentIndex = $(this).attr('data-compound-index');
+        self.currentComponentsType = componentsType;
+        $('#dataflow_view_holder').html('');
+        $('#' + self.componentViewModalId).modal('show');
+      };
+      $('[data-schemapath="root.artifacts.' + componentsType + '.' + componentIndex + '"]').prepend(viewDataflowButton);
     },
 
     /**
      * Updates the artifactId of the current compound component
-     * @param {number} index - Index of the compound component in compoundComponents array of manifest.artifacts
-     * @param {object} manifest - Manifest object contain in the manifest.webpackage file
+     * @param {object} component - New current component
      */
-    updateCurrentCompound: function (index, manifest) {
-      this.setCurrentComponentArtifactId(manifest.artifacts.compoundComponents[index].artifactId);
+    updateCurrentComponent: function (component) {
+      this.setCurrentComponentArtifactId(component.artifactId);
     }
   });
 }());
