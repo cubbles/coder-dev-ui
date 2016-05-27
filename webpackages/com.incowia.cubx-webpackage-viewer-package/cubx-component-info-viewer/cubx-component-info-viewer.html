@@ -4,17 +4,35 @@
     <template>
         <style include="cubx-component-info-viewer-style"></style>
         <h2>{{model.title}}</h2>
-        <table id="slots_info_table" class="table table-hover">
-            <thead>
+        <div id="i_slots_info_div">
+            <h3>Input slots</h3>
+            <table id="i_slots_info_table" class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>slotId</th>
+                        <th>type</th>
+                        <th>description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+
+        <div id="o_slots_info_div">
+            <h3>Output slots</h3>
+            <table id="o_slots_info_table" class="table table-hover">
+                <thead>
                 <tr>
                     <th>slotId</th>
                     <th>type</th>
                     <th>description</th>
                 </tr>
-            </thead>
-            <tbody>
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
     </template>
 
     <script src="cubx-component-info-viewer.js"></script>

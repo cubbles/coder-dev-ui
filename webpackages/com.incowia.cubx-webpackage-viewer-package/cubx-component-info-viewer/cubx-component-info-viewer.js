@@ -50,19 +50,33 @@
      * Update the table which contains the information of the compound component slots
      */
     updateSlotsInformation: function () {
-      var slotsInfoTable = document.getElementById('slots_info_table');
+      var iSlotsInfoTable = document.getElementById('i_slots_info_table');
+      var oSlotsInfoTable = document.getElementById('o_slots_info_table');
       var row;
       var slotId;
       var type;
       var description;
-      for (var i in this.getComponent().slots) {
-        row = slotsInfoTable.insertRow(slotsInfoTable.rows.length);
-        slotId = row.insertCell(0);
-        type = row.insertCell(1);
-        description = row.insertCell(2);
-        slotId.innerHTML = this.getComponent().slots[i].slotId;
-        type.innerHTML = this.getComponent().slots[i].type;
-        description.innerHTML = this.getComponent().slots[i].description || '';
+      var slots = this.getComponent().slots;
+      for (var i in slots) {
+        for (var j in slots[i].direction) {
+          if (slots[i].direction[j] === 'input') {
+            row = iSlotsInfoTable.insertRow(iSlotsInfoTable.rows.length);
+          } else {
+            row = oSlotsInfoTable.insertRow(oSlotsInfoTable.rows.length);
+          }
+          slotId = row.insertCell(0);
+          type = row.insertCell(1);
+          description = row.insertCell(2);
+          slotId.innerHTML = slots[i].slotId;
+          type.innerHTML = slots[i].type;
+          description.innerHTML = slots[i].description || '';
+        }
+      }
+      if (iSlotsInfoTable.rows.length > 1) {
+        document.getElementById('i_slots_info_div').style.display = 'block';
+      }
+      if (oSlotsInfoTable.rows.length > 1) {
+        document.getElementById('o_slots_info_div').style.display = 'block';
       }
     }
   });
