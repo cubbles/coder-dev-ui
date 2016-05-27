@@ -129,6 +129,21 @@
             "direction": [
               "input"
             ]
+          },
+          {
+            "slotId": "viewerTitle",
+            "type": "string",
+            "direction": [
+              "input"
+            ]
+          },
+          {
+            "slotId": "showTitle",
+            "type": "boolean",
+            "direction": [
+              "input"
+            ],
+            "value": false
           }
         ]
       },
@@ -162,6 +177,14 @@
             "direction": [
               "input"
             ]
+          },
+          {
+            "slotId": "title",
+            "type": "string",
+            "direction": [
+              "input"
+            ],
+            "value": "Interface details"
           }
         ]
       }
@@ -355,6 +378,11 @@
           {
             "slot": "viewerHeight",
             "value": "500px",
+            "memberIdRef": "componentViewer"
+          },
+          {
+            "slot": "showTitle",
+            "value": true,
             "memberIdRef": "componentViewer"
           }
         ]

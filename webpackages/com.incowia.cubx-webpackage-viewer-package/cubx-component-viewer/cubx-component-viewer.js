@@ -59,6 +59,14 @@
       var component = this.searchComponentInManifest(componentArtifactId, this.getManifest());
       if (component) {
         this.setComponent(component);
+        if (this.getShowTitle()) {
+          $('#component_view_holder_title').css('display', 'inline-block');
+          if (component.members) {
+            this.setViewerTitle('Dataflow view');
+          } else {
+            this.setViewerTitle('Interface view');
+          }
+        }
         this.drawComponent(this.generateComponentGraph());
       } else {
         console.error('The component with ' + componentArtifactId + ' artifactId was not found');
