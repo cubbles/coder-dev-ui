@@ -14,11 +14,10 @@
     is: 'cubx-component-viewer',
 
     isCubxReady: false,
-    COMPONENT_LABEL_HEIGHT: 15,
+    COMPONENT_LABEL_HEIGHT: 18,
     COMPONENT_LABEL_LETTER_WIDTH: 10,
     SPACE_BETWEEN_SLOT_LABELS: 10,
     SLOT_HEIGHT: 25,
-    SLOT_INIT_Y: 50,
     SLOT_LABEL_LETTER_WIDTH: 7,
     CONNECTION_LABEL_LETTER_WIDTH: 7,
 
@@ -26,6 +25,7 @@
      * Manipulate an element’s local DOM when the element is created.
      */
     created: function () {
+      this.HEADER_HEIGHT = this.COMPONENT_LABEL_HEIGHT * 3;
     },
 
     /**
@@ -90,7 +90,7 @@
       var componentGraph = {id: 'root', children: []};
       var rootComponent = this.generateGraphMember(
         this.getComponent(),
-        this.getComponent().artifactId,
+        undefined,
         {portLabelPlacement: 'OUTSIDE', borderSpacing: 40}
       );
       rootComponent.children = this.generateGraphMembers(this.getComponent().members, this.getManifest());
@@ -104,16 +104,16 @@
     /**
      * Generate a list of GraphMembers (KNodes) using a a list of components which belong to a compound component that
      * is defined in manifest
-     * @param {Array} compoundMembers - Components which belong to a compound component
+     * @param {Array} compoundsMembers - Components which belong to a compound component
      * @returns {Array} List of GraphMembers (KNodes)
      */
-    generateGraphMembers: function (compoundMembers) {
+    generateGraphMembers: function (compoundsMembers) {
       var graphMember;
       var component;
       var graphMembers = [];
-      for (var k in compoundMembers) {
-        component = this.componentDefinitionOfMember(compoundMembers[k]);
-        graphMember = this.generateGraphMember(component, compoundMembers[k].memberId);
+      for (var k in compoundsMembers) {
+        component = this.componentDefinitionOfMember(compoundsMembers[k]);
+        graphMember = this.generateGraphMember(component, compoundsMembers[k].memberId);
         graphMembers.push(graphMember);
       }
       return graphMembers;
@@ -129,20 +129,24 @@
      * @returns {object}
      */
     generateGraphMember: function (component, memberId, optionals) {
-      var graphMemberSlots = this.generateGraphMemberSlots(component, memberId);
-      var titleWidth = component.artifactId.length * this.COMPONENT_LABEL_LETTER_WIDTH;
+      var graphMemberSlots = this.generateGraphMemberSlots(component, memberId || component.artifactId);
+      var titleWidth = (component.artifactId.length + 4) * this.COMPONENT_LABEL_LETTER_WIDTH;
+      var subtitleWidth = (memberId) ? memberId.length * this.COMPONENT_LABEL_LETTER_WIDTH : 0;
 
       var graphMember = {
-        id: memberId,
-        labels: [{text: component.artifactId, width: titleWidth, height: this.COMPONENT_LABEL_HEIGHT}],
+        id: memberId || component.artifactId,
+        labels: [
+          {text: '<<' + component.artifactId + '>>', width: titleWidth, height: this.COMPONENT_LABEL_HEIGHT, id: 'ArtifactId'},
+          {text: memberId || '', width: subtitleWidth, height: this.COMPONENT_LABEL_HEIGHT, id: 'MemberId'}
+        ],
         width: Math.max(graphMemberSlots.maxSlotWidth * 2 + this.SPACE_BETWEEN_SLOT_LABELS, titleWidth),
-        height: graphMemberSlots.slots.length * this.SLOT_HEIGHT + this.SLOT_INIT_Y,
+        height: graphMemberSlots.slots.length * this.SLOT_HEIGHT + this.HEADER_HEIGHT,
         ports: graphMemberSlots.slots,
         properties: {
           portConstraints: 'FIXED_SIDE',
           portLabelPlacement: (optionals) ? optionals.portLabelPlacement : 'INSIDE',
-          nodeLabelPlacement: 'V_TOP',
-          portAlignment: 'CENTER',
+          nodeLabelPlacement: 'V_TOP H_CENTER',
+          portAlignment: 'BEGIN',
           portSpacing: 11,
           borderSpacing: (optionals) ? optionals.borderSpacing : 12
         }
@@ -361,8 +365,7 @@
         var connectionsData = root.selectAll('.link')
           .data(connections, function (d) { return d.id; });
 
-        self.drawComponents(componentsData);
-        self.drawComponentsSlots(componentsData);
+        self.drawMembers(componentsData);
         self.drawConnections(connectionsData);
       });
       layouter.kgraph(componentGraph);
@@ -372,7 +375,7 @@
      * Draw a square for each component and its id as label
      * @param {Object} componentsData - Data of each component (D3)
      */
-    drawComponents: function (componentsData) {
+    drawMembers: function (componentsData) {
       var componentView = componentsData.enter()
         .append('g')
         .attr('id', function (d) {
@@ -395,6 +398,13 @@
           }
         });
 
+      var headingAtom = componentView.append('g')
+        .attr('class', 'headingAtom cubx-component-viewer');
+
+      headingAtom.transition()
+        .attr('width', function (d) { return d.width; })
+        .attr('height', this.HEADER_HEIGHT);
+
       // Apply componentView positions
       componentView.transition()
         .attr('transform', function (d) {
@@ -406,7 +416,7 @@
         .attr('height', function (d) { return d.height; });
 
       // Nodes labels
-      var componentViewLabel = componentView.selectAll('.componentViewLabel')
+      var componentViewLabel = headingAtom.selectAll('.componentViewLabel')
         .data(function (d) {
           return d.labels || [];
         })
@@ -415,24 +425,37 @@
         .text(function (d) {
           return d.text;
         })
-        .attr('class', 'componentViewLabel cubx-component-viewer');
+        .attr('class', function (d) {
+          return 'componentViewLabel' + d.id + ' cubx-component-viewer';
+        });
 
       componentViewLabel.transition()
-        .attr('height', function (d) { return d.height; })
-        .attr('width', function (d) { return d.width; });
-
-      componentViewLabel.transition()
-        .attr('x', function (d) { return d.x + 5; })
+        .attr('x', function (d, i, j) { return componentViewLabel[j].parentNode.__data__.width / 2; })
         .attr('y', function (d) { return d.y + d.height + 5; });
+
+      this.drawComponentsSlots(componentView);
     },
 
     /**
      * Draw the components' slots and their ids as labels
-     * @param {Object} componentsData - Data of each component (D3)
+     * @param {Object} componentView - Data of each component (D3)
      */
-    drawComponentsSlots: function (componentsData) {
+    drawComponentsSlots: function (componentView) {
+      var self = this;
+      var slotsAtom = componentView.append('g')
+        .attr('class', 'slotsAtom cubx-component-viewer');
+
+      slotsAtom.transition()
+        .attr('width', function (d) { return d.width; })
+        .attr('height', function (d) { return d.width - self.HEADER_HEIGHT; });
+
+      slotsAtom.transition()
+        .attr('transform', function (d) {
+          return 'translate(' + 0 + ' ' + self.HEADER_HEIGHT + ')';
+        });
+
       // slots
-      var slotView = componentsData.selectAll('.slotView')
+      var slotView = slotsAtom.selectAll('.slotView')
         .data(function (d) { return d.ports || []; })
         .enter()
         .append('g')
@@ -468,6 +491,7 @@
      * @param {Object} connectionData - Data of each connection (D3)
      */
     drawConnections: function (connectionData) {
+      var self = this;
       // build the arrow.
       this.svg.append('svg:defs').selectAll('marker')
         .data(['end'])                 // define connectionView/path types
@@ -499,17 +523,17 @@
         .attr('class', 'connectionViewLabel cubx-component-viewer')
         .attr('text-anchor', 'middle')
         .attr('x', function (d) { return (d.sourcePoint.x + d.targetPoint.x) / 2; })
-        .attr('y', function (d) { return d.labels[0].y + d.labels[0].height * 2.2; })
+        .attr('y', function (d) { return self.HEADER_HEIGHT + d.labels[0].y + d.labels[0].height * 2.2; })
         .text(function (d) { return d.labels[0].text || ''; });
 
       // Apply connections routes
       connectionView.transition().attr('d', function (d) {
         var path = '';
-        path += 'M' + (d.sourcePoint.x + 5) + ' ' + (d.sourcePoint.y - 5) + ' ';
+        path += 'M' + (d.sourcePoint.x + 5) + ' ' + (d.sourcePoint.y + self.HEADER_HEIGHT - 5) + ' ';
         (d.bendPoints || []).forEach(function (bp, i) {
           path += 'L' + bp.x + ' ' + (bp.y - 5) + ' ';
         });
-        path += 'L' + (d.targetPoint.x - 5) + ' ' + (d.targetPoint.y - 5) + ' ';
+        path += 'L' + (d.targetPoint.x - 5) + ' ' + (d.targetPoint.y + self.HEADER_HEIGHT - 5) + ' ';
         return path;
       });
     }
