@@ -385,6 +385,9 @@
       layouter.kgraph(componentGraph);
     },
 
+    /**
+     * Center the component view horizontally and vertically
+     */
     centerDiagram: function () {
       var componentViewHolderSvg = $('#component_view_holder_svg');
       var componentViewHolderContainer = d3.select('#component_view_holder_container');
