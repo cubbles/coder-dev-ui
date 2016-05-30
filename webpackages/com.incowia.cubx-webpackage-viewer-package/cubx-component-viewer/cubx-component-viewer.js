@@ -173,10 +173,10 @@
           slotLabelWidth = compoundMember.slots[l].slotId.length * this.SLOT_LABEL_LETTER_WIDTH;
           if (compoundMember.slots[l].direction[m] === 'input') {
             maxSlotWidthLeft = Math.max(slotLabelWidth, maxSlotWidthLeft);
-            inputSlots ++;
+            inputSlots++;
           } else {
             maxSlotWidthRight = Math.max(slotLabelWidth, maxSlotWidthRight);
-            outputSlots ++;
+            outputSlots++;
           }
           graphMemberSlot = this.generateGraphMemberSlot(
             compoundMember.slots[l].slotId,
