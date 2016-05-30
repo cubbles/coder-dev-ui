@@ -5,11 +5,11 @@
   'use strict';
   // set namespace containing cubx-component-viewer functions
   window.com_incowia_cubx_data_flow_viewer = {
-    showTooltip: function (evt, mouseovertext) {
+    showTooltip: function (evt, htmlContent) {
       var tooltip = document.getElementById('info_tooltip');
       tooltip.style.top = (evt.clientY + 12) + 'px';
       tooltip.style.left = (evt.clientX + 12) + 'px';
-      tooltip.textContent = mouseovertext;
+      tooltip.innerHTML = htmlContent;
       tooltip.style.display = 'block';
     },
 

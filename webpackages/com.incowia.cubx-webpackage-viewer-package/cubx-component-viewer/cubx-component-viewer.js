@@ -156,11 +156,11 @@
 
     /**
      * Generate the slots (ports) of a GraphMember (KNode)
-     * @param {object} compoundMember - Component which is a member of a compound component
+     * @param {object} member - Component which is a member of a compound component
      * @param {string} memberId - memberId of the component within a compoundComponent
      * @returns {{slots: Array, slotsWidth: number}} - List of slots and the width of the widest slot
      */
-    generateGraphMemberSlots: function (compoundMember, memberId) {
+    generateGraphMemberSlots: function (member, memberId) {
       var graphMemberSlots = [];
       var graphMemberSlot;
       var maxSlotWidthLeft = 0;
@@ -168,22 +168,17 @@
       var inputSlots = 0;
       var outputSlots = 0;
       var slotLabelWidth;
-      for (var l in compoundMember.slots) {
-        for (var m in compoundMember.slots[l].direction) {
-          slotLabelWidth = compoundMember.slots[l].slotId.length * this.SLOT_LABEL_LETTER_WIDTH;
-          if (compoundMember.slots[l].direction[m] === 'input') {
+      for (var l in member.slots) {
+        for (var m in member.slots[l].direction) {
+          slotLabelWidth = member.slots[l].slotId.length * this.SLOT_LABEL_LETTER_WIDTH;
+          if (member.slots[l].direction[m] === 'input') {
             maxSlotWidthLeft = Math.max(slotLabelWidth, maxSlotWidthLeft);
             inputSlots++;
           } else {
             maxSlotWidthRight = Math.max(slotLabelWidth, maxSlotWidthRight);
             outputSlots++;
           }
-          graphMemberSlot = this.generateGraphMemberSlot(
-            compoundMember.slots[l].slotId,
-            memberId,
-            compoundMember.slots[l].direction[m],
-            slotLabelWidth
-          );
+          graphMemberSlot = this.generateGraphMemberSlot(member.slots[l], member.slots[l].direction[m], memberId);
           graphMemberSlots.push(graphMemberSlot);
         }
       }
@@ -196,24 +191,25 @@
 
     /**
      * Generate a slot (port) of a GraphMember (KNode)
-     * @param {string} slotId - Id of the slot
+     * @param {string} slot - Slot to be displayed
      * @param {string} memberId - memberId of the component within a compoundComponent
      * @param {string} direction - direction of the slot (input, output)
-     * @param {number} slotWidth - Width of the slot
      * @returns {object} Generated slot (port)
      */
-    generateGraphMemberSlot: function (slotId, memberId, direction, slotWidth) {
+    generateGraphMemberSlot: function (slot, direction, memberId) {
       var graphMemberSlot = {
-        id: slotId + '_' + memberId + '_' + direction,
+        id: slot.slotId + '_' + memberId + '_' + direction,
         properties: {
           portSide: (direction === 'input') ? 'WEST' : 'EAST'
         },
         labels: [{
-          text: slotId,
-          width: slotWidth,
+          text: slot.slotId,
+          width: slot.slotId.length * this.SLOT_LABEL_LETTER_WIDTH,
           height: 10
         }],
-        height: 10
+        height: 10,
+        description: slot.description || '-',
+        type: slot.type || 'any'
       };
       return graphMemberSlot;
     },
@@ -501,7 +497,13 @@
 
       slotView.append('circle')
         .attr('class', 'slotViewAtom cubx-component-viewer')
-        .attr('onmousemove', function (d) { return 'com_incowia_cubx_data_flow_viewer.showTooltip(evt, \"' + d.id + '\")'; })
+        .attr('onmousemove', function (d) {
+          return 'com_incowia_cubx_data_flow_viewer.showTooltip(' +
+            'evt,' +
+            '\"<label>Description:</label> ' + d.description + '<br>' +
+            '<label>Type:</label> ' + d.type +
+            '\")';
+        })
         .attr('onmouseout', 'com_incowia_cubx_data_flow_viewer.hideTooltip()');
 
       // slots labels
@@ -511,8 +513,8 @@
         .append('text')
         .text(function (d) { return d.text; })
         .attr('text-anchor', function (d) { return (d.x > 0) ? 'start' : 'end'; })
-        .attr('x', function (d) { return (d.x > 0) ? d.x + 3 : -7; })
-        .attr('y', function (d) { return (d.y > 0) ? d.y - 10 : d.y + 3; })
+        .attr('x', function (d) { return (d.x > 0) ? d.x + 5 : -9; })
+        .attr('y', function (d) { return (d.y > 0) ? d.y - 10.5 : d.y + 3.5; })
         .attr('class', 'slotViewLabel cubx-component-viewer');
 
       slotView.transition()
