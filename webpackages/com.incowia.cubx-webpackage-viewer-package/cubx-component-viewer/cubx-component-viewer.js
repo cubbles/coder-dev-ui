@@ -411,14 +411,18 @@
           if (d.children) {
             return 'componentView compound cubx-component-viewer';
           } else {
-            return 'componentView leaf cubx-component-viewer';
+            return 'componentView member cubx-component-viewer';
           }
         });
 
       var atoms = componentView.append('rect')
         .attr('class', function (d) {
           if (d.id !== 'root') {
-            return 'componentViewAtom cubx-component-viewer';
+            if (d.children) {
+              return 'componentViewAtom compound cubx-component-viewer';
+            } else {
+              return 'componentViewAtom member cubx-component-viewer';
+            }
           } else {
             return '';
           }
