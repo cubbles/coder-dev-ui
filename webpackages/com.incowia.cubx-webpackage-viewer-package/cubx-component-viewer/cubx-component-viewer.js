@@ -139,8 +139,8 @@
           {text: '<<' + component.artifactId + '>>', width: titleWidth, height: this.COMPONENT_LABEL_HEIGHT, id: 'ArtifactId'},
           {text: memberId || '', width: subtitleWidth, height: this.COMPONENT_LABEL_HEIGHT, id: 'MemberId'}
         ],
-        width: Math.max(graphMemberSlots.maxSlotWidth * 2 + this.SPACE_BETWEEN_SLOT_LABELS, titleWidth),
-        height: graphMemberSlots.slots.length * this.SLOT_HEIGHT + this.HEADER_HEIGHT,
+        width: Math.max(graphMemberSlots.slotsWidth + this.SPACE_BETWEEN_SLOT_LABELS, titleWidth),
+        height: graphMemberSlots.slotsHeight + this.HEADER_HEIGHT,
         ports: graphMemberSlots.slots,
         properties: {
           portConstraints: 'FIXED_SIDE',
@@ -158,17 +158,26 @@
      * Generate the slots (ports) of a GraphMember (KNode)
      * @param {object} compoundMember - Component which is a member of a compound component
      * @param {string} memberId - memberId of the component within a compoundComponent
-     * @returns {{slots: Array, maxSlotWidth: number}} - List of slots and the width of the widest slot
+     * @returns {{slots: Array, slotsWidth: number}} - List of slots and the width of the widest slot
      */
     generateGraphMemberSlots: function (compoundMember, memberId) {
       var graphMemberSlots = [];
       var graphMemberSlot;
-      var maxSlotWidth = 0;
+      var maxSlotWidthLeft = 0;
+      var maxSlotWidthRight = 0;
+      var inputSlots = 0;
+      var outputSlots = 0;
       var slotLabelWidth;
       for (var l in compoundMember.slots) {
         for (var m in compoundMember.slots[l].direction) {
           slotLabelWidth = compoundMember.slots[l].slotId.length * this.SLOT_LABEL_LETTER_WIDTH;
-          maxSlotWidth = Math.max(slotLabelWidth, maxSlotWidth);
+          if (compoundMember.slots[l].direction[m] === 'input') {
+            maxSlotWidthLeft = Math.max(slotLabelWidth, maxSlotWidthLeft);
+            inputSlots ++;
+          } else {
+            maxSlotWidthRight = Math.max(slotLabelWidth, maxSlotWidthRight);
+            outputSlots ++;
+          }
           graphMemberSlot = this.generateGraphMemberSlot(
             compoundMember.slots[l].slotId,
             memberId,
@@ -178,7 +187,11 @@
           graphMemberSlots.push(graphMemberSlot);
         }
       }
-      return {slots: graphMemberSlots, maxSlotWidth: maxSlotWidth};
+      return {
+        slots: graphMemberSlots,
+        slotsWidth: maxSlotWidthLeft + maxSlotWidthRight,
+        slotsHeight: Math.max(inputSlots, outputSlots) * this.SLOT_HEIGHT
+      };
     },
 
     /**

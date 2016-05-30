@@ -153,14 +153,14 @@
     addViewDataflowButtons: function () {
       var self = this;
       var types = ['compoundComponents', 'elementaryComponents'];
-      var artifacts = this.structureView.getValue().artifacts;
+      var artifacts = this.getManifest().artifacts;
       for (var i in types) {
         for (var j in artifacts[types[i]]) {
           this.createViewComponentButton(j, types[i]);
         }
       }
       $('#dataflow_view_modal').on('shown.bs.modal', function () {
-        self.updateCurrentComponent(self.structureView.getValue().artifacts[self.currentComponentsType][self.currentComponentIndex]);
+        self.updateCurrentComponent(self.getManifest().artifacts[self.currentComponentsType][self.currentComponentIndex]);
       });
     },
 
