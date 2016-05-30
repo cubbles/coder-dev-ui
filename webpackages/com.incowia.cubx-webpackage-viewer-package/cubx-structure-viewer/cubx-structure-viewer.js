@@ -92,6 +92,7 @@
         self.setManifest(response);
         self.addViewDataflowButtons();
         $('[data-toggle="popover"]').popover();
+        $('[data-toggle="tooltip"]').tooltip();
       });
     },
 
@@ -120,6 +121,7 @@
         schema.definitions.compoundArtifact.properties.connections.format = 'tabs';
         schema.definitions.compoundArtifact.properties.inits.format = 'table';
         self.loadStructureView(schema);
+        self.hideRootLabel();
         self.loadManifest();
       });
     },
@@ -191,6 +193,10 @@
      */
     updateCurrentComponent: function (component) {
       this.setCurrentComponentArtifactId(component.artifactId);
+    },
+
+    hideRootLabel: function () {
+      $('[data-schemaid = "root"]').find('label:first').css('display', 'none');
     }
   });
 }());
