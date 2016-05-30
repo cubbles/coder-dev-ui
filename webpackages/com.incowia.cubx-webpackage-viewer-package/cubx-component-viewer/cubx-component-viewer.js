@@ -342,6 +342,7 @@
       var zoom = d3.behavior.zoom()
         .on('zoom', function () {
           self.svg.attr('transform', 'translate(' + d3.event.translate + ')' + ' scale(' + d3.event.scale + ')');
+          self.centerDiagram();
         });
       if (!this.getViewerHeight()) {
         this.setViewerHeight(window.innerHeight * 0.7);
@@ -383,14 +384,22 @@
       });
       layouter.kgraph(componentGraph);
     },
-    
-    
+
+    centerDiagram: function () {
+      var componentViewHolderSvg = $('#component_view_holder_svg');
+      var componentViewHolderContainer = d3.select('#component_view_holder_container');
+      var newX = (componentViewHolderSvg.width() / 2) - (componentViewHolderContainer.node().getBBox().width / 2);
+      var newY = (componentViewHolderSvg.height() / 2) - (componentViewHolderContainer.node().getBBox().height / 2);
+      componentViewHolderContainer.transition()
+        .attr('transform', 'translate(' + newX + ',' + newY + ')');
+    },
 
     /**
      * Draw a square for each component and its id as label
      * @param {Object} componentsData - Data of each component (D3)
      */
     drawMembers: function (componentsData) {
+      var self = this;
       var componentView = componentsData.enter()
         .append('g')
         .attr('id', function (d) {
@@ -428,7 +437,12 @@
 
       atoms.transition()
         .attr('width', function (d) { return d.width; })
-        .attr('height', function (d) { return d.height; });
+        .attr('height', function (d) { return d.height; })
+        .each('end', function (d) {
+          if (d.id === 'root') {
+            self.centerDiagram();
+          }
+        });
 
       // Nodes labels
       var componentViewLabel = headingAtom.selectAll('.componentViewLabel')
