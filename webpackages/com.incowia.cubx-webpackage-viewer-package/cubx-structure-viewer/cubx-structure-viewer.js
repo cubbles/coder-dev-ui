@@ -69,6 +69,7 @@
         disable_properties: true,
         disable_array_add: true,
         disable_array_delete: true,
+        asViewer: true,
         schema: schema
       });
     },
@@ -88,7 +89,6 @@
       var self = this;
       $.getJSON(this.getManifestUrl(), function (response) {
         self.structureView.setValue(response);
-        self.structureView.disable();
         self.setManifest(response);
         self.addViewDataflowButtons();
         $('[data-toggle="popover"]').popover();
@@ -108,7 +108,6 @@
           schema.properties.artifacts.properties[prop].format = 'tabs';
         }
         schema.properties.contributors.format = 'table';
-        schema.properties.author.format = 'grid';
 
         var artifacts = ['appArtifact', 'elementaryArtifact', 'compoundArtifact'];
         for (var i in artifacts) {
@@ -120,10 +119,6 @@
         schema.definitions.compoundArtifact.properties.members.format = 'table';
         schema.definitions.compoundArtifact.properties.connections.format = 'tabs';
         schema.definitions.compoundArtifact.properties.inits.format = 'table';
-
-        // Editors for not objects and arrays created by the user are not supported
-        // schema.definitions.compoundArtifactInitItem.properties.value.type = 'string';
-        // schema.definitions.elementaryArtifactSlotItem.properties.value.type = 'string';
         self.loadStructureView(schema);
         self.loadManifest();
       });
