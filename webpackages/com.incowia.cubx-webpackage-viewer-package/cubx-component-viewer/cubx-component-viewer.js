@@ -342,7 +342,6 @@
       var zoom = d3.behavior.zoom()
         .on('zoom', function () {
           self.svg.attr('transform', 'translate(' + d3.event.translate + ')' + ' scale(' + d3.event.scale + ')');
-          self.centerDiagram();
         });
       if (!this.getViewerHeight()) {
         this.setViewerHeight(window.innerHeight * 0.7);
