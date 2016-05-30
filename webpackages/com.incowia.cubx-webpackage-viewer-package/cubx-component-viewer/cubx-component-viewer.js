@@ -350,7 +350,7 @@
         .append('svg')
         .attr('width', this.getViewerWidth())
         .attr('height', this.getViewerHeight())
-        .attr('id', 'svg_element')
+        .attr('id', 'component_view_holder_svg')
         .call(zoom)
         .append('g')
         .attr('id', 'component_view_holder_container');
@@ -383,6 +383,8 @@
       });
       layouter.kgraph(componentGraph);
     },
+    
+    
 
     /**
      * Draw a square for each component and its id as label
