@@ -16,6 +16,7 @@
     currentComponentIndex: 0,
     structureHolderId: 'structure_view_holder',
     componentViewModalId: 'dataflow_view_modal',
+
     /**
      * Manipulate an element’s local DOM when the element is created.
      */
@@ -40,12 +41,14 @@
     cubxReady: function () {
       this.loadSchema();
     },
+
     /**
      *  Observe the Cubbles-Component-Model: If value for slot 'schemaUrl' has changed ...
      */
     modelSlotSchemaUrlChanged: function (schemaUrl) {
       this.loadSchema();
     },
+
     /**
      *  Observe the Cubbles-Component-Model: If value for slot 'manifestUrl' has changed ...
      */
@@ -164,7 +167,12 @@
       });
     },
 
-    createViewComponentButton: function (componentIndex, componentsType) {
+    /**
+     * Create a button to display the view of a certain component
+     * @param {number} componentIndex - Index of the component within artifacts array of manifest
+     * @param {string} componentsKey - Key in artifacts -> compoundComponents or elementaryComponents
+     */
+    createViewComponentButton: function (componentIndex, componentsKey) {
       var self = this;
       var viewDataflowButton = document.createElement('button');
       viewDataflowButton.setAttribute('type', 'button');
@@ -174,17 +182,17 @@
       var viewIcon = document.createElement('i');
       viewIcon.setAttribute('class', 'glyphicon glyphicon-eye-open');
       viewDataflowButton.appendChild(viewIcon);
-      var buttonText = (componentsType === 'compoundComponents') ? ' Dataflow view' : ' Interface view';
+      var buttonText = (componentsKey === 'compoundComponents') ? ' Dataflow view' : ' Interface view';
       viewDataflowButton.appendChild(document.createTextNode(buttonText));
       viewDataflowButton.onclick = function () {
         self.currentComponentIndex = $(this).attr('data-compound-index');
-        self.currentComponentsType = componentsType;
+        self.currentComponentsType = componentsKey;
         $('#dataflow_view_holder').html('');
         var diagramContainer = $('#' + self.componentViewModalId);
         diagramContainer.find('.modal-title').html(buttonText);
         diagramContainer.modal('show');
       };
-      $('[data-schemapath="root.artifacts.' + componentsType + '.' + componentIndex + '"]').prepend(viewDataflowButton);
+      $('[data-schemapath="root.artifacts.' + componentsKey + '.' + componentIndex + '"]').prepend(viewDataflowButton);
     },
 
     /**
@@ -195,6 +203,9 @@
       this.setCurrentComponentArtifactId(component.artifactId);
     },
 
+    /**
+     * Hides the root label and button generated bx the json-editor library
+     */
     hideRootLabel: function () {
       $('[data-schemaid = "root"]').find('label:first').css('display', 'none');
     }
