@@ -32,7 +32,7 @@
               "cubx-structure-viewer.html"
             ],
             "dependencies": [
-              "cubx.core.rte@1.8.0/cubxpolymer/main",
+              "cubx.core.rte@1.9.0/cubxpolymer/main",
               "cubx-json-editor-0.7.25@1.0.2/cubx-json-editor/html-import"
             ]
           }
@@ -87,7 +87,7 @@
               "jsFunctions.js"
             ],
             "dependencies": [
-              "cubx.core.rte@1.8.0/cubxpolymer/main",
+              "cubx.core.rte@1.9.0/cubxpolymer/main",
               "klayjsd3-0.3.5@1.0.2/klayjs-d3/html-import",
               "jquery-2.1.4@1.0.0/jquery/html-import"
             ]
@@ -165,7 +165,7 @@
               "cubx-component-info-viewer.html"
             ],
             "dependencies": [
-              "cubx.core.rte@1.8.0/cubxpolymer/main",
+              "cubx.core.rte@1.9.0/cubxpolymer/main",
               "bootstrap-3.3.5@1.0.3/bootstrap/html-import"
             ]
           }
