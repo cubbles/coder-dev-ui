@@ -335,10 +335,6 @@
       // group
       d3.select('#component_view_holder').html('');
       var self = this;
-      var zoom = d3.behavior.zoom()
-        .on('zoom', function () {
-          self.svg.attr('transform', 'translate(' + d3.event.translate + ')' + ' scale(' + d3.event.scale + ')');
-        });
       if (!this.getViewerHeight()) {
         this.setViewerHeight(window.innerHeight * 0.7);
       }
@@ -347,7 +343,6 @@
         .attr('width', this.getViewerWidth())
         .attr('height', this.getViewerHeight())
         .attr('id', 'component_view_holder_svg')
-        .call(zoom)
         .append('g')
         .attr('id', 'component_view_holder_container');
       var realWidth = $('#component_view_holder').width();
@@ -381,15 +376,23 @@
     },
 
     /**
-     * Center the component view horizontally and vertically
+     * Center the component view horizontally and vertically and set and translate the zoom behavior to the center
      */
-    centerDiagram: function () {
+    centerDiagramAndSetZoomBehavior: function () {
       var componentViewHolderSvg = $('#component_view_holder_svg');
       var componentViewHolderContainer = d3.select('#component_view_holder_container');
       var newX = (componentViewHolderSvg.width() / 2) - (componentViewHolderContainer.node().getBBox().width / 2);
       var newY = (componentViewHolderSvg.height() / 2) - (componentViewHolderContainer.node().getBBox().height / 2);
       componentViewHolderContainer.transition()
         .attr('transform', 'translate(' + newX + ',' + newY + ')');
+
+      var self = this;
+      var zoom = d3.behavior.zoom()
+        .translate([newX, newY])
+        .on('zoom', function () {
+          self.svg.attr('transform', 'translate(' + d3.event.translate + ')' + ' scale(' + d3.event.scale + ')');
+        });
+      d3.select('#component_view_holder').call(zoom);
     },
 
     /**
@@ -442,7 +445,7 @@
         .attr('height', function (d) { return d.height; })
         .each('end', function (d) {
           if (d.id === 'root') {
-            self.centerDiagram();
+            self.centerDiagramAndSetZoomBehavior();
           }
         });
 
