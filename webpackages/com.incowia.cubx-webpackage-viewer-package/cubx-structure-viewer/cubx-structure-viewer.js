@@ -40,6 +40,32 @@
      */
     cubxReady: function () {
       this.loadSchema();
+      this.initHideElementsButton();
+    },
+
+    initHideElementsButton: function () {
+      var self = this;
+      $('#hideElementsButton').click(function () {
+        if (self.hiddenProperties) {
+          self.showEmptyProperties();
+          $('#hideElementsButton').find('i:first').attr('class', 'glyphicon glyphicon-eye-close');
+          $('#hideElementsButton').find('span:first').text('Hide empty properties');
+        } else {
+          self.hideEmptyProperties();
+          $('#hideElementsButton').find('i:first').attr('class', 'glyphicon glyphicon-eye-open');
+          $('#hideElementsButton').find('span:first').text('Show empty properties');
+        }
+      });
+    },
+
+    showEmptyProperties: function () {
+      this.structureView.editors.root.showEmptyProperties();
+      this.hiddenProperties = false;
+    },
+
+    hideEmptyProperties: function () {
+      this.structureView.editors.root.hideEmptyProperties();
+      this.hiddenProperties = true;
     },
 
     /**
@@ -94,6 +120,7 @@
         self.structureView.setValue(response);
         self.setManifest(response);
         self.addViewDataflowButtons();
+        self.hideEmptyProperties();
         $('[data-toggle="popover"]').popover();
         $('[data-toggle="tooltip"]').tooltip();
       });
@@ -182,14 +209,15 @@
       var viewIcon = document.createElement('i');
       viewIcon.setAttribute('class', 'glyphicon glyphicon-eye-open');
       viewDataflowButton.appendChild(viewIcon);
-      var buttonText = (componentsKey === 'compoundComponents') ? ' Dataflow view' : ' Interface view';
-      viewDataflowButton.appendChild(document.createTextNode(buttonText));
+      var buttonText = document.createElement('span');
+      buttonText.innerText = (componentsKey === 'compoundComponents') ? ' Dataflow view' : ' Interface view';
+      viewDataflowButton.appendChild(buttonText);
       viewDataflowButton.onclick = function () {
         self.currentComponentIndex = $(this).attr('data-compound-index');
         self.currentComponentsType = componentsKey;
         $('#dataflow_view_holder').html('');
         var diagramContainer = $('#' + self.componentViewModalId);
-        diagramContainer.find('.modal-title').html(buttonText);
+        diagramContainer.find('.modal-title').text(buttonText.innerText);
         diagramContainer.modal('show');
       };
       $('[data-schemapath="root.artifacts.' + componentsKey + '.' + componentIndex + '"]').prepend(viewDataflowButton);
