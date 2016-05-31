@@ -40,10 +40,13 @@
      */
     cubxReady: function () {
       this.loadSchema();
-      this.initHideElementsButton();
+      this.addListenerToHideElementsButton();
     },
 
-    initHideElementsButton: function () {
+    /**
+     * Add a click event to the hideElementsButton
+     */
+    addListenerToHideElementsButton: function () {
       var self = this;
       $('#hideElementsButton').click(function () {
         if (self.hiddenProperties) {
@@ -58,11 +61,17 @@
       });
     },
 
+    /**
+     * Show the empty properties in the structure view
+     */
     showEmptyProperties: function () {
       this.structureView.editors.root.showEmptyProperties();
       this.hiddenProperties = false;
     },
 
+    /**
+     * Hide the empty properties in the structure view
+     */
     hideEmptyProperties: function () {
       this.structureView.editors.root.hideEmptyProperties();
       this.hiddenProperties = true;
