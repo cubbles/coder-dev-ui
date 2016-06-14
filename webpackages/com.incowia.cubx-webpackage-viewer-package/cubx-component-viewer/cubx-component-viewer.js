@@ -15,7 +15,7 @@
 
     isCubxReady: false,
     COMPONENT_LABEL_HEIGHT: 18,
-    COMPONENT_LABEL_LETTER_WIDTH: 10,
+    COMPONENT_LABEL_LETTER_WIDTH: 8,
     SPACE_BETWEEN_SLOT_LABELS: 10,
     SLOT_HEIGHT: 25,
     SLOT_LABEL_LETTER_WIDTH: 7,
@@ -91,9 +91,10 @@
       var rootComponent = this.generateGraphMember(
         this.getComponent(),
         undefined,
+        this.getManifest(),
         {portLabelPlacement: 'OUTSIDE', borderSpacing: 40}
       );
-      rootComponent.children = this.generateGraphMembers(this.getComponent().members, this.getManifest());
+      rootComponent.children = this.generateGraphMembers(this.getComponent().members);
 
       componentGraph.children.push(rootComponent);
       componentGraph.edges = this.generateGraphConnections(this.getComponent().connections,
@@ -110,10 +111,13 @@
     generateGraphMembers: function (compoundsMembers) {
       var graphMember;
       var component;
+      var manifest;
       var graphMembers = [];
       for (var k in compoundsMembers) {
-        component = this.componentDefinitionOfMember(compoundsMembers[k]);
-        graphMember = this.generateGraphMember(component, compoundsMembers[k].memberId);
+        var componentArtifactId = compoundsMembers[k].componentId.substr(compoundsMembers[k].componentId.indexOf('/') + 1);
+        manifest = this._manifestOfMember(compoundsMembers[k]);
+        component = this.searchComponentInManifest(componentArtifactId, manifest);
+        graphMember = this.generateGraphMember(component, compoundsMembers[k].memberId, manifest);
         graphMembers.push(graphMember);
       }
       return graphMembers;
@@ -123,21 +127,25 @@
      * Generate a GraphMember (KNode) that represents a Component
      * @param {string} component - Component to be represented as GraphMember
      * @param {string} memberId - memberId of the component within a compoundComponent
+     * @param {object} manifest - Manifest of the component
      * @param {object[]} [optionals] - Optional parameters
      * @param {string} [optionals[].portLabelPlacement='INSIDE']- Placement of the slots for the node
      * @param {number} [optionals[].borderSpacing=12] - Optional parameters
      * @returns {object}
      */
-    generateGraphMember: function (component, memberId, optionals) {
+    generateGraphMember: function (component, memberId, manifest, optionals) {
       var graphMemberSlots = this.generateGraphMemberSlots(component, memberId || component.artifactId);
-      var titleWidth = (component.artifactId.length + 4) * this.COMPONENT_LABEL_LETTER_WIDTH;
+      var webpackageQName = (manifest.groupId) ? manifest.groupId + '.' + manifest.name : manifest.name;
+      var instanceName = ':' + webpackageQName + '@' + manifest.version + '/' + component.artifactId;
+      var titleWidth = (instanceName.length + 4) * this.COMPONENT_LABEL_LETTER_WIDTH;
       var subtitleWidth = (memberId) ? memberId.length * this.COMPONENT_LABEL_LETTER_WIDTH : 0;
+      var subtitleHeight = (memberId) ? this.COMPONENT_LABEL_HEIGHT : 0;
 
       var graphMember = {
         id: memberId || component.artifactId,
         labels: [
-          {text: '<<' + component.artifactId + '>>', width: titleWidth, height: this.COMPONENT_LABEL_HEIGHT, id: 'ArtifactId'},
-          {text: memberId || '', width: subtitleWidth, height: this.COMPONENT_LABEL_HEIGHT, id: 'MemberId'}
+          {text: memberId || '', width: subtitleWidth, height: subtitleHeight, id: 'MemberId'},
+          {text: instanceName, width: titleWidth, height: this.COMPONENT_LABEL_HEIGHT, id: 'InstanceName'}
         ],
         width: Math.max(graphMemberSlots.slotsWidth + this.SPACE_BETWEEN_SLOT_LABELS, titleWidth),
         height: graphMemberSlots.slotsHeight + this.HEADER_HEIGHT,
@@ -271,28 +279,26 @@
     },
 
     /**
-     * Returns the component definition of a member from the same manifest or from a manifest located in a store
+     * Returns the manifest of a member
      * @param {object} member - Member of a compound component
-     * @returns {object} Component from a manifest
+     * @returns {object} - Manifest of the component
      */
-    componentDefinitionOfMember: function (member) {
-      var componentArtifactId = member.componentId.substr(member.componentId.indexOf('/') + 1);
-      var component;
+    _manifestOfMember: function (member) {
+      var manifest = {};
       if (member.componentId.includes('this/')) {
-        component = this.searchComponentInManifest(componentArtifactId, this.getManifest());
+        return this.getManifest();
       } else {
-        var self = this;
         // TODO: Use method from CRC
         var manifestUrl = window.cubx.CRC._baseUrl + member.componentId.substr(0, member.componentId.indexOf('/'));
         // var manifestUrl = '../../' + member.componentId.substr(0, member.componentId.indexOf('/'));
         console.log(manifestUrl);
         $.ajaxSetup({async: false});
         $.getJSON(manifestUrl, function (response) {
-          component = self.searchComponentInManifest(componentArtifactId, response);
+          manifest = response;
         });
         $.ajaxSetup({async: true});
       }
-      return component;
+      return manifest;
     },
 
     /**
