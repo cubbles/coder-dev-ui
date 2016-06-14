@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>&lt;cubx-component-docs-viewer&gt;</title>
+
+    <script src="../../../cubx.core.rte@1.9.0/webcomponents/webcomponents-lite.js"></script>
+
+    <!--
+        Refer to the crc-loader artifact from a Cubbles-Base.
+        Take care: All other dependencies are expected to be available within the same Base!
+
+        Want to add a 'main' -script to be executed after the dependencies have been loaded?
+        If yes, add the following attribute: data-crc-main="js/my-script.js"
+    -->
+    <script src="../../../cubx.core.rte@1.9.0/crc-loader/js/main.js" data-crcinit-loadcif="true"></script>
+
+</head>
+<body>
+<!--
+    The cubbles client-runtime-container is bound to the next element.
+    Place Cubbles-Component there as child element.
+    Note: Currently there is only one element supported. This will change in future (@see PLAT-205).
+-->
+<div cubx-core-crc class="container">
+    <div class="row">
+        <div class="alert alert-danger fade in" id="alertD" style="display: none">
+            <a href="#" class="close" data-dismiss="alert">&times;</a>
+            <strong>Error!</strong> <span id="alertDText"></span>.
+        </div>
+    </div>
+    <h1>&lt;cubx-webpackage-viewer&gt;</h1>
+    <div class="row">
+        <label for="urlTF" >Manifest url: </label>
+        <input id="urlTF" style="width: 80%"/>
+        <input type="submit" value="Load" id="loadB" class="btn btn-primary" disabled>
+    </div>
+    <cubx-webpackage-viewer cubx-dependency="this/cubx-webpackage-viewer/main">
+    </cubx-webpackage-viewer>
+</div>
+
+<script>
+    var loadB = document.querySelector('#loadB');
+    var urlTF = document.querySelector('#urlTF');
+    var alertD = document.querySelector('#alertD');
+    var alertDText = document.querySelector('#alertDText');
+    var cubxWebpackageV = document.querySelector('cubx-webpackage-viewer');
+    document.addEventListener('cifReady', function () {
+        loadB.removeAttribute('disabled');
+    });
+    loadB.addEventListener('click', function () {
+        if (urlTF.value !== '') {
+            cubxWebpackageV.setManifestUrl(urlTF.value);
+        } else {
+            alertDText.textContent = 'Please fill out the File url field';
+            alertD.style.display = 'block';
+        }
+    });
+</script>
+
+</body>
+</html>
