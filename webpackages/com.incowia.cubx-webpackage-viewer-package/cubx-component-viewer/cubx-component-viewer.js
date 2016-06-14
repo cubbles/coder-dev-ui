@@ -16,16 +16,17 @@
     isCubxReady: false,
     COMPONENT_LABEL_HEIGHT: 18,
     COMPONENT_LABEL_LETTER_WIDTH: 8,
-    SPACE_BETWEEN_SLOT_LABELS: 10,
+    SLOT_LABELS_SPACE: 10,
     SLOT_HEIGHT: 25,
     SLOT_LABEL_LETTER_WIDTH: 7,
     CONNECTION_LABEL_LETTER_WIDTH: 7,
+    HEADER_SLOTS_SPACE: 10,
 
     /**
      * Manipulate an element’s local DOM when the element is created.
      */
     created: function () {
-      this.HEADER_HEIGHT = this.COMPONENT_LABEL_HEIGHT * 3;
+      this.HEADER_HEIGHT = this.COMPONENT_LABEL_HEIGHT * 3 + this.HEADER_SLOTS_SPACE;
     },
 
     /**
@@ -147,7 +148,7 @@
           {text: memberId || '', width: subtitleWidth, height: subtitleHeight, id: 'MemberId'},
           {text: instanceName, width: titleWidth, height: this.COMPONENT_LABEL_HEIGHT, id: 'InstanceName'}
         ],
-        width: Math.max(graphMemberSlots.slotsWidth + this.SPACE_BETWEEN_SLOT_LABELS, titleWidth),
+        width: Math.max(graphMemberSlots.slotsWidth + this.SLOT_LABELS_SPACE, titleWidth),
         height: graphMemberSlots.slotsHeight + this.HEADER_HEIGHT,
         ports: graphMemberSlots.slots,
         properties: {
@@ -439,6 +440,21 @@
       headingAtom.transition()
         .attr('width', function (d) { return d.width; })
         .attr('height', this.HEADER_HEIGHT);
+
+      var splitLine = componentView.append('line')
+        .attr('class', function (d) {
+          if (d.children) {
+            return 'splitLineCompound cubx-component-viewer';
+          } else {
+            return 'splitLineMember cubx-component-viewer';
+          }
+        });
+
+      splitLine.transition()
+        .attr('x1', 0)
+        .attr('x2', function (d) { return d.width; })
+        .attr('y1', this.HEADER_HEIGHT - this.HEADER_SLOTS_SPACE)
+        .attr('y2', this.HEADER_HEIGHT - this.HEADER_SLOTS_SPACE);
 
       // Apply componentView positions
       componentView.transition()
