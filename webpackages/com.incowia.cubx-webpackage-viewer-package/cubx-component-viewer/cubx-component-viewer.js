@@ -571,7 +571,7 @@
         var path = '';
         path += 'M' + (d.sourcePoint.x + 5) + ' ' + (d.sourcePoint.y + self.HEADER_HEIGHT - 5) + ' ';
         (d.bendPoints || []).forEach(function (bp, i) {
-          var y = (bp.y < d.sourcePoint.y && bp.y < d.targetPoint.y) ? bp.y : bp.y + self.HEADER_HEIGHT;
+          var y = (bp.y < d.sourcePoint.y - 5 && bp.y < d.targetPoint.y - 5) ? bp.y : bp.y + self.HEADER_HEIGHT;
           path += 'L' + bp.x + ' ' + (y - 5) + ' ';
         });
         path += 'L' + (d.targetPoint.x - 5) + ' ' + (d.targetPoint.y + self.HEADER_HEIGHT - 5) + ' ';
