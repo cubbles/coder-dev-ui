@@ -1,7 +1,7 @@
 {
   "name": "cubx-webpackage-viewer-package",
   "groupId": "com.incowia",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "modelVersion": "8.3.0",
   "docType": "webpackage",
   "author": {
@@ -12,7 +12,19 @@
   "keywords": [],
   "man": [],
   "artifacts": {
-    "apps": [],
+    "apps": [
+      {
+        "artifactId": "any-webpackage-viewer",
+        "description": "App to visualize the structure of any webpackage using its manifest url",
+        "runnables": [
+          {
+            "name": "My Hello World App.",
+            "path": "/index.html",
+            "description": "Call this app as a simple demo."
+          }
+        ]
+      }
+    ],
     "elementaryComponents": [
       {
         "artifactId": "cubx-structure-viewer",
@@ -39,24 +51,34 @@
         ],
         "slots": [
           {
-            "slotId": "schemaUrl",
-            "type": "string",
+            "slotId": "schemaLoaded",
+            "type": "boolean",
             "direction": [
               "input"
-            ]
+            ],
+            "value": false
           },
           {
-            "slotId": "manifestUrl",
-            "type": "string",
+            "slotId": "manifestLoaded",
+            "type": "boolean",
             "direction": [
               "input"
-            ]
+            ],
+            "value": false
           },
           {
             "slotId": "manifest",
             "type": "object",
             "direction": [
+              "input",
               "output"
+            ]
+          },
+          {
+            "slotId": "schema",
+            "type": "object",
+            "direction": [
+              "input"
             ]
           },
           {
@@ -198,6 +220,11 @@
             "name": "demo",
             "path": "/demo/index.html",
             "description": "Demo app..."
+          },
+          {
+            "name": "Any webpackage viewer",
+            "path": "/anyWebpackeageApp/index.html",
+            "description": "Demo app to visualize the structure of any webpackage using its manifest url"
           }
         ],
         "endpoints": [
@@ -205,11 +232,13 @@
             "endpointId": "main",
             "resources": [
               "css/cubx-webpackage-viewer.css",
-              "template.html"
+              "template.html",
+              "jsFunctions.js"
             ],
             "dependencies": [
               "this/cubx-component-viewer/main",
-              "this/cubx-structure-viewer/main"
+              "this/cubx-structure-viewer/main",
+              "com.incowia.ajax@0.1.0-SNAPSHOT/ajax-request/main"
             ]
           }
         ],
@@ -237,6 +266,14 @@
           {
             "memberId": "structureViewer",
             "componentId": "this/cubx-structure-viewer"
+          },
+          {
+            "memberId": "manifestRequester",
+            "componentId": "com.incowia.ajax@0.1.0-SNAPSHOT/ajax-request"
+          },
+          {
+            "memberId": "schemaRequester",
+            "componentId": "com.incowia.ajax@0.1.0-SNAPSHOT/ajax-request"
           }
         ],
         "connections": [
@@ -246,8 +283,32 @@
               "slot": "manifestUrl"
             },
             "destination": {
+              "memberIdRef": "manifestRequester",
+              "slot": "config"
+            },
+            "hookFunction": "window.com_incowia_cubxWebpackageViewer_cubxWebpackageViewer.buildConfigObject"
+          },
+          {
+            "connectionId": "manifestLoadedCon",
+            "source": {
+              "memberIdRef": "manifestRequester",
+              "slot": "status"
+            },
+            "destination": {
               "memberIdRef": "structureViewer",
-              "slot": "manifestUrl"
+              "slot": "manifestLoaded"
+            },
+            "hookFunction": "window.com_incowia_cubxWebpackageViewer_cubxWebpackageViewer.isLoaded"
+          },
+          {
+            "connectionId": "resultToManifest",
+            "source": {
+              "memberIdRef": "manifestRequester",
+              "slot": "result"
+            },
+            "destination": {
+              "memberIdRef": "structureViewer",
+              "slot": "manifest"
             }
           },
           {
@@ -256,8 +317,32 @@
               "slot": "schemaUrl"
             },
             "destination": {
+              "memberIdRef": "schemaRequester",
+              "slot": "config"
+            },
+            "hookFunction": "window.com_incowia_cubxWebpackageViewer_cubxWebpackageViewer.buildConfigObject"
+          },
+          {
+            "connectionId": "schemaLoadedCon",
+            "source": {
+              "memberIdRef": "schemaRequester",
+              "slot": "status"
+            },
+            "destination": {
               "memberIdRef": "structureViewer",
-              "slot": "schemaUrl"
+              "slot": "schemaLoaded"
+            },
+            "hookFunction": "window.com_incowia_cubxWebpackageViewer_cubxWebpackageViewer.isLoaded"
+          },
+          {
+            "connectionId": "resultToSchema",
+            "source": {
+              "memberIdRef": "schemaRequester",
+              "slot": "result"
+            },
+            "destination": {
+              "memberIdRef": "structureViewer",
+              "slot": "schema"
             }
           },
           {
@@ -287,8 +372,7 @@
         "inits": [
           {
             "slot": "schemaUrl",
-            "value": "https://raw.githubusercontent.com/cubbles/cubx-webpackage-document-api/master/lib/jsonSchema/manifestWebpackage-8.3.1.schema.json",
-            "memberIdRef": "structureViewer"
+            "value": "https://raw.githubusercontent.com/cubbles/cubx-webpackage-document-api/master/lib/jsonSchema/manifestWebpackage-8.3.1.schema.json"
           }
         ]
       },

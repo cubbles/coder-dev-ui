@@ -39,7 +39,6 @@
      * Manipulate an element’s local DOM when the cubbles framework is initialized and ready to work.
      */
     cubxReady: function () {
-      this.loadSchema();
       this.addListenerToHideElementsButton();
     },
 
@@ -78,17 +77,49 @@
     },
 
     /**
-     *  Observe the Cubbles-Component-Model: If value for slot 'schemaUrl' has changed ...
+     *  Observe the Cubbles-Component-Model: If value for slot 'manifest' has changed ...
      */
-    modelSlotSchemaUrlChanged: function (schemaUrl) {
-      this.loadSchema();
+    modelManifestChanged: function (manifest) {
+      if (!this.getSchemaLoaded()) return;
+      this._setManifestToStructureViewer();
     },
 
     /**
-     *  Observe the Cubbles-Component-Model: If value for slot 'manifestUrl' has changed ...
+     *  Observe the Cubbles-Component-Model: If value for slot 'schema' has changed ...
      */
-    modelSlotManifestUrlChanged: function (manifestUrl) {
-      this.loadManifest();
+    modelSchemaChanged: function (schema) {
+      for (var prop in schema.properties.artifacts.properties) {
+        schema.properties.artifacts.properties[prop].format = 'tabs';
+      }
+      schema.properties.contributors.format = 'table';
+
+      var artifacts = ['appArtifact', 'elementaryArtifact', 'compoundArtifact'];
+      for (var i in artifacts) {
+        schema.definitions[artifacts[i]].properties.runnables.format = 'table';
+        schema.definitions[artifacts[i]].properties.endpoints.format = 'tabs';
+      }
+      schema.definitions.elementaryArtifact.properties.slots.format = 'tabs';
+      schema.definitions.compoundArtifact.properties.slots.format = 'tabs';
+      schema.definitions.compoundArtifact.properties.members.format = 'table';
+      schema.definitions.compoundArtifact.properties.connections.format = 'tabs';
+      schema.definitions.compoundArtifact.properties.inits.format = 'table';
+      this.loadStructureView(schema);
+      if (this.getManifestLoaded()) {
+        this._setManifestToStructureViewer();
+      }
+      this.hideRootLabel();
+    },
+
+    /**
+     * Set the manifest to the structureView as value and perform necessary actions for the structureView to work well
+     * @private
+     */
+    _setManifestToStructureViewer: function () {
+      this.structureView.setValue(this.getManifest());
+      this.addViewDataflowButtons();
+      this.hideEmptyProperties();
+      $('[data-toggle="popover"]').popover();
+      $('[data-toggle="tooltip"]').tooltip();
     },
 
     /**
@@ -118,51 +149,6 @@
     setStructureViewOptions: function () {
       JSONEditor.defaults.editors.array.options.collapsed = true;
       JSONEditor.defaults.editors.table.options.collapsed = true;
-    },
-
-    /**
-     * Load the manifest.webpackage file retrieving its path from the url
-     */
-    loadManifest: function () {
-      var self = this;
-      $.getJSON(this.getManifestUrl(), function (response) {
-        self.structureView.setValue(response);
-        self.setManifest(response);
-        self.addViewDataflowButtons();
-        self.hideEmptyProperties();
-        $('[data-toggle="popover"]').popover();
-        $('[data-toggle="tooltip"]').tooltip();
-      });
-    },
-
-    /**
-     * Load the JSON schema file retrieving its path from the url.
-     * Additionally add format to the schema for its representation
-     */
-    loadSchema: function () {
-      var self = this;
-      $.getJSON(this.getSchemaUrl(), function (response) {
-        var schema = response;
-
-        for (var prop in schema.properties.artifacts.properties) {
-          schema.properties.artifacts.properties[prop].format = 'tabs';
-        }
-        schema.properties.contributors.format = 'table';
-
-        var artifacts = ['appArtifact', 'elementaryArtifact', 'compoundArtifact'];
-        for (var i in artifacts) {
-          schema.definitions[artifacts[i]].properties.runnables.format = 'table';
-          schema.definitions[artifacts[i]].properties.endpoints.format = 'tabs';
-        }
-        schema.definitions.elementaryArtifact.properties.slots.format = 'tabs';
-        schema.definitions.compoundArtifact.properties.slots.format = 'tabs';
-        schema.definitions.compoundArtifact.properties.members.format = 'table';
-        schema.definitions.compoundArtifact.properties.connections.format = 'tabs';
-        schema.definitions.compoundArtifact.properties.inits.format = 'table';
-        self.loadStructureView(schema);
-        self.hideRootLabel();
-        self.loadManifest();
-      });
     },
 
     /**
