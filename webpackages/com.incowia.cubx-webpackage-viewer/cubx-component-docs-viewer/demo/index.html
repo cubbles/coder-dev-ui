@@ -41,10 +41,11 @@
 <script>
     var componentDocsViewer = document.getElementsByTagName('cubx-component-docs-viewer')[0];
     var manifestUrl = "../../manifest.webpackage";
+    manifestUrl = 'https://cubbles.world/incowia/com.incowia.leanix-demo@0.1.0-SNAPSHOT';
     document.addEventListener('cifReady', function() {
         $.getJSON(manifestUrl, function (response) {
             componentDocsViewer.setManifest(response);
-            componentDocsViewer.setComponentArtifactId('cubx-component-docs-viewer');
+            componentDocsViewer.setComponentArtifactId('leanix-connector-ifaces');
         });
     });
 </script>

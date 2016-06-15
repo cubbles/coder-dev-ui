@@ -16,7 +16,7 @@
     _cubxReady: false,
     DEFAULT_VIEWER_HEIGHT: window.innerHeight * 0.7,
     COMPONENT_LABEL_HEIGHT: 18,
-    COMPONENT_LABEL_LETTER_WIDTH: 8,
+    COMPONENT_LABEL_LETTER_WIDTH: 9,
     SLOT_LABELS_SPACE: 10,
     SLOT_HEIGHT: 10,
     SLOT_LABEL_LETTER_WIDTH: 7,
@@ -24,19 +24,19 @@
     CONNECTION_LABEL_LETTER_WIDTH: 7,
     CONNECTION_HEIGHT: 10,
     SLOTS_AREA_TOP_BOTTOM_MARGIN: 10,
-    ROOT_BORDER_SPACE: 40,
+    ROOT_BORDER_SPACE: 60,
     MEMBER_BORDER_SPACE: 12,
     SLOT_SPACE: 11,
     COMPOUND_TITLE: 'Dataflow view',
     ELEMENTARY_TITLE: 'Interface view',
     VIEW_HOLDER_CSS_CLASS: 'component_view_holder',
-    HEADER_TOP_MARGIN: 5,
+    HEADER_MARGIN: 5,
 
     /**
      * Manipulate an element’s local DOM when the element is created.
      */
     created: function () {
-      this.HEADER_HEIGHT = this.COMPONENT_LABEL_HEIGHT * 3 + this.SLOTS_AREA_TOP_BOTTOM_MARGIN;
+      this.HEADER_HEIGHT = this.COMPONENT_LABEL_HEIGHT * 5 + this.SLOTS_AREA_TOP_BOTTOM_MARGIN;
     },
 
     /**
@@ -102,6 +102,7 @@
       var rootComponent = this.generateGraphMember(
         this.getComponent(),
         undefined,
+        this.getManifest(),
         {portLabelPlacement: 'OUTSIDE', borderSpacing: this.ROOT_BORDER_SPACE}
       );
       rootComponent.children = this.generateGraphMembers(this.getComponent().members);
@@ -127,7 +128,7 @@
         var componentArtifactId = compoundsMembers[k].componentId.substr(compoundsMembers[k].componentId.indexOf('/') + 1);
         manifest = this._manifestOfMember(compoundsMembers[k]);
         component = this.searchComponentInManifest(componentArtifactId, manifest);
-        graphMember = this.generateGraphMember(component, compoundsMembers[k]);
+        graphMember = this.generateGraphMember(component, compoundsMembers[k], manifest);
         graphMembers.push(graphMember);
       }
       return graphMembers;
@@ -137,33 +138,27 @@
      * Generate a GraphMember (KNode) that represents a Component
      * @param {string} component - Component to be represented as GraphMember
      * @param {string} member - Member of a compoundComponent
+     * @param {object} manifest - Manifest of the component
      * @param {object[]} [optionals] - Optional parameters
      * @param {string} [optionals[].portLabelPlacement='INSIDE']- Placement of the slots for the node
      * @param {number} [optionals[].borderSpacing=12] - Optional parameters
      * @returns {object}
      */
-    generateGraphMember: function (component, member, optionals) {
-      var instanceName = ':';
+    generateGraphMember: function (component, member, manifest, optionals) {
       var memberId;
       if (member) {
         memberId = member.memberId;
-        instanceName += member.componentId;
-      } else {
-        var webpackageQName = (this.getManifest().groupId) ? this.getManifest().groupId + '.' + this.getManifest().name : this.getManifest().name;
-        instanceName += webpackageQName + '@' + this.getManifest().version + '/' + component.artifactId;
       }
-      var titleWidth = (instanceName.length + 4) * this.COMPONENT_LABEL_LETTER_WIDTH;
-      var subtitleWidth = (memberId) ? memberId.length * this.COMPONENT_LABEL_LETTER_WIDTH : 0;
-      var subtitleHeight = (memberId) ? this.COMPONENT_LABEL_HEIGHT : 0;
       var graphMemberSlots = this.generateGraphMemberSlots(component, memberId || component.artifactId);
+      var webpackageQName = (manifest.groupId) ? manifest.groupId + '.' + manifest.name : manifest.name;
+      var webpackageInfo = ':' + webpackageQName + '@' + manifest.version;
+      var artifactId = '/' + component.artifactId;
+      var header = this.generateComponentHeader(memberId, webpackageInfo, artifactId);
 
       var graphMember = {
         id: memberId || component.artifactId,
-        labels: [
-          {text: memberId || '', width: subtitleWidth, height: subtitleHeight, id: 'MemberId'},
-          {text: instanceName, width: titleWidth, height: this.COMPONENT_LABEL_HEIGHT, id: 'InstanceName'}
-        ],
-        width: Math.max(graphMemberSlots.slotsWidth + this.SLOT_LABELS_SPACE, titleWidth),
+        labels: header.labels,
+        width: Math.max(graphMemberSlots.slotsWidth + this.SLOT_LABELS_SPACE, header.width),
         height: graphMemberSlots.slotsHeight + this.HEADER_HEIGHT,
         ports: graphMemberSlots.slots,
         properties: {
@@ -176,6 +171,41 @@
         }
       };
       return graphMember;
+    },
+
+    /**
+     * Generate the labels array of the component header and calculate its width
+     * @param memberId - Member id, if it is a member
+     * @param webpackageInfo - :webpackageQName@version
+     * @param artifactId - Artifact id of the component
+     * @returns {{labels: *[], width: number}}
+     */
+    generateComponentHeader: function (memberId, webpackageInfo, artifactId) {
+      var memberIdWidth = (memberId) ? memberId.length * this.COMPONENT_LABEL_LETTER_WIDTH : 0;
+      var webpackageInfoWidth = webpackageInfo.length * this.COMPONENT_LABEL_LETTER_WIDTH * (memberId ? 0.85 : 1);
+      var artifactIdWidth = artifactId.length * this.COMPONENT_LABEL_LETTER_WIDTH * (memberId ? 0.85 : 1);
+
+      var labels = [
+        {
+          text: memberId || '',
+          width: memberIdWidth,
+          height: (memberId) ? this.COMPONENT_LABEL_HEIGHT : 0,
+          className: 'memberIdLabel'
+        },
+        {
+          text: webpackageInfo,
+          width: webpackageInfoWidth,
+          height: this.COMPONENT_LABEL_HEIGHT + this.HEADER_MARGIN * (memberId ? 3 : 0),
+          className: memberId ? 'componentNameLabel' : 'componentNameRootLabel'
+        },
+        {
+          text: artifactId,
+          width: artifactIdWidth,
+          height: this.COMPONENT_LABEL_HEIGHT * 0.8,
+          className: memberId ? 'componentNameLabel' : 'componentNameRootLabel'
+        }
+      ];
+      return {labels: labels, width: Math.max(memberIdWidth, artifactIdWidth, webpackageInfoWidth)};
     },
 
     /**
@@ -350,6 +380,26 @@
     },
 
     /**
+     * Center the component view horizontally and vertically and set and translate the zoom behavior to the center
+     */
+    centerDiagramAndSetZoomBehavior: function () {
+      var componentViewHolderSvg = $('#' + this.VIEW_HOLDER_CSS_CLASS + '_svg');
+      var componentViewHolderContainer = d3.select('#' + this.VIEW_HOLDER_CSS_CLASS + '_container');
+      var newX = (componentViewHolderSvg.width() / 2) - (componentViewHolderContainer.node().getBBox().width / 2);
+      var newY = (componentViewHolderSvg.height() / 2) - (componentViewHolderContainer.node().getBBox().height / 2);
+      componentViewHolderContainer.transition()
+        .attr('transform', 'translate(' + newX + ',' + newY + ')');
+
+      var self = this;
+      var zoom = d3.behavior.zoom()
+        .translate([newX, newY])
+        .on('zoom', function () {
+          self.svg.attr('transform', 'translate(' + d3.event.translate + ')' + ' scale(' + d3.event.scale + ')');
+        });
+      d3.select('#' + this.VIEW_HOLDER_CSS_CLASS).call(zoom);
+    },
+
+    /**
      * Build and append all the graphic elements of a component described by a Kgraph
      * @param {object} componentGraph - JSON KGraph to be displayed
      */
@@ -398,26 +448,6 @@
     },
 
     /**
-     * Center the component view horizontally and vertically and set and translate the zoom behavior to the center
-     */
-    centerDiagramAndSetZoomBehavior: function () {
-      var componentViewHolderSvg = $('#' + this.VIEW_HOLDER_CSS_CLASS + '_svg');
-      var componentViewHolderContainer = d3.select('#' + this.VIEW_HOLDER_CSS_CLASS + '_container');
-      var newX = (componentViewHolderSvg.width() / 2) - (componentViewHolderContainer.node().getBBox().width / 2);
-      var newY = (componentViewHolderSvg.height() / 2) - (componentViewHolderContainer.node().getBBox().height / 2);
-      componentViewHolderContainer.transition()
-        .attr('transform', 'translate(' + newX + ',' + newY + ')');
-
-      var self = this;
-      var zoom = d3.behavior.zoom()
-        .translate([newX, newY])
-        .on('zoom', function () {
-          self.svg.attr('transform', 'translate(' + d3.event.translate + ')' + ' scale(' + d3.event.scale + ')');
-        });
-      d3.select('#' + this.VIEW_HOLDER_CSS_CLASS).call(zoom);
-    },
-
-    /**
      * Draw a square for each component and its id as label
      * @param {Object} componentsData - Data of each component (D3)
      */
@@ -430,7 +460,7 @@
         })
         .attr('class', function (d) {
           if (d.children) {
-            return 'componentView compound ' + self.is;
+            return 'componentView root ' + self.is;
           } else {
             return 'componentView member ' + self.is;
           }
@@ -440,7 +470,7 @@
         .attr('class', function (d) {
           if (d.id !== 'root') {
             if (d.children) {
-              return 'componentViewAtom compound ' + self.is;
+              return 'componentViewAtom root ' + self.is;
             } else {
               return 'componentViewAtom member ' + self.is;
             }
@@ -459,7 +489,7 @@
       var splitLine = componentView.append('line')
         .attr('class', function (d) {
           if (d.children) {
-            return 'splitLineCompound ' + self.is;
+            return 'splitLineRoot ' + self.is;
           } else {
             return 'splitLineMember ' + self.is;
           }
@@ -487,7 +517,7 @@
         });
 
       // Nodes labels
-      var componentViewLabel = headingAtom.selectAll('.componentViewLabel')
+      var componentViewLabel = headingAtom.selectAll('.componentViewHeaderLabel')
         .data(function (d) {
           return d.labels || [];
         })
@@ -497,12 +527,12 @@
           return d.text;
         })
         .attr('class', function (d) {
-          return 'componentViewLabel' + d.id + ' ' + self.is;
+          return 'componentViewHeaderLabel ' + d.className + ' ' + self.is;
         });
 
       componentViewLabel.transition()
         .attr('x', function (d, i, j) { return componentViewLabel[j].parentNode.__data__.width / 2; })
-        .attr('y', function (d) { return d.y + d.height + self.HEADER_TOP_MARGIN; });
+        .attr('y', function (d) { return d.y + d.height + self.HEADER_MARGIN; });
 
       this.drawComponentsSlots(componentView);
     },
@@ -555,7 +585,7 @@
         .text(function (d) { return d.text; })
         .attr('text-anchor', function (d) { return (d.x > 0) ? 'start' : 'end'; })
         .attr('x', function (d) { return (d.x > 0) ? d.x + self.SLOT_RADIUS : -self.SLOT_RADIUS * 2; })
-        .attr('y', function (d) { return (d.y > 0) ? d.y - self.SLOT_RADIUS : d.y + self.SLOT_RADIUS * 0.6; })
+        .attr('y', function (d) { return (d.y > 0) ? d.y - self.SLOT_RADIUS * 2 : d.y + self.SLOT_RADIUS * 0.6; })
         .attr('class', 'slotViewLabel ' + self.is);
 
       slotView.transition()
