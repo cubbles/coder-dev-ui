@@ -1,5 +1,10 @@
 {
   "uploadConfigs": {
+    "local": {
+      "url": "http://cubbles-base-dev/sandbox",
+      "proxy": "",
+      "debug": false
+    },
     "dev": {
       "url": "http://cubbles-base-dev/sandbox",
       "proxy": "",
