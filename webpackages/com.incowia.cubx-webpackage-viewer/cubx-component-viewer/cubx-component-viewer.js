@@ -537,6 +537,7 @@
 
       slotView.append('circle')
         .attr('class', 'slotViewAtom ' + self.is)
+        .attr('r', self.SLOT_RADIUS)
         .attr('onmousemove', function (d) {
           return 'com_incowia_cubx_data_flow_viewer.showTooltip(' +
             'evt,' +
