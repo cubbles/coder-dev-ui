@@ -6,7 +6,7 @@
       "debug": false
     },
     "dev": {
-      "url": "http://cubbles-base-dev/sandbox",
+      "url": "https://www.cubbles.world/sandbox",
       "proxy": "",
       "debug": false
     },

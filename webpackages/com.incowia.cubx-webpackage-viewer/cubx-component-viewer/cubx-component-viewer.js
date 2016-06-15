@@ -23,8 +23,8 @@
     SLOT_RADIUS: 5,
     CONNECTION_LABEL_LETTER_WIDTH: 7,
     CONNECTION_HEIGHT: 10,
-    SLOTS_AREA_TOP_BOTTOM_MARGIN: 10,
-    ROOT_BORDER_SPACE: 60,
+    SLOTS_AREA_MARGIN: 10,
+    ROOT_BORDER_SPACE: 70,
     MEMBER_BORDER_SPACE: 12,
     SLOT_SPACE: 11,
     COMPOUND_TITLE: 'Dataflow view',
@@ -36,7 +36,7 @@
      * Manipulate an element’s local DOM when the element is created.
      */
     created: function () {
-      this.HEADER_HEIGHT = this.COMPONENT_LABEL_HEIGHT * 5 + this.SLOTS_AREA_TOP_BOTTOM_MARGIN;
+      this.HEADER_HEIGHT = this.COMPONENT_LABEL_HEIGHT * 5 + this.SLOTS_AREA_MARGIN;
     },
 
     /**
@@ -239,7 +239,7 @@
       return {
         slots: graphMemberSlots,
         slotsWidth: maxSlotWidthLeft + maxSlotWidthRight,
-        slotsHeight: Math.max(inputSlots, outputSlots) * (this.SLOT_HEIGHT + this.SLOT_SPACE) + this.SLOTS_AREA_TOP_BOTTOM_MARGIN
+        slotsHeight: Math.max(inputSlots, outputSlots) * (this.SLOT_HEIGHT + this.SLOT_SPACE) + this.SLOTS_AREA_MARGIN
       };
     },
 
@@ -331,7 +331,7 @@
      */
     _manifestOfMember: function (member) {
       var manifest = {};
-      if (member.componentId.includes('this/')) {
+      if (member.componentId.indexOf('this/') !== -1) {
         return this.getManifest();
       } else {
         // TODO: Use method from CRC
@@ -487,19 +487,17 @@
         .attr('height', this.HEADER_HEIGHT);
 
       var splitLine = componentView.append('line')
-        .attr('class', function (d) {
-          if (d.children) {
-            return 'splitLineRoot ' + self.is;
-          } else {
-            return 'splitLineMember ' + self.is;
-          }
-        });
+        .attr('class', 'splitLine ' + self.is);
 
       splitLine.transition()
         .attr('x1', 0)
         .attr('x2', function (d) { return d.width; })
-        .attr('y1', this.HEADER_HEIGHT - this.SLOTS_AREA_TOP_BOTTOM_MARGIN)
-        .attr('y2', this.HEADER_HEIGHT - this.SLOTS_AREA_TOP_BOTTOM_MARGIN);
+        .attr('y1', function (d) {
+          return d.children ? self.COMPONENT_LABEL_HEIGHT * 3 : self.HEADER_HEIGHT - self.SLOTS_AREA_MARGIN;
+        })
+        .attr('y2', function (d) {
+          return d.children ? self.COMPONENT_LABEL_HEIGHT * 3 : self.HEADER_HEIGHT - self.SLOTS_AREA_MARGIN;
+        });
 
       // Apply componentView positions
       componentView.transition()
