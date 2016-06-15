@@ -92,7 +92,6 @@
       var rootComponent = this.generateGraphMember(
         this.getComponent(),
         undefined,
-        this.getManifest(),
         {portLabelPlacement: 'OUTSIDE', borderSpacing: 40}
       );
       rootComponent.children = this.generateGraphMembers(this.getComponent().members);
@@ -118,7 +117,7 @@
         var componentArtifactId = compoundsMembers[k].componentId.substr(compoundsMembers[k].componentId.indexOf('/') + 1);
         manifest = this._manifestOfMember(compoundsMembers[k]);
         component = this.searchComponentInManifest(componentArtifactId, manifest);
-        graphMember = this.generateGraphMember(component, compoundsMembers[k].memberId, manifest);
+        graphMember = this.generateGraphMember(component, compoundsMembers[k]);
         graphMembers.push(graphMember);
       }
       return graphMembers;
@@ -127,20 +126,26 @@
     /**
      * Generate a GraphMember (KNode) that represents a Component
      * @param {string} component - Component to be represented as GraphMember
-     * @param {string} memberId - memberId of the component within a compoundComponent
-     * @param {object} manifest - Manifest of the component
+     * @param {string} member - Member of a compoundComponent
      * @param {object[]} [optionals] - Optional parameters
      * @param {string} [optionals[].portLabelPlacement='INSIDE']- Placement of the slots for the node
      * @param {number} [optionals[].borderSpacing=12] - Optional parameters
      * @returns {object}
      */
-    generateGraphMember: function (component, memberId, manifest, optionals) {
-      var graphMemberSlots = this.generateGraphMemberSlots(component, memberId || component.artifactId);
-      var webpackageQName = (manifest.groupId) ? manifest.groupId + '.' + manifest.name : manifest.name;
-      var instanceName = ':' + webpackageQName + '@' + manifest.version + '/' + component.artifactId;
+    generateGraphMember: function (component, member, optionals) {
+      var instanceName = ':';
+      var memberId;
+      if (member) {
+        memberId = member.memberId;
+        instanceName += member.componentId;
+      } else {
+        var webpackageQName = (this.getManifest().groupId) ? this.getManifest().groupId + '.' + this.getManifest().name : this.getManifest().name;
+        instanceName += webpackageQName + '@' + this.getManifest().version + '/' + component.artifactId;
+      }
       var titleWidth = (instanceName.length + 4) * this.COMPONENT_LABEL_LETTER_WIDTH;
       var subtitleWidth = (memberId) ? memberId.length * this.COMPONENT_LABEL_LETTER_WIDTH : 0;
       var subtitleHeight = (memberId) ? this.COMPONENT_LABEL_HEIGHT : 0;
+      var graphMemberSlots = this.generateGraphMemberSlots(component, memberId || component.artifactId);
 
       var graphMember = {
         id: memberId || component.artifactId,
