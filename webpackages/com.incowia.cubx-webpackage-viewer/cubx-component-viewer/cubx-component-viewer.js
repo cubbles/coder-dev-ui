@@ -62,9 +62,7 @@
      *  Observe the Cubbles-Component-Model: If value for slot 'componentArtifactId' has changed ...
      */
     modelComponentArtifactIdChanged: function (componentArtifactId) {
-      if (!this.getManifest()) {
-        return;
-      }
+      if (!this.getManifest()) return;
       this._updateView();
     },
 
@@ -553,7 +551,7 @@
 
       slotsAtom.transition()
         .attr('width', function (d) { return d.width; })
-        .attr('height', function (d) { return d.width - self.HEADER_HEIGHT; });
+        .attr('height', function (d) { return d.height - self.HEADER_HEIGHT; });
 
       slotsAtom.transition()
         .attr('transform', function (d) {
