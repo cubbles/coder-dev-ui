@@ -62,12 +62,26 @@
      *  Observe the Cubbles-Component-Model: If value for slot 'componentArtifactId' has changed ...
      */
     modelComponentArtifactIdChanged: function (componentArtifactId) {
-      // update the view
       if (!this.getManifest()) {
-        console.error('The manifest should be set');
         return;
       }
-      var component = this.searchComponentInManifest(componentArtifactId, this.getManifest());
+      this._updateView();
+    },
+
+    /**
+     *  Observe the Cubbles-Component-Model: If value for slot 'manifest' has changed ...
+     */
+    modelManifestChanged: function (manifest) {
+      if (!this.getComponentArtifactId()) return;
+      this._updateView();
+    },
+
+    /**
+     * Update the view after the manifest or the componentArtifactId slots have changed
+     * @private
+     */
+    _updateView: function () {
+      var component = this.searchComponentInManifest(this.getComponentArtifactId(), this.getManifest());
       if (component) {
         this.setComponent(component);
         if (this.getShowTitle()) {
@@ -80,16 +94,9 @@
         }
         this.drawComponent(this.generateComponentGraph());
       } else {
-        console.error('The component with ' + componentArtifactId + ' artifactId was not found');
+        console.error('The component with ' + this.getComponentArtifactId() + ' artifactId was not found');
         return;
       }
-    },
-
-    /**
-     *  Observe the Cubbles-Component-Model: If value for slot 'manifest' has changed ...
-     */
-    modelManifestChanged: function (manifest) {
-      // update the view
     },
 
     /**

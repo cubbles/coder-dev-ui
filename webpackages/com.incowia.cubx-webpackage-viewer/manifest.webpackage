@@ -391,11 +391,13 @@
             "endpointId": "main",
             "resources": [
               "css/cubx-component-docs-viewer.css",
-              "template.html"
+              "template.html",
+              "jsFunctions.js"
             ],
             "dependencies": [
               "this/cubx-component-viewer/main",
-              "this/cubx-component-info-viewer/main"
+              "this/cubx-component-info-viewer/main",
+              "com.incowia.ajax@0.1.0-SNAPSHOT/ajax-request/main"
             ]
           }
         ],
@@ -413,6 +415,13 @@
             "direction": [
               "input"
             ]
+          },
+          {
+            "slotId": "manifestUrl",
+            "type": "string",
+            "direction": [
+              "input"
+            ]
           }
         ],
         "members": [
@@ -423,6 +432,10 @@
           {
             "memberId": "componentInfoViewer",
             "componentId": "this/cubx-component-info-viewer"
+          },
+          {
+            "memberId": "manifestRequester",
+            "componentId": "com.incowia.ajax@0.1.0-SNAPSHOT/ajax-request"
           }
         ],
         "connections": [
@@ -455,6 +468,28 @@
             "destination": {
               "memberIdRef": "componentInfoViewer",
               "slot": "component"
+            }
+          },
+          {
+            "connectionId": "manifestUrlCon",
+            "source": {
+              "slot": "manifestUrl"
+            },
+            "destination": {
+              "memberIdRef": "manifestRequester",
+              "slot": "config"
+            },
+            "hookFunction": "window.com_incowia_cubxWebpackageViewer_cubxComponentViewer.buildConfigObject"
+          },
+          {
+            "connectionId": "resultToManifest",
+            "source": {
+              "memberIdRef": "manifestRequester",
+              "slot": "result"
+            },
+            "destination": {
+              "memberIdRef": "componentViewer",
+              "slot": "manifest"
             }
           }
         ],

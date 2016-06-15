@@ -7,16 +7,6 @@
 
     <script src="../../../cubx.core.rte@1.9.0/webcomponents/webcomponents-lite.js"></script>
 
-    <script>
-        window.cubx = {
-            CRCInit: {
-                rootDependencies: [
-                    "../../../jquery-2.1.4@1.0.0/jquery/html-import"
-                ]
-            }
-        }
-    </script>
-
     <!--
         Refer to the crc-loader artifact from a Cubbles-Base.
         Take care: All other dependencies are expected to be available within the same Base!
@@ -41,12 +31,9 @@
 <script>
     var componentDocsViewer = document.getElementsByTagName('cubx-component-docs-viewer')[0];
     var manifestUrl = "../../manifest.webpackage";
-    manifestUrl = 'https://cubbles.world/incowia/com.incowia.leanix-demo@0.1.0-SNAPSHOT';
     document.addEventListener('cifReady', function() {
-        $.getJSON(manifestUrl, function (response) {
-            componentDocsViewer.setManifest(response);
-            componentDocsViewer.setComponentArtifactId('leanix-connector-ifaces');
-        });
+        componentDocsViewer.setManifestUrl(manifestUrl);
+        componentDocsViewer.setComponentArtifactId('cubx-component-docs-viewer');
     });
 </script>
 
