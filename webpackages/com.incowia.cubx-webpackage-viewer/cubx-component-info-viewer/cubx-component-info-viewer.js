@@ -11,7 +11,7 @@
    */
   CubxPolymer({
     is: 'cubx-component-info-viewer',
-    isCubxReady: false,
+    _cubxReady: false,
 
     /**
      * Manipulate an element’s local DOM when the element is created.
@@ -35,14 +35,14 @@
      * Manipulate an element’s local DOM when the cubbles framework is initialized and ready to work.
      */
     cubxReady: function () {
-      this.isCubxReady = true;
+      this._cubxReady = true;
     },
 
     /**
      *  Observe the Cubbles-Component-Model: If value for slot 'component' has changed ...
      */
     modelComponentChanged: function (component) {
-      if (!this.isCubxReady) { return; }
+      if (!this._cubxReady) { return; }
       this.updateSlotsInformation();
     },
 

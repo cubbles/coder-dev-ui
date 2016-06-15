@@ -13,20 +13,30 @@
   CubxPolymer({
     is: 'cubx-component-viewer',
 
-    isCubxReady: false,
+    _cubxReady: false,
+    DEFAULT_VIEWER_HEIGHT: window.innerHeight * 0.7,
     COMPONENT_LABEL_HEIGHT: 18,
     COMPONENT_LABEL_LETTER_WIDTH: 8,
     SLOT_LABELS_SPACE: 10,
-    SLOT_HEIGHT: 25,
+    SLOT_HEIGHT: 10,
     SLOT_LABEL_LETTER_WIDTH: 7,
+    SLOT_RADIUS: 5,
     CONNECTION_LABEL_LETTER_WIDTH: 7,
-    HEADER_SLOTS_SPACE: 10,
+    CONNECTION_HEIGHT: 10,
+    SLOTS_AREA_TOP_BOTTOM_MARGIN: 10,
+    ROOT_BORDER_SPACE: 40,
+    MEMBER_BORDER_SPACE: 12,
+    SLOT_SPACE: 11,
+    COMPOUND_TITLE: 'Dataflow view',
+    ELEMENTARY_TITLE: 'Interface view',
+    VIEW_HOLDER_CSS_CLASS: 'component_view_holder',
+    HEADER_TOP_MARGIN: 5,
 
     /**
      * Manipulate an element’s local DOM when the element is created.
      */
     created: function () {
-      this.HEADER_HEIGHT = this.COMPONENT_LABEL_HEIGHT * 3 + this.HEADER_SLOTS_SPACE;
+      this.HEADER_HEIGHT = this.COMPONENT_LABEL_HEIGHT * 3 + this.SLOTS_AREA_TOP_BOTTOM_MARGIN;
     },
 
     /**
@@ -45,7 +55,7 @@
      * Manipulate an element’s local DOM when the cubbles framework is initialized and ready to work.
      */
     cubxReady: function () {
-      this.isCubxReady = true;
+      this._cubxReady = true;
     },
 
     /**
@@ -61,11 +71,11 @@
       if (component) {
         this.setComponent(component);
         if (this.getShowTitle()) {
-          $('#component_view_holder_title').css('display', 'inline-block');
+          $('#' + this.VIEW_HOLDER_CSS_CLASS + '_title').css('display', 'inline-block');
           if (component.members) {
-            this.setViewerTitle('Dataflow view');
+            this.setViewerTitle(this.COMPOUND_TITLE);
           } else {
-            this.setViewerTitle('Interface view');
+            this.setViewerTitle(this.ELEMENTARY_TITLE);
           }
         }
         this.drawComponent(this.generateComponentGraph());
@@ -87,12 +97,12 @@
      * @returns {{id: string, children: Array}} KGraph to be used to build and display the component
      */
     generateComponentGraph: function () {
-      if (!this.isCubxReady) { return; }
+      if (!this._cubxReady) { return; }
       var componentGraph = {id: 'root', children: []};
       var rootComponent = this.generateGraphMember(
         this.getComponent(),
         undefined,
-        {portLabelPlacement: 'OUTSIDE', borderSpacing: 40}
+        {portLabelPlacement: 'OUTSIDE', borderSpacing: this.ROOT_BORDER_SPACE}
       );
       rootComponent.children = this.generateGraphMembers(this.getComponent().members);
 
@@ -161,8 +171,8 @@
           portLabelPlacement: (optionals) ? optionals.portLabelPlacement : 'INSIDE',
           nodeLabelPlacement: 'V_TOP H_CENTER',
           portAlignment: 'BEGIN',
-          portSpacing: 11,
-          borderSpacing: (optionals) ? optionals.borderSpacing : 12
+          portSpacing: this.SLOT_SPACE,
+          borderSpacing: (optionals) ? optionals.borderSpacing : this.MEMBER_BORDER_SPACE
         }
       };
       return graphMember;
@@ -199,7 +209,7 @@
       return {
         slots: graphMemberSlots,
         slotsWidth: maxSlotWidthLeft + maxSlotWidthRight,
-        slotsHeight: Math.max(inputSlots, outputSlots) * this.SLOT_HEIGHT
+        slotsHeight: Math.max(inputSlots, outputSlots) * (this.SLOT_HEIGHT + this.SLOT_SPACE) + this.SLOTS_AREA_TOP_BOTTOM_MARGIN
       };
     },
 
@@ -219,9 +229,9 @@
         labels: [{
           text: slot.slotId,
           width: slot.slotId.length * this.SLOT_LABEL_LETTER_WIDTH,
-          height: 10
+          height: this.SLOT_HEIGHT
         }],
-        height: 10,
+        height: this.SLOT_HEIGHT,
         description: slot.description || '-',
         type: slot.type || 'any'
       };
@@ -274,7 +284,7 @@
         labels: [{
           text: compoundConnection.connectionId,
           width: compoundConnection.connectionId.length * this.CONNECTION_LABEL_LETTER_WIDTH,
-          height: 10
+          height: this.CONNECTION_HEIGHT
         }],
         source: source,
         sourcePort: sourcePort,
@@ -345,20 +355,20 @@
      */
     drawComponent: function (componentGraph) {
       // group
-      d3.select('#component_view_holder').html('');
+      d3.select('#' + this.VIEW_HOLDER_CSS_CLASS).html('');
       var self = this;
       if (!this.getViewerHeight()) {
-        this.setViewerHeight(window.innerHeight * 0.7);
+        this.setViewerHeight(this.DEFAULT_VIEWER_HEIGHT);
       }
-      this.svg = d3.select('#component_view_holder')
+      this.svg = d3.select('#' + this.VIEW_HOLDER_CSS_CLASS)
         .append('svg')
         .attr('width', this.getViewerWidth())
         .attr('height', this.getViewerHeight())
-        .attr('id', 'component_view_holder_svg')
+        .attr('id', this.VIEW_HOLDER_CSS_CLASS + '_svg')
         .append('g')
-        .attr('id', 'component_view_holder_container');
-      var realWidth = $('#component_view_holder').width();
-      var realHeight = $('#component_view_holder').height();
+        .attr('id', this.VIEW_HOLDER_CSS_CLASS + '_container');
+      var realWidth = $('#' + this.VIEW_HOLDER_CSS_CLASS).width();
+      var realHeight = $('#' + this.VIEW_HOLDER_CSS_CLASS).height();
       var root = this.svg.append('g');
       var layouter = klay.d3kgraph()
         .size([realWidth, realHeight])
@@ -391,8 +401,8 @@
      * Center the component view horizontally and vertically and set and translate the zoom behavior to the center
      */
     centerDiagramAndSetZoomBehavior: function () {
-      var componentViewHolderSvg = $('#component_view_holder_svg');
-      var componentViewHolderContainer = d3.select('#component_view_holder_container');
+      var componentViewHolderSvg = $('#' + this.VIEW_HOLDER_CSS_CLASS + '_svg');
+      var componentViewHolderContainer = d3.select('#' + this.VIEW_HOLDER_CSS_CLASS + '_container');
       var newX = (componentViewHolderSvg.width() / 2) - (componentViewHolderContainer.node().getBBox().width / 2);
       var newY = (componentViewHolderSvg.height() / 2) - (componentViewHolderContainer.node().getBBox().height / 2);
       componentViewHolderContainer.transition()
@@ -404,7 +414,7 @@
         .on('zoom', function () {
           self.svg.attr('transform', 'translate(' + d3.event.translate + ')' + ' scale(' + d3.event.scale + ')');
         });
-      d3.select('#component_view_holder').call(zoom);
+      d3.select('#' + this.VIEW_HOLDER_CSS_CLASS).call(zoom);
     },
 
     /**
@@ -420,9 +430,9 @@
         })
         .attr('class', function (d) {
           if (d.children) {
-            return 'componentView compound cubx-component-viewer';
+            return 'componentView compound ' + self.is;
           } else {
-            return 'componentView member cubx-component-viewer';
+            return 'componentView member ' + self.is;
           }
         });
 
@@ -430,9 +440,9 @@
         .attr('class', function (d) {
           if (d.id !== 'root') {
             if (d.children) {
-              return 'componentViewAtom compound cubx-component-viewer';
+              return 'componentViewAtom compound ' + self.is;
             } else {
-              return 'componentViewAtom member cubx-component-viewer';
+              return 'componentViewAtom member ' + self.is;
             }
           } else {
             return '';
@@ -440,7 +450,7 @@
         });
 
       var headingAtom = componentView.append('g')
-        .attr('class', 'headingAtom cubx-component-viewer');
+        .attr('class', 'headingAtom ' + self.is);
 
       headingAtom.transition()
         .attr('width', function (d) { return d.width; })
@@ -449,17 +459,17 @@
       var splitLine = componentView.append('line')
         .attr('class', function (d) {
           if (d.children) {
-            return 'splitLineCompound cubx-component-viewer';
+            return 'splitLineCompound ' + self.is;
           } else {
-            return 'splitLineMember cubx-component-viewer';
+            return 'splitLineMember ' + self.is;
           }
         });
 
       splitLine.transition()
         .attr('x1', 0)
         .attr('x2', function (d) { return d.width; })
-        .attr('y1', this.HEADER_HEIGHT - this.HEADER_SLOTS_SPACE)
-        .attr('y2', this.HEADER_HEIGHT - this.HEADER_SLOTS_SPACE);
+        .attr('y1', this.HEADER_HEIGHT - this.SLOTS_AREA_TOP_BOTTOM_MARGIN)
+        .attr('y2', this.HEADER_HEIGHT - this.SLOTS_AREA_TOP_BOTTOM_MARGIN);
 
       // Apply componentView positions
       componentView.transition()
@@ -487,12 +497,12 @@
           return d.text;
         })
         .attr('class', function (d) {
-          return 'componentViewLabel' + d.id + ' cubx-component-viewer';
+          return 'componentViewLabel' + d.id + ' ' + self.is;
         });
 
       componentViewLabel.transition()
         .attr('x', function (d, i, j) { return componentViewLabel[j].parentNode.__data__.width / 2; })
-        .attr('y', function (d) { return d.y + d.height + 5; });
+        .attr('y', function (d) { return d.y + d.height + self.HEADER_TOP_MARGIN; });
 
       this.drawComponentsSlots(componentView);
     },
@@ -504,7 +514,7 @@
     drawComponentsSlots: function (componentView) {
       var self = this;
       var slotsAtom = componentView.append('g')
-        .attr('class', 'slotsAtom cubx-component-viewer');
+        .attr('class', 'slotsAtom ' + self.is);
 
       slotsAtom.transition()
         .attr('width', function (d) { return d.width; })
@@ -523,10 +533,10 @@
         .attr('id', function (d) {
           return d.id;
         })
-        .attr('class', 'slotView cubx-component-viewer');
+        .attr('class', 'slotView ' + self.is);
 
       slotView.append('circle')
-        .attr('class', 'slotViewAtom cubx-component-viewer')
+        .attr('class', 'slotViewAtom ' + self.is)
         .attr('onmousemove', function (d) {
           return 'com_incowia_cubx_data_flow_viewer.showTooltip(' +
             'evt,' +
@@ -543,9 +553,9 @@
         .append('text')
         .text(function (d) { return d.text; })
         .attr('text-anchor', function (d) { return (d.x > 0) ? 'start' : 'end'; })
-        .attr('x', function (d) { return (d.x > 0) ? d.x + 5 : -9; })
-        .attr('y', function (d) { return (d.y > 0) ? d.y - 10.5 : d.y + 3.5; })
-        .attr('class', 'slotViewLabel cubx-component-viewer');
+        .attr('x', function (d) { return (d.x > 0) ? d.x + self.SLOT_RADIUS : -self.SLOT_RADIUS * 2; })
+        .attr('y', function (d) { return (d.y > 0) ? d.y - self.SLOT_RADIUS : d.y + self.SLOT_RADIUS * 0.6; })
+        .attr('class', 'slotViewLabel ' + self.is);
 
       slotView.transition()
         .attr('transform', function (d) {
@@ -564,7 +574,7 @@
         .data(['end'])                 // define connectionView/path types
         .enter().append('svg:marker')    // add arrows
         .attr('id', String)
-        .attr('class', 'arrowEnd cubx-component-viewer')
+        .attr('class', 'arrowEnd ' + self.is)
         .attr('viewBox', '0 -5 10 10')
         .attr('refX', 10)
         .attr('refY', 0)
@@ -580,14 +590,14 @@
         .attr('id', function (d) {
           return d.id;
         })
-        .attr('class', 'connectionView cubx-component-viewer')
+        .attr('class', 'connectionView ' + self.is)
         .attr('d', 'M0 0')
         .attr('marker-end', 'url(#end)');
 
       // Add connections labels
       connectionData.enter()
         .append('text')
-        .attr('class', 'connectionViewLabel cubx-component-viewer')
+        .attr('class', 'connectionViewLabel ' + self.is)
         .attr('text-anchor', 'middle')
         .attr('x', function (d) { return (d.sourcePoint.x + d.targetPoint.x) / 2; })
         .attr('y', function (d) { return self.HEADER_HEIGHT + d.labels[0].y + d.labels[0].height * 2.2; })
@@ -596,12 +606,12 @@
       // Apply connections routes
       connectionView.transition().attr('d', function (d) {
         var path = '';
-        path += 'M' + (d.sourcePoint.x + 5) + ' ' + (d.sourcePoint.y + self.HEADER_HEIGHT - 5) + ' ';
+        path += 'M' + (d.sourcePoint.x + self.SLOT_RADIUS) + ' ' + (d.sourcePoint.y + self.HEADER_HEIGHT - self.SLOT_RADIUS) + ' ';
         (d.bendPoints || []).forEach(function (bp, i) {
-          var y = (bp.y < d.sourcePoint.y - 5 && bp.y < d.targetPoint.y - 5) ? bp.y : bp.y + self.HEADER_HEIGHT;
-          path += 'L' + bp.x + ' ' + (y - 5) + ' ';
+          var y = (bp.y < d.sourcePoint.y - self.SLOT_RADIUS && bp.y < d.targetPoint.y - self.SLOT_RADIUS) ? bp.y : bp.y + self.HEADER_HEIGHT;
+          path += 'L' + bp.x + ' ' + (y - self.SLOT_RADIUS) + ' ';
         });
-        path += 'L' + (d.targetPoint.x - 5) + ' ' + (d.targetPoint.y + self.HEADER_HEIGHT - 5) + ' ';
+        path += 'L' + (d.targetPoint.x - self.SLOT_RADIUS) + ' ' + (d.targetPoint.y + self.HEADER_HEIGHT - self.SLOT_RADIUS) + ' ';
         return path;
       });
     }
