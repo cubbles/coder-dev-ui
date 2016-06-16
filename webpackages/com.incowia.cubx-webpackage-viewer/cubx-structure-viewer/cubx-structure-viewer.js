@@ -39,13 +39,13 @@
      * Manipulate an element’s local DOM when the cubbles framework is initialized and ready to work.
      */
     cubxReady: function () {
-      this.addListenerToHideElementsButton();
+      this._addListenerToHideElementsButton();
     },
 
     /**
      * Add a click event to the hideElementsButton
      */
-    addListenerToHideElementsButton: function () {
+    _addListenerToHideElementsButton: function () {
       var self = this;
       $('#hideElementsButton').click(function () {
         if (self.hiddenProperties) {
@@ -103,11 +103,11 @@
       schema.definitions.compoundArtifact.properties.members.format = 'table';
       schema.definitions.compoundArtifact.properties.connections.format = 'tabs';
       schema.definitions.compoundArtifact.properties.inits.format = 'table';
-      this.loadStructureView(schema);
+      this._loadStructureView(schema);
       if (this.getManifestLoaded()) {
         this._setManifestToStructureViewer();
       }
-      this.hideRootLabel();
+      this._hideRootLabel();
     },
 
     /**
@@ -116,7 +116,7 @@
      */
     _setManifestToStructureViewer: function () {
       this.structureView.setValue(this.getManifest());
-      this.addViewDataflowButtons();
+      this._addViewDataflowButtons();
       this.hideEmptyProperties();
       $('[data-toggle="popover"]').popover();
       $('[data-toggle="tooltip"]').tooltip();
@@ -126,8 +126,8 @@
      * Load the structureView which is a json-editor
      * @param {object} schema - JSON schema of the structureView
      */
-    loadStructureView: function (schema) {
-      this.setStructureViewOptions();
+    _loadStructureView: function (schema) {
+      this._setStructureViewOptions();
       this.structureView = new JSONEditor(document.getElementById(this.structureHolderId), {
         theme: 'bootstrap3',
         iconlib: 'bootstrap3',
@@ -146,46 +146,25 @@
     /**
      * Set the json-editors' default options.
      */
-    setStructureViewOptions: function () {
+    _setStructureViewOptions: function () {
       JSONEditor.defaults.editors.array.options.collapsed = true;
       JSONEditor.defaults.editors.table.options.collapsed = true;
     },
 
     /**
-     * Read url get parameters, similar to PHP.
-     * Source: https://www.creativejuiz.fr/blog/en/javascript-en/read-url-get-parameters-with-javascript
-     * @param {string} param - Name of the parameter to read
-     * @returns {*} the value of the parameter or an empty object if the parameter was not in the url
-     */
-    $_GET: function (param) {
-      var vars = {};
-      window.location.href.replace(location.hash, '').replace(
-        /[?&]+([^=&]+)=?([^&]*)?/gi, // regexp
-        function (m, key, value) { // callback
-          vars[key] = value !== undefined ? value : '';
-        }
-      );
-
-      if (param) {
-        return vars[param] ? vars[param] : null;
-      }
-      return vars;
-    },
-
-    /**
      * Add a button to each compound components view, to display its dataflow view
      */
-    addViewDataflowButtons: function () {
+    _addViewDataflowButtons: function () {
       var self = this;
       var types = ['compoundComponents', 'elementaryComponents'];
       var artifacts = this.getManifest().artifacts;
       for (var i in types) {
         for (var j in artifacts[types[i]]) {
-          this.createViewComponentButton(j, types[i]);
+          this._createViewComponentButton(j, types[i]);
         }
       }
       $('#dataflow_view_modal').on('shown.bs.modal', function () {
-        self.updateCurrentComponent(self.getManifest().artifacts[self.currentComponentsType][self.currentComponentIndex]);
+        self._updateCurrentComponent(self.getManifest().artifacts[self.currentComponentsType][self.currentComponentIndex]);
       });
     },
 
@@ -194,7 +173,7 @@
      * @param {number} componentIndex - Index of the component within artifacts array of manifest
      * @param {string} componentsKey - Key in artifacts -> compoundComponents or elementaryComponents
      */
-    createViewComponentButton: function (componentIndex, componentsKey) {
+    _createViewComponentButton: function (componentIndex, componentsKey) {
       var self = this;
       var viewDataflowButton = document.createElement('button');
       viewDataflowButton.setAttribute('type', 'button');
@@ -222,14 +201,14 @@
      * Updates the artifactId of the current compound component
      * @param {object} component - New current component
      */
-    updateCurrentComponent: function (component) {
+    _updateCurrentComponent: function (component) {
       this.setCurrentComponentArtifactId(component.artifactId);
     },
 
     /**
      * Hides the root label and button generated bx the json-editor library
      */
-    hideRootLabel: function () {
+    _hideRootLabel: function () {
       $('[data-schemaid = "root"]').find('label:first').css('display', 'none');
     }
   });

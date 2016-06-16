@@ -43,13 +43,13 @@
      */
     modelComponentChanged: function (component) {
       if (!this._cubxReady) { return; }
-      this.updateSlotsInformation();
+      this._updateSlotsInformation();
     },
 
     /**
      * Update the table which contains the information of the compound component slots
      */
-    updateSlotsInformation: function () {
+    _updateSlotsInformation: function () {
       var iSlotsInfoTable = document.getElementById('i_slots_info_table');
       var oSlotsInfoTable = document.getElementById('o_slots_info_table');
       var row;

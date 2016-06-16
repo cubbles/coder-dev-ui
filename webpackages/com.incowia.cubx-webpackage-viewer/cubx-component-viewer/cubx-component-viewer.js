@@ -78,7 +78,7 @@
      * @private
      */
     _updateView: function () {
-      var component = this.searchComponentInManifest(this.getComponentArtifactId(), this.getManifest());
+      var component = this._searchComponentInManifest(this.getComponentArtifactId(), this.getManifest());
       if (component) {
         this.setComponent(component);
         if (this.getShowTitle()) {
@@ -89,7 +89,7 @@
             this.setViewerTitle(this.ELEMENTARY_TITLE);
           }
         }
-        this.drawComponent(this.generateComponentGraph());
+        this._drawComponent(this._generateComponentGraph());
       } else {
         console.error('The component with ' + this.getComponentArtifactId() + ' artifactId was not found');
         return;
@@ -100,19 +100,19 @@
      * Generate the KGraph that represents a component
      * @returns {{id: string, children: Array}} KGraph to be used to build and display the component
      */
-    generateComponentGraph: function () {
+    _generateComponentGraph: function () {
       if (!this._cubxReady) { return; }
       var componentGraph = {id: 'root', children: []};
-      var rootComponent = this.generateGraphMember(
+      var rootComponent = this._generateGraphMember(
         this.getComponent(),
         undefined,
         this.getManifest(),
         {portLabelPlacement: 'OUTSIDE', borderSpacing: this.ROOT_BORDER_SPACE}
       );
-      rootComponent.children = this.generateGraphMembers(this.getComponent().members);
+      rootComponent.children = this._generateGraphMembers(this.getComponent().members);
 
       componentGraph.children.push(rootComponent);
-      componentGraph.edges = this.generateGraphConnections(this.getComponent().connections,
+      componentGraph.edges = this._generateGraphConnections(this.getComponent().connections,
         this.getComponent().artifactId);
       return componentGraph;
     },
@@ -123,7 +123,7 @@
      * @param {Array} compoundsMembers - Components which belong to a compound component
      * @returns {Array} List of GraphMembers (KNodes)
      */
-    generateGraphMembers: function (compoundsMembers) {
+    _generateGraphMembers: function (compoundsMembers) {
       var graphMember;
       var component;
       var manifest;
@@ -131,8 +131,8 @@
       for (var k in compoundsMembers) {
         var componentArtifactId = compoundsMembers[k].componentId.substr(compoundsMembers[k].componentId.indexOf('/') + 1);
         manifest = this._manifestOfMember(compoundsMembers[k]);
-        component = this.searchComponentInManifest(componentArtifactId, manifest);
-        graphMember = this.generateGraphMember(component, compoundsMembers[k], manifest);
+        component = this._searchComponentInManifest(componentArtifactId, manifest);
+        graphMember = this._generateGraphMember(component, compoundsMembers[k], manifest);
         graphMembers.push(graphMember);
       }
       return graphMembers;
@@ -146,16 +146,16 @@
      * @param {object[]} [optionals] - Optional parameters
      * @returns {object}
      */
-    generateGraphMember: function (component, member, manifest, optionals) {
+    _generateGraphMember: function (component, member, manifest, optionals) {
       var memberId;
       if (member) {
         memberId = member.memberId;
       }
-      var graphMemberSlots = this.generateGraphMemberSlots(component, memberId || component.artifactId);
+      var graphMemberSlots = this._generateGraphMemberSlots(component, memberId || component.artifactId);
       var webpackageQName = (manifest.groupId) ? manifest.groupId + '.' + manifest.name : manifest.name;
       var webpackageInfo = ':' + webpackageQName + '@' + manifest.version;
       var artifactId = '/' + component.artifactId;
-      var header = this.generateComponentHeader(memberId, webpackageInfo, artifactId);
+      var header = this._generateComponentHeader(memberId, webpackageInfo, artifactId);
 
       var graphMember = {
         id: memberId || component.artifactId,
@@ -185,7 +185,7 @@
      * @param artifactId - Artifact id of the component
      * @returns {{labels: *[], width: number}}
      */
-    generateComponentHeader: function (memberId, webpackageInfo, artifactId) {
+    _generateComponentHeader: function (memberId, webpackageInfo, artifactId) {
       var memberIdWidth = (memberId) ? memberId.length * this.COMPONENT_LABEL_LETTER_WIDTH : 0;
       var webpackageInfoWidth = webpackageInfo.length * this.COMPONENT_LABEL_LETTER_WIDTH * (memberId ? 0.85 : 1);
       var artifactIdWidth = artifactId.length * this.COMPONENT_LABEL_LETTER_WIDTH * (memberId ? 0.85 : 1);
@@ -228,7 +228,7 @@
      * @param {string} memberId - memberId of the component within a compoundComponent
      * @returns {{slots: Array, slotsWidth: number}} - List of slots and the width of the widest slot
      */
-    generateGraphMemberSlots: function (member, memberId) {
+    _generateGraphMemberSlots: function (member, memberId) {
       var graphMemberSlots = [];
       var graphMemberSlot;
       var maxSlotWidthLeft = 0;
@@ -246,7 +246,7 @@
             maxSlotWidthRight = Math.max(slotLabelWidth, maxSlotWidthRight);
             outputSlots++;
           }
-          graphMemberSlot = this.generateGraphMemberSlot(member.slots[l], member.slots[l].direction[m], memberId);
+          graphMemberSlot = this._generateGraphMemberSlot(member.slots[l], member.slots[l].direction[m], memberId);
           graphMemberSlots.push(graphMemberSlot);
         }
       }
@@ -264,7 +264,7 @@
      * @param {string} direction - direction of the slot (input, output)
      * @returns {object} Generated slot (port)
      */
-    generateGraphMemberSlot: function (slot, direction, memberId) {
+    _generateGraphMemberSlot: function (slot, direction, memberId) {
       var graphMemberSlot = {
         id: slot.slotId + '_' + memberId + '_' + direction,
         properties: {
@@ -288,11 +288,11 @@
      * @param {string} compoundId - artifactId of the compound component
      * @returns {Array} Generated connections
      */
-    generateGraphConnections: function (compoundConnections, compoundId) {
+    _generateGraphConnections: function (compoundConnections, compoundId) {
       var connection;
       var connections = [];
       for (var n in compoundConnections) {
-        connection = this.generateGraphConnection(compoundConnections[n], compoundId);
+        connection = this._generateGraphConnection(compoundConnections[n], compoundId);
         connections.push(connection);
       }
       return connections;
@@ -304,7 +304,7 @@
      * @param {string} compoundId - artifactId of the compound component
      * @returns {object} Generated connection
      */
-    generateGraphConnection: function (compoundConnection, compoundId) {
+    _generateGraphConnection: function (compoundConnection, compoundId) {
       var source;
       var sourcePort = compoundConnection.source.slot + '_';
       if (compoundConnection.source.memberIdRef) {
@@ -367,13 +367,13 @@
      * @param {object} manifest - Manifest where the component will be searched
      * @returns {object} Found component
      */
-    searchComponentInManifest: function (componentArtifactId, manifest) {
+    _searchComponentInManifest: function (componentArtifactId, manifest) {
       if (!manifest.artifacts) {
         console.error('The manifest has no artifacts');
       }
-      var componentDefinition = this.searchComponentInList(componentArtifactId, manifest.artifacts.elementaryComponents);
+      var componentDefinition = this._searchComponentInList(componentArtifactId, manifest.artifacts.elementaryComponents);
       if (!componentDefinition) {
-        componentDefinition = this.searchComponentInList(componentArtifactId, manifest.artifacts.compoundComponents);
+        componentDefinition = this._searchComponentInList(componentArtifactId, manifest.artifacts.compoundComponents);
       }
       return componentDefinition;
     },
@@ -384,7 +384,7 @@
      * @param {Array} componentsList - Array where the component will be searched
      * @returns {*}
      */
-    searchComponentInList: function (componentId, componentsList) {
+    _searchComponentInList: function (componentId, componentsList) {
       for (var i in componentsList) {
         if (componentsList[i].artifactId === componentId) {
           return componentsList[i];
@@ -396,7 +396,7 @@
     /**
      * Center the component view horizontally and vertically and set and translate the zoom behavior to the center
      */
-    centerDiagramAndSetZoomBehavior: function () {
+    _centerDiagramAndSetZoomBehavior: function () {
       var componentViewHolderSvg = $('#' + this.VIEW_HOLDER_CSS_CLASS + '_svg');
       var componentViewHolderContainer = d3.select('#' + this.VIEW_HOLDER_CSS_CLASS + '_container');
       var newX = (componentViewHolderSvg.width() / 2) - (componentViewHolderContainer.node().getBBox().width / 2);
@@ -417,7 +417,7 @@
      * Build and append all the graphic elements of a component described by a Kgraph
      * @param {object} componentGraph - JSON KGraph to be displayed
      */
-    drawComponent: function (componentGraph) {
+    _drawComponent: function (componentGraph) {
       // group
       d3.select('#' + this.VIEW_HOLDER_CSS_CLASS).html('');
       var self = this;
@@ -454,8 +454,8 @@
         var connectionsData = root.selectAll('.link')
           .data(connections, function (d) { return d.id; });
 
-        self.drawMembers(componentsData);
-        self.drawConnections(connectionsData);
+        self._drawMembers(componentsData);
+        self._drawConnections(connectionsData);
       });
       layouter.kgraph(componentGraph);
     },
@@ -464,7 +464,7 @@
      * Draw a square for each component and its id as label
      * @param {Object} componentsData - Data of each component (D3)
      */
-    drawMembers: function (componentsData) {
+    _drawMembers: function (componentsData) {
       var self = this;
       var componentView = componentsData.enter()
         .append('g')
@@ -519,7 +519,7 @@
         .attr('height', function (d) { return d.height; })
         .each('end', function (d) {
           if (d.id === 'root') {
-            self.centerDiagramAndSetZoomBehavior();
+            self._centerDiagramAndSetZoomBehavior();
           }
         });
 
@@ -541,14 +541,14 @@
         .attr('x', function (d, i, j) { return componentViewLabel[j].parentNode.__data__.width / 2; })
         .attr('y', function (d) { return d.y + d.height + self.HEADER_MARGIN; });
 
-      this.drawComponentsSlots(componentsData);
+      this._drawComponentsSlots(componentsData);
     },
 
     /**
      * Draw the components' slots and their ids as labels
      * @param {Object} componentsData - Data of each component (D3)
      */
-    drawComponentsSlots: function (componentsData) {
+    _drawComponentsSlots: function (componentsData) {
       var self = this;
 
       // slots
@@ -595,7 +595,7 @@
      * Draw the connections and their ids as labels
      * @param {Object} connectionData - Data of each connection (D3)
      */
-    drawConnections: function (connectionData) {
+    _drawConnections: function (connectionData) {
       var self = this;
       // build the arrow.
       this.svg.append('svg:defs').selectAll('marker')
