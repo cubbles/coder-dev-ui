@@ -61,7 +61,7 @@
      *  Observe the Cubbles-Component-Model: If value for slot 'componentArtifactId' has changed ...
      */
     modelComponentArtifactIdChanged: function (componentArtifactId) {
-      if (!this.getManifest()) return;
+      if (!this.getManifest() || !componentArtifactId) return;
       this._updateView();
     },
 
