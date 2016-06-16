@@ -1,4 +1,4 @@
-/*global $, JSONEditor, location*/
+/*global $, JSONEditor*/
 (function () {
   'use strict';
   /**
@@ -39,11 +39,46 @@
      * Manipulate an element’s local DOM when the cubbles framework is initialized and ready to work.
      */
     cubxReady: function () {
+      this.$$('#hideElementsButton').style.display = 'none';
       this._addListenerToHideElementsButton();
     },
 
     /**
+     *  Observe the Cubbles-Component-Model: If value for slot 'manifest' has changed ...
+     */
+    modelManifestChanged: function (manifest) {
+      this.setCurrentComponentArtifactId(undefined);
+      if (!this.getSchemaLoaded()) return;
+      this._loadStructureView();
+    },
+
+    /**
+     *  Observe the Cubbles-Component-Model: If value for slot 'schema' has changed ...
+     */
+    modelSchemaChanged: function (schema) {
+      for (var prop in this.getSchema().properties.artifacts.properties) {
+        this.getSchema().properties.artifacts.properties[prop].format = 'tabs';
+      }
+      this.getSchema().properties.contributors.format = 'table';
+
+      var artifacts = ['appArtifact', 'elementaryArtifact', 'compoundArtifact'];
+      for (var i in artifacts) {
+        this.getSchema().definitions[artifacts[i]].properties.runnables.format = 'table';
+        this.getSchema().definitions[artifacts[i]].properties.endpoints.format = 'tabs';
+      }
+      this.getSchema().definitions.elementaryArtifact.properties.slots.format = 'tabs';
+      this.getSchema().definitions.compoundArtifact.properties.slots.format = 'tabs';
+      this.getSchema().definitions.compoundArtifact.properties.members.format = 'table';
+      this.getSchema().definitions.compoundArtifact.properties.connections.format = 'tabs';
+      this.getSchema().definitions.compoundArtifact.properties.inits.format = 'table';
+      if (this.getManifestLoaded()) {
+        this._loadStructureView();
+      }
+    },
+
+    /**
      * Add a click event to the hideElementsButton
+     * @private
      */
     _addListenerToHideElementsButton: function () {
       var self = this;
@@ -62,71 +97,52 @@
 
     /**
      * Show the empty properties in the structure view
+     * @private
      */
     _showEmptyProperties: function () {
-      this.structureView.editors.root._showEmptyProperties();
+      this.structureView.editors.root.showEmptyProperties();
       this.hiddenProperties = false;
     },
 
     /**
      * Hide the empty properties in the structure view
+     * @private
      */
     _hideEmptyProperties: function () {
-      this.structureView.editors.root._hideEmptyProperties();
+      this.structureView.editors.root.hideEmptyProperties();
       this.hiddenProperties = true;
     },
 
     /**
-     *  Observe the Cubbles-Component-Model: If value for slot 'manifest' has changed ...
-     */
-    modelManifestChanged: function (manifest) {
-      if (!this.getSchemaLoaded()) return;
-      this._setManifestToStructureViewer();
-    },
-
-    /**
-     *  Observe the Cubbles-Component-Model: If value for slot 'schema' has changed ...
-     */
-    modelSchemaChanged: function (schema) {
-      for (var prop in schema.properties.artifacts.properties) {
-        schema.properties.artifacts.properties[prop].format = 'tabs';
-      }
-      schema.properties.contributors.format = 'table';
-
-      var artifacts = ['appArtifact', 'elementaryArtifact', 'compoundArtifact'];
-      for (var i in artifacts) {
-        schema.definitions[artifacts[i]].properties.runnables.format = 'table';
-        schema.definitions[artifacts[i]].properties.endpoints.format = 'tabs';
-      }
-      schema.definitions.elementaryArtifact.properties.slots.format = 'tabs';
-      schema.definitions.compoundArtifact.properties.slots.format = 'tabs';
-      schema.definitions.compoundArtifact.properties.members.format = 'table';
-      schema.definitions.compoundArtifact.properties.connections.format = 'tabs';
-      schema.definitions.compoundArtifact.properties.inits.format = 'table';
-      this._loadStructureView(schema);
-      if (this.getManifestLoaded()) {
-        this._setManifestToStructureViewer();
-      }
-      this._hideRootLabel();
-    },
-
-    /**
-     * Set the manifest to the structureView as value and perform necessary actions for the structureView to work well
+     * Perform the necessary actions before loading the structure
      * @private
      */
-    _setManifestToStructureViewer: function () {
-      this.structureView.setValue(this.getManifest());
+    _beforeLoadingStructure: function () {
+      this.$$('#hideElementsButton').style.display = 'none';
+      var viewer = this.$$('[data-schemaid="root"]');
+      if (viewer) {
+        this.$$('#structure_view_holder').removeChild(viewer);
+      }
+    },
+    /**
+     * Perform the necessary actions after loading the structure
+     * @private
+     */
+    _afterLoadingStructure: function () {
+      this._hideRootLabel();
       this._addViewDataflowButtons();
       this._hideEmptyProperties();
+      this.$$('#hideElementsButton').style.display = 'block';
       $('[data-toggle="popover"]').popover();
       $('[data-toggle="tooltip"]').tooltip();
     },
 
     /**
      * Load the structureView which is a json-editor
-     * @param {object} schema - JSON schema of the structureView
+     * @private
      */
-    _loadStructureView: function (schema) {
+    _loadStructureView: function () {
+      this._beforeLoadingStructure();
       this._setStructureViewOptions();
       this.structureView = new JSONEditor(document.getElementById(this.structureHolderId), {
         theme: 'bootstrap3',
@@ -139,12 +155,15 @@
         disable_array_add: true,
         disable_array_delete: true,
         asViewer: true,
-        schema: schema
+        schema: this.getSchema(),
+        startval: this.getManifest()
       });
+      this._afterLoadingStructure();
     },
 
     /**
      * Set the json-editors' default options.
+     * @private
      */
     _setStructureViewOptions: function () {
       JSONEditor.defaults.editors.array.options.collapsed = true;
@@ -153,6 +172,7 @@
 
     /**
      * Add a button to each compound components view, to display its dataflow view
+     * @private
      */
     _addViewDataflowButtons: function () {
       var self = this;
@@ -172,6 +192,7 @@
      * Create a button to display the view of a certain component
      * @param {number} componentIndex - Index of the component within artifacts array of manifest
      * @param {string} componentsKey - Key in artifacts -> compoundComponents or elementaryComponents
+     * @private
      */
     _createViewComponentButton: function (componentIndex, componentsKey) {
       var self = this;
@@ -200,6 +221,7 @@
     /**
      * Updates the artifactId of the current compound component
      * @param {object} component - New current component
+     * @private
      */
     _updateCurrentComponent: function (component) {
       this.setCurrentComponentArtifactId(component.artifactId);
@@ -207,6 +229,7 @@
 
     /**
      * Hides the root label and button generated bx the json-editor library
+     * @private
      */
     _hideRootLabel: function () {
       $('[data-schemaid = "root"]').find('label:first').css('display', 'none');

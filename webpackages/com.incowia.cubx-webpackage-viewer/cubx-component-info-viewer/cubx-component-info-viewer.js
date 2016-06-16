@@ -48,6 +48,7 @@
 
     /**
      * Update the table which contains the information of the compound component slots
+     * @private
      */
     _updateSlotsInformation: function () {
       var iSlotsInfoTable = document.getElementById('i_slots_info_table');

@@ -99,6 +99,7 @@
     /**
      * Generate the KGraph that represents a component
      * @returns {{id: string, children: Array}} KGraph to be used to build and display the component
+     * @private
      */
     _generateComponentGraph: function () {
       if (!this._cubxReady) { return; }
@@ -122,6 +123,7 @@
      * is defined in manifest
      * @param {Array} compoundsMembers - Components which belong to a compound component
      * @returns {Array} List of GraphMembers (KNodes)
+     * @private
      */
     _generateGraphMembers: function (compoundsMembers) {
       var graphMember;
@@ -144,7 +146,8 @@
      * @param {string} member - Member of a compoundComponent
      * @param {object} manifest - Manifest of the component
      * @param {object[]} [optionals] - Optional parameters
-     * @returns {object}
+     * @returns {object} GraphMember (Knode)
+     * @private
      */
     _generateGraphMember: function (component, member, manifest, optionals) {
       var memberId;
@@ -184,6 +187,7 @@
      * @param webpackageInfo - :webpackageQName@version
      * @param artifactId - Artifact id of the component
      * @returns {{labels: *[], width: number}}
+     * @private
      */
     _generateComponentHeader: function (memberId, webpackageInfo, artifactId) {
       var memberIdWidth = (memberId) ? memberId.length * this.COMPONENT_LABEL_LETTER_WIDTH : 0;
@@ -227,6 +231,7 @@
      * @param {object} member - Component which is a member of a compound component
      * @param {string} memberId - memberId of the component within a compoundComponent
      * @returns {{slots: Array, slotsWidth: number}} - List of slots and the width of the widest slot
+     * @private
      */
     _generateGraphMemberSlots: function (member, memberId) {
       var graphMemberSlots = [];
@@ -263,6 +268,7 @@
      * @param {string} memberId - memberId of the component within a compoundComponent
      * @param {string} direction - direction of the slot (input, output)
      * @returns {object} Generated slot (port)
+     * @private
      */
     _generateGraphMemberSlot: function (slot, direction, memberId) {
       var graphMemberSlot = {
@@ -287,6 +293,7 @@
      * @param {Array} compoundConnections - List of connections of a compound component
      * @param {string} compoundId - artifactId of the compound component
      * @returns {Array} Generated connections
+     * @private
      */
     _generateGraphConnections: function (compoundConnections, compoundId) {
       var connection;
@@ -303,6 +310,7 @@
      * @param {object} compoundConnection - Connection within the compound component
      * @param {string} compoundId - artifactId of the compound component
      * @returns {object} Generated connection
+     * @private
      */
     _generateGraphConnection: function (compoundConnection, compoundId) {
       var source;
@@ -342,6 +350,7 @@
      * Returns the manifest of a member
      * @param {object} member - Member of a compound component
      * @returns {object} - Manifest of the component
+     * @private
      */
     _manifestOfMember: function (member) {
       var manifest = {};
@@ -366,6 +375,7 @@
      * @param {string} componentArtifactId - Artifact id of the component
      * @param {object} manifest - Manifest where the component will be searched
      * @returns {object} Found component
+     * @private
      */
     _searchComponentInManifest: function (componentArtifactId, manifest) {
       if (!manifest.artifacts) {
@@ -383,6 +393,7 @@
      * @param {string} componentId - Id of the component to be searched
      * @param {Array} componentsList - Array where the component will be searched
      * @returns {*}
+     * @private
      */
     _searchComponentInList: function (componentId, componentsList) {
       for (var i in componentsList) {
@@ -395,6 +406,7 @@
 
     /**
      * Center the component view horizontally and vertically and set and translate the zoom behavior to the center
+     * @private
      */
     _centerDiagramAndSetZoomBehavior: function () {
       var componentViewHolderSvg = $('#' + this.VIEW_HOLDER_CSS_CLASS + '_svg');
@@ -416,6 +428,7 @@
     /**
      * Build and append all the graphic elements of a component described by a Kgraph
      * @param {object} componentGraph - JSON KGraph to be displayed
+     * @private
      */
     _drawComponent: function (componentGraph) {
       // group
@@ -463,6 +476,7 @@
     /**
      * Draw a square for each component and its id as label
      * @param {Object} componentsData - Data of each component (D3)
+     * @private
      */
     _drawMembers: function (componentsData) {
       var self = this;
@@ -547,6 +561,7 @@
     /**
      * Draw the components' slots and their ids as labels
      * @param {Object} componentsData - Data of each component (D3)
+     * @private
      */
     _drawComponentsSlots: function (componentsData) {
       var self = this;
@@ -594,6 +609,7 @@
     /**
      * Draw the connections and their ids as labels
      * @param {Object} connectionData - Data of each connection (D3)
+     * @private
      */
     _drawConnections: function (connectionData) {
       var self = this;
