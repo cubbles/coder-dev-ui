@@ -15,28 +15,27 @@
 
     _cubxReady: false,
     DEFAULT_VIEWER_HEIGHT: window.innerHeight * 0.7,
+    ROOT_BORDER_SPACE: 70,
+    HEADER_MARGIN: 5,
     COMPONENT_LABEL_HEIGHT: 18,
     COMPONENT_LABEL_LETTER_WIDTH: 9,
-    SLOT_LABELS_SPACE: 10,
-    SLOT_HEIGHT: 10,
-    SLOT_LABEL_LETTER_WIDTH: 7,
-    SLOT_RADIUS: 5,
-    CONNECTION_LABEL_LETTER_WIDTH: 7,
-    CONNECTION_HEIGHT: 10,
-    SLOTS_AREA_MARGIN: 10,
-    ROOT_BORDER_SPACE: 70,
-    MEMBER_BORDER_SPACE: 12,
-    SLOT_SPACE: 11,
     COMPOUND_TITLE: 'Dataflow view',
     ELEMENTARY_TITLE: 'Interface view',
     VIEW_HOLDER_CSS_CLASS: 'component_view_holder',
-    HEADER_MARGIN: 5,
+    SLOT_LABELS_SPACE: 10,
+    SLOT_LABEL_LETTER_WIDTH: 7,
+    SLOT_RADIUS: 5,
+    SLOTS_AREA_MARGIN: 10,
+    SLOT_SPACE: 11,
+    CONNECTION_LABEL_LETTER_WIDTH: 6,
+    CONNECTION_LABEL_MARGIN: 20,
+    CONNECTION_HEIGHT: 10,
 
     /**
      * Manipulate an element’s local DOM when the element is created.
      */
     created: function () {
-      this.HEADER_HEIGHT = this.COMPONENT_LABEL_HEIGHT * 5 + this.HEADER_MARGIN * 2;
+      this.SLOT_DIAMETER = this.SLOT_RADIUS * 2;
     },
 
     /**
@@ -145,8 +144,6 @@
      * @param {string} member - Member of a compoundComponent
      * @param {object} manifest - Manifest of the component
      * @param {object[]} [optionals] - Optional parameters
-     * @param {string} [optionals[].portLabelPlacement='INSIDE']- Placement of the slots for the node
-     * @param {number} [optionals[].borderSpacing=12] - Optional parameters
      * @returns {object}
      */
     generateGraphMember: function (component, member, manifest, optionals) {
@@ -164,17 +161,18 @@
         id: memberId || component.artifactId,
         labels: header.labels,
         width: Math.max(graphMemberSlots.slotsWidth + this.SLOT_LABELS_SPACE, header.width),
-        height: graphMemberSlots.slotsHeight + this.HEADER_HEIGHT,
+        height: graphMemberSlots.slotsHeight + header.height,
         ports: graphMemberSlots.slots,
+        headerHeight: header.height,
         properties: {
           portConstraints: 'FIXED_SIDE',
           portLabelPlacement: (optionals) ? optionals.portLabelPlacement : 'INSIDE',
           nodeLabelPlacement: 'V_TOP H_CENTER',
           portAlignment: 'BEGIN',
           portSpacing: this.SLOT_SPACE,
-          additionalPortSpace: 'top=' + (this.HEADER_HEIGHT + this.SLOTS_AREA_MARGIN) +
+          additionalPortSpace: 'top=' + (header.height + this.SLOTS_AREA_MARGIN * 1.5) +
           ', bottom=' + this.SLOTS_AREA_MARGIN + ',left=0,right=0',
-          borderSpacing: (optionals) ? optionals.borderSpacing : this.MEMBER_BORDER_SPACE
+          borderSpacing: (optionals) ? optionals.borderSpacing : 0
         }
       };
       return graphMember;
@@ -192,27 +190,36 @@
       var webpackageInfoWidth = webpackageInfo.length * this.COMPONENT_LABEL_LETTER_WIDTH * (memberId ? 0.85 : 1);
       var artifactIdWidth = artifactId.length * this.COMPONENT_LABEL_LETTER_WIDTH * (memberId ? 0.85 : 1);
 
+      var memberIdHeight = (memberId) ? this.COMPONENT_LABEL_HEIGHT : 0;
+      var webpackageInfoHeight = this.COMPONENT_LABEL_HEIGHT + this.HEADER_MARGIN * (memberId ? 3 : 0);
+      var artifactIdHeight = this.COMPONENT_LABEL_HEIGHT * 0.8;
+
       var labels = [
         {
           text: memberId || '',
           width: memberIdWidth,
-          height: (memberId) ? this.COMPONENT_LABEL_HEIGHT : 0,
+          height: memberIdHeight,
           className: 'memberIdLabel'
         },
         {
           text: webpackageInfo,
           width: webpackageInfoWidth,
-          height: this.COMPONENT_LABEL_HEIGHT + this.HEADER_MARGIN * (memberId ? 3 : 0),
+          height: webpackageInfoHeight,
           className: memberId ? 'componentNameLabel' : 'componentNameRootLabel'
         },
         {
           text: artifactId,
           width: artifactIdWidth,
-          height: this.COMPONENT_LABEL_HEIGHT * 0.8,
+          height: artifactIdHeight,
           className: memberId ? 'componentNameLabel' : 'componentNameRootLabel'
         }
       ];
-      return {labels: labels, width: Math.max(memberIdWidth, artifactIdWidth, webpackageInfoWidth)};
+
+      return {
+        labels: labels,
+        width: Math.max(memberIdWidth, artifactIdWidth, webpackageInfoWidth),
+        height: memberIdHeight + webpackageInfoHeight + artifactIdHeight + this.HEADER_MARGIN * 4
+      };
     },
 
     /**
@@ -246,7 +253,7 @@
       return {
         slots: graphMemberSlots,
         slotsWidth: maxSlotWidthLeft + maxSlotWidthRight,
-        slotsHeight: Math.max(inputSlots, outputSlots) * (this.SLOT_HEIGHT + this.SLOT_SPACE) + this.SLOTS_AREA_MARGIN
+        slotsHeight: Math.max(inputSlots, outputSlots) * (this.SLOT_DIAMETER + this.SLOT_SPACE) + this.SLOTS_AREA_MARGIN
       };
     },
 
@@ -261,14 +268,14 @@
       var graphMemberSlot = {
         id: slot.slotId + '_' + memberId + '_' + direction,
         properties: {
-          portSide: (direction === 'input') ? 'WEST' : 'EAST'
+          portSide: (direction === 'input') ? 'WEST' : 'EAST',
+          portAnchor: (direction === 'input') ? '(0.0, 0.5)' : '(0.0, 0.5)'
         },
         labels: [{
           text: slot.slotId,
-          width: slot.slotId.length * this.SLOT_LABEL_LETTER_WIDTH,
-          height: this.SLOT_HEIGHT
+          width: slot.slotId.length * this.SLOT_LABEL_LETTER_WIDTH
         }],
-        height: this.SLOT_HEIGHT,
+        height: this.SLOT_DIAMETER,
         description: slot.description || '-',
         type: slot.type || 'any'
       };
@@ -364,9 +371,9 @@
       if (!manifest.artifacts) {
         console.error('The manifest has no artifacts');
       }
-      var componentDefinition = this.searchComponentIn(componentArtifactId, manifest.artifacts.elementaryComponents);
+      var componentDefinition = this.searchComponentInList(componentArtifactId, manifest.artifacts.elementaryComponents);
       if (!componentDefinition) {
-        componentDefinition = this.searchComponentIn(componentArtifactId, manifest.artifacts.compoundComponents);
+        componentDefinition = this.searchComponentInList(componentArtifactId, manifest.artifacts.compoundComponents);
       }
       return componentDefinition;
     },
@@ -377,7 +384,7 @@
      * @param {Array} componentsList - Array where the component will be searched
      * @returns {*}
      */
-    searchComponentIn: function (componentId, componentsList) {
+    searchComponentInList: function (componentId, componentsList) {
       for (var i in componentsList) {
         if (componentsList[i].artifactId === componentId) {
           return componentsList[i];
@@ -490,7 +497,7 @@
 
       headingAtom.transition()
         .attr('width', function (d) { return d.width; })
-        .attr('height', this.HEADER_HEIGHT);
+        .attr('height', function (d) { return d.headerHeight; });
 
       var splitLine = componentView.append('line')
         .attr('class', 'splitLine ' + self.is);
@@ -498,12 +505,8 @@
       splitLine.transition()
         .attr('x1', 0)
         .attr('x2', function (d) { return d.width; })
-        .attr('y1', function (d) {
-          return d.children ? self.COMPONENT_LABEL_HEIGHT * 3 : self.HEADER_HEIGHT - self.SLOTS_AREA_MARGIN;
-        })
-        .attr('y2', function (d) {
-          return d.children ? self.COMPONENT_LABEL_HEIGHT * 3 : self.HEADER_HEIGHT - self.SLOTS_AREA_MARGIN;
-        });
+        .attr('y1', function (d) { return d.headerHeight; })
+        .attr('y2', function (d) { return d.headerHeight; });
 
       // Apply componentView positions
       componentView.transition()
@@ -547,17 +550,6 @@
      */
     drawComponentsSlots: function (componentsData) {
       var self = this;
-      // var slotsAtom = componentsData.append('g')
-      //   .attr('class', 'slotsAtom ' + self.is);
-      //
-      // slotsAtom.transition()
-      //   .attr('width', function (d) { return d.width; })
-      //   .attr('height', function (d) { return d.height - self.HEADER_HEIGHT; });
-      //
-      // slotsAtom.transition()
-      //   .attr('transform', function (d) {
-      //     return 'translate(' + 0 + ' ' + self.HEADER_HEIGHT + ')';
-      //   });
 
       // slots
       var slotView = componentsData.selectAll('.slotView')
@@ -587,9 +579,10 @@
         .enter()
         .append('text')
         .text(function (d) { return d.text; })
+        .attr('dominant-baseline', 'central')
         .attr('text-anchor', function (d) { return (d.x > 0) ? 'start' : 'end'; })
         .attr('x', function (d) { return (d.x > 0) ? d.x + self.SLOT_RADIUS : -self.SLOT_RADIUS * 2; })
-        .attr('y', function (d) { return (d.y > 0) ? d.y - self.SLOT_RADIUS * 2 : d.y + self.SLOT_RADIUS * 0.6; })
+        .attr('y', 0)
         .attr('class', 'slotViewLabel ' + self.is);
 
       slotView.transition()
@@ -629,46 +622,27 @@
         .attr('d', 'M0 0')
         .attr('marker-end', 'url(#end)');
 
-      // Add connections labels
       connectionData.enter()
         .append('text')
         .attr('class', 'connectionViewLabel ' + self.is)
-        .attr('text-anchor', 'middle')
-        .attr('x', function (d) { return (d.sourcePoint.x + d.targetPoint.x) / 2; })
-        .attr('y', function (d) { return d.labels[0].y + d.labels[0].height * 1.8; })
+        .attr('text-anchor', 'start')
+        .attr('dominant-baseline', 'text-before-edge')
+        .attr('x', function (d) {
+          return d.sourcePoint.x + self.CONNECTION_LABEL_MARGIN;
+        })
+        .attr('y', function (d) { return d.labels[0].y + d.labels[0].height + self.SLOT_RADIUS; })
         .text(function (d) { return d.labels[0].text || ''; });
 
       // Apply connections routes
       connectionView.transition().attr('d', function (d) {
         var path = '';
-        path += 'M' + (d.sourcePoint.x + self.SLOT_RADIUS) + ' ' + (d.sourcePoint.y - self.SLOT_RADIUS) + ' ';
+        path += 'M' + (d.sourcePoint.x + self.SLOT_RADIUS) + ' ' + d.sourcePoint.y + ' ';
         (d.bendPoints || []).forEach(function (bp, i) {
-          path += 'L' + bp.x + ' ' + (bp.y - self.SLOT_RADIUS) + ' ';
+          path += 'L' + bp.x + ' ' + bp.y + ' ';
         });
-        path += 'L' + (d.targetPoint.x - self.SLOT_RADIUS) + ' ' + (d.targetPoint.y - self.SLOT_RADIUS) + ' ';
+        path += 'L' + (d.targetPoint.x - self.SLOT_RADIUS) + ' ' + d.targetPoint.y + ' ';
         return path;
       });
-
-      // Add connections labels
-      // connectionData.enter()
-      //   .append('text')
-      //   .attr('class', 'connectionViewLabel ' + self.is)
-      //   .attr('text-anchor', 'middle')
-      //   .attr('x', function (d) { return (d.sourcePoint.x + d.targetPoint.x) / 2; })
-      //   .attr('y', function (d) { return self.HEADER_HEIGHT + d.labels[0].y + d.labels[0].height * 2.2; })
-      //   .text(function (d) { return d.labels[0].text || ''; });
-      //
-      // // Apply connections routes
-      // connectionView.transition().attr('d', function (d) {
-      //   var path = '';
-      //   path += 'M' + (d.sourcePoint.x + self.SLOT_RADIUS) + ' ' + (d.sourcePoint.y + self.HEADER_HEIGHT - self.SLOT_RADIUS) + ' ';
-      //   (d.bendPoints || []).forEach(function (bp, i) {
-      //     var y = (bp.y < d.sourcePoint.y - self.SLOT_RADIUS && bp.y < d.targetPoint.y - self.SLOT_RADIUS) ? bp.y : bp.y + self.HEADER_HEIGHT;
-      //     path += 'L' + bp.x + ' ' + (y - self.SLOT_RADIUS) + ' ';
-      //   });
-      //   path += 'L' + (d.targetPoint.x - self.SLOT_RADIUS) + ' ' + (d.targetPoint.y + self.HEADER_HEIGHT - self.SLOT_RADIUS) + ' ';
-      //   return path;
-      // });
     }
   });
 }());
