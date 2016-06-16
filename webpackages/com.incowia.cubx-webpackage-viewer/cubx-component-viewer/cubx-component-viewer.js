@@ -36,7 +36,7 @@
      * Manipulate an element’s local DOM when the element is created.
      */
     created: function () {
-      this.HEADER_HEIGHT = this.COMPONENT_LABEL_HEIGHT * 5 + this.SLOTS_AREA_MARGIN;
+      this.HEADER_HEIGHT = this.COMPONENT_LABEL_HEIGHT * 5 + this.HEADER_MARGIN * 2;
     },
 
     /**
@@ -172,6 +172,8 @@
           nodeLabelPlacement: 'V_TOP H_CENTER',
           portAlignment: 'BEGIN',
           portSpacing: this.SLOT_SPACE,
+          additionalPortSpace: 'top=' + (this.HEADER_HEIGHT + this.SLOTS_AREA_MARGIN) +
+          ', bottom=' + this.SLOTS_AREA_MARGIN + ',left=0,right=0',
           borderSpacing: (optionals) ? optionals.borderSpacing : this.MEMBER_BORDER_SPACE
         }
       };
@@ -429,10 +431,9 @@
         .size([realWidth, realHeight])
         .transformGroup(root)
         .options({
-          layoutHierarchy: true,
           intCoordinates: true,
           edgeRouting: 'ORTHOGONAL',
-          nodeLayering: 'NETWORK_SIMPLEX',
+          nodeLayering: 'LONGEST_PATH',
           nodePlace: 'BRANDES_KOEPF',
           crossMin: 'LAYER_SWEEP',
           algorithm: 'de.cau.cs.kieler.klay.layered'
@@ -537,29 +538,29 @@
         .attr('x', function (d, i, j) { return componentViewLabel[j].parentNode.__data__.width / 2; })
         .attr('y', function (d) { return d.y + d.height + self.HEADER_MARGIN; });
 
-      this.drawComponentsSlots(componentView);
+      this.drawComponentsSlots(componentsData);
     },
 
     /**
      * Draw the components' slots and their ids as labels
-     * @param {Object} componentView - Data of each component (D3)
+     * @param {Object} componentsData - Data of each component (D3)
      */
-    drawComponentsSlots: function (componentView) {
+    drawComponentsSlots: function (componentsData) {
       var self = this;
-      var slotsAtom = componentView.append('g')
-        .attr('class', 'slotsAtom ' + self.is);
-
-      slotsAtom.transition()
-        .attr('width', function (d) { return d.width; })
-        .attr('height', function (d) { return d.height - self.HEADER_HEIGHT; });
-
-      slotsAtom.transition()
-        .attr('transform', function (d) {
-          return 'translate(' + 0 + ' ' + self.HEADER_HEIGHT + ')';
-        });
+      // var slotsAtom = componentsData.append('g')
+      //   .attr('class', 'slotsAtom ' + self.is);
+      //
+      // slotsAtom.transition()
+      //   .attr('width', function (d) { return d.width; })
+      //   .attr('height', function (d) { return d.height - self.HEADER_HEIGHT; });
+      //
+      // slotsAtom.transition()
+      //   .attr('transform', function (d) {
+      //     return 'translate(' + 0 + ' ' + self.HEADER_HEIGHT + ')';
+      //   });
 
       // slots
-      var slotView = slotsAtom.selectAll('.slotView')
+      var slotView = componentsData.selectAll('.slotView')
         .data(function (d) { return d.ports || []; })
         .enter()
         .append('g')
@@ -634,20 +635,40 @@
         .attr('class', 'connectionViewLabel ' + self.is)
         .attr('text-anchor', 'middle')
         .attr('x', function (d) { return (d.sourcePoint.x + d.targetPoint.x) / 2; })
-        .attr('y', function (d) { return self.HEADER_HEIGHT + d.labels[0].y + d.labels[0].height * 2.2; })
+        .attr('y', function (d) { return d.labels[0].y + d.labels[0].height * 1.8; })
         .text(function (d) { return d.labels[0].text || ''; });
 
       // Apply connections routes
       connectionView.transition().attr('d', function (d) {
         var path = '';
-        path += 'M' + (d.sourcePoint.x + self.SLOT_RADIUS) + ' ' + (d.sourcePoint.y + self.HEADER_HEIGHT - self.SLOT_RADIUS) + ' ';
+        path += 'M' + (d.sourcePoint.x + self.SLOT_RADIUS) + ' ' + (d.sourcePoint.y - self.SLOT_RADIUS) + ' ';
         (d.bendPoints || []).forEach(function (bp, i) {
-          var y = (bp.y < d.sourcePoint.y - self.SLOT_RADIUS && bp.y < d.targetPoint.y - self.SLOT_RADIUS) ? bp.y : bp.y + self.HEADER_HEIGHT;
-          path += 'L' + bp.x + ' ' + (y - self.SLOT_RADIUS) + ' ';
+          path += 'L' + bp.x + ' ' + (bp.y - self.SLOT_RADIUS) + ' ';
         });
-        path += 'L' + (d.targetPoint.x - self.SLOT_RADIUS) + ' ' + (d.targetPoint.y + self.HEADER_HEIGHT - self.SLOT_RADIUS) + ' ';
+        path += 'L' + (d.targetPoint.x - self.SLOT_RADIUS) + ' ' + (d.targetPoint.y - self.SLOT_RADIUS) + ' ';
         return path;
       });
+
+      // Add connections labels
+      // connectionData.enter()
+      //   .append('text')
+      //   .attr('class', 'connectionViewLabel ' + self.is)
+      //   .attr('text-anchor', 'middle')
+      //   .attr('x', function (d) { return (d.sourcePoint.x + d.targetPoint.x) / 2; })
+      //   .attr('y', function (d) { return self.HEADER_HEIGHT + d.labels[0].y + d.labels[0].height * 2.2; })
+      //   .text(function (d) { return d.labels[0].text || ''; });
+      //
+      // // Apply connections routes
+      // connectionView.transition().attr('d', function (d) {
+      //   var path = '';
+      //   path += 'M' + (d.sourcePoint.x + self.SLOT_RADIUS) + ' ' + (d.sourcePoint.y + self.HEADER_HEIGHT - self.SLOT_RADIUS) + ' ';
+      //   (d.bendPoints || []).forEach(function (bp, i) {
+      //     var y = (bp.y < d.sourcePoint.y - self.SLOT_RADIUS && bp.y < d.targetPoint.y - self.SLOT_RADIUS) ? bp.y : bp.y + self.HEADER_HEIGHT;
+      //     path += 'L' + bp.x + ' ' + (y - self.SLOT_RADIUS) + ' ';
+      //   });
+      //   path += 'L' + (d.targetPoint.x - self.SLOT_RADIUS) + ' ' + (d.targetPoint.y + self.HEADER_HEIGHT - self.SLOT_RADIUS) + ' ';
+      //   return path;
+      // });
     }
   });
 }());
