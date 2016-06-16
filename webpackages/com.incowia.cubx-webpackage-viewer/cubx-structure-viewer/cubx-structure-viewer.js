@@ -49,11 +49,11 @@
       var self = this;
       $('#hideElementsButton').click(function () {
         if (self.hiddenProperties) {
-          self.showEmptyProperties();
+          self._showEmptyProperties();
           $('#hideElementsButton').find('i:first').attr('class', 'glyphicon glyphicon-eye-close');
           $('#hideElementsButton').find('span:first').text('Hide empty properties');
         } else {
-          self.hideEmptyProperties();
+          self._hideEmptyProperties();
           $('#hideElementsButton').find('i:first').attr('class', 'glyphicon glyphicon-eye-open');
           $('#hideElementsButton').find('span:first').text('Show empty properties');
         }
@@ -63,16 +63,16 @@
     /**
      * Show the empty properties in the structure view
      */
-    showEmptyProperties: function () {
-      this.structureView.editors.root.showEmptyProperties();
+    _showEmptyProperties: function () {
+      this.structureView.editors.root._showEmptyProperties();
       this.hiddenProperties = false;
     },
 
     /**
      * Hide the empty properties in the structure view
      */
-    hideEmptyProperties: function () {
-      this.structureView.editors.root.hideEmptyProperties();
+    _hideEmptyProperties: function () {
+      this.structureView.editors.root._hideEmptyProperties();
       this.hiddenProperties = true;
     },
 
@@ -117,7 +117,7 @@
     _setManifestToStructureViewer: function () {
       this.structureView.setValue(this.getManifest());
       this._addViewDataflowButtons();
-      this.hideEmptyProperties();
+      this._hideEmptyProperties();
       $('[data-toggle="popover"]').popover();
       $('[data-toggle="tooltip"]').tooltip();
     },
