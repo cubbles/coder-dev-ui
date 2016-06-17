@@ -29,7 +29,7 @@
     SLOTS_AREA_MARGIN: 10,
     SLOT_SPACE: 11,
     CONNECTION_LABEL_LETTER_WIDTH: 6,
-    CONNECTION_LABEL_MARGIN: 20,
+    CONNECTION_LABEL_MARGIN: 10,
     CONNECTION_HEIGHT: 10,
 
     /**
@@ -280,7 +280,6 @@
         },
         labels: [{
           text: slot.slotId,
-          width: slot.slotId.length * this.SLOT_LABEL_LETTER_WIDTH,
           height: this.SLOT_LABEL_HEIGHT
         }],
         height: this.SLOT_DIAMETER,
@@ -650,7 +649,7 @@
         .attr('class', 'connectionViewLabel ' + self.is)
         .attr('text-anchor', 'start')
         .attr('x', function (d) {
-          return d.sourcePoint.x + self.CONNECTION_LABEL_MARGIN;
+          return d.labels[0].x + self.CONNECTION_LABEL_MARGIN;
         })
         .attr('y', function (d) {
           return d.labels[0].y + d.labels[0].height * 2.5;
