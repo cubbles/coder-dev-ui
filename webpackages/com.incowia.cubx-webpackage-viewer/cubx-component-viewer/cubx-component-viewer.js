@@ -16,21 +16,20 @@
     _cubxReady: false,
     DEFAULT_VIEWER_HEIGHT: window.innerHeight * 0.7,
     ROOT_BORDER_SPACE: 70,
-    HEADER_MARGIN: 5,
-    COMPONENT_LABEL_HEIGHT: 18,
-    COMPONENT_LABEL_LETTER_WIDTH: 9,
+    HEADER_MARGIN: 10,
+    ROOT_COMPONENT_NAME_FONT: {size: 16, family: 'arial'},
+    MEMBER_COMPONENT_NAME_FONT: {size: 12, family: 'arial'},
+    MEMBER_ID_NAME_FONT: {size: 16, family: 'arial', weight: 'bold'},
     COMPOUND_TITLE: 'Dataflow view',
     ELEMENTARY_TITLE: 'Interface view',
     VIEW_HOLDER_CSS_CLASS: 'component_view_holder',
     SLOT_LABELS_SPACE: 10,
-    SLOT_LABEL_LETTER_WIDTH: 7,
-    SLOT_LABEL_HEIGHT: 11,
+    SLOT_LABEL_FONT: {size: 12, family: 'arial'},
     SLOT_RADIUS: 5,
     SLOTS_AREA_MARGIN: 10,
     SLOT_SPACE: 11,
-    CONNECTION_LABEL_LETTER_WIDTH: 6,
+    CONNECTION_LABEL_FONT: {size: 10, family: 'arial'},
     CONNECTION_LABEL_MARGIN: 10,
-    CONNECTION_HEIGHT: 10,
 
     /**
      * Manipulate an element’s local DOM when the element is created.
@@ -191,39 +190,53 @@
      * @private
      */
     _generateComponentHeader: function (memberId, webpackageInfo, artifactId) {
-      var memberIdWidth = (memberId) ? memberId.length * this.COMPONENT_LABEL_LETTER_WIDTH : 0;
-      var webpackageInfoWidth = webpackageInfo.length * this.COMPONENT_LABEL_LETTER_WIDTH * (memberId ? 0.85 : 1);
-      var artifactIdWidth = artifactId.length * this.COMPONENT_LABEL_LETTER_WIDTH * (memberId ? 0.85 : 1);
-
-      var memberIdHeight = (memberId) ? this.COMPONENT_LABEL_HEIGHT : 0;
-      var webpackageInfoHeight = this.COMPONENT_LABEL_HEIGHT + this.HEADER_MARGIN * (memberId ? 3 : 0);
-      var artifactIdHeight = this.COMPONENT_LABEL_HEIGHT * 0.8;
-
-      var labels = [
-        {
-          text: memberId || '',
-          width: memberIdWidth,
-          height: memberIdHeight,
-          className: 'memberIdLabel'
-        },
-        {
+      var memberIdLabel;
+      var webpackageInfoLabel;
+      var artifactIdLabel;
+      if (memberId) {
+        memberIdLabel = {
+          text: memberId,
+          width: this._getTextWidth(memberId, this._fontObjectToString(this.MEMBER_ID_NAME_FONT)),
+          height: this.MEMBER_ID_NAME_FONT.size,
+          className: 'memberIdLabel',
+          fontObject: this.MEMBER_ID_NAME_FONT
+        };
+        webpackageInfoLabel = {
           text: webpackageInfo,
-          width: webpackageInfoWidth,
-          height: webpackageInfoHeight,
-          className: memberId ? 'componentNameLabel' : 'componentNameRootLabel'
-        },
-        {
+          width: this._getTextWidth(webpackageInfo, this._fontObjectToString(this.MEMBER_COMPONENT_NAME_FONT)),
+          height: this.MEMBER_COMPONENT_NAME_FONT.size + this.HEADER_MARGIN,
+          className: 'componentNameLabel',
+          fontObject: this.MEMBER_COMPONENT_NAME_FONT
+        };
+        artifactIdLabel = {
           text: artifactId,
-          width: artifactIdWidth,
-          height: artifactIdHeight,
-          className: memberId ? 'componentNameLabel' : 'componentNameRootLabel'
-        }
-      ];
+          width: this._getTextWidth(artifactId, this._fontObjectToString(this.MEMBER_COMPONENT_NAME_FONT)),
+          height: this.MEMBER_COMPONENT_NAME_FONT.size,
+          className: 'componentNameLabel',
+          fontObject: this.MEMBER_COMPONENT_NAME_FONT
+        };
+      } else {
+        memberIdLabel = {text: '', width: 0, height: 0, className: 'memberIdLabel', fontObject: {}};
+        webpackageInfoLabel = {
+          text: webpackageInfo,
+          width: this._getTextWidth(webpackageInfo, this._fontObjectToString(this.ROOT_COMPONENT_NAME_FONT)),
+          height: this.ROOT_COMPONENT_NAME_FONT.size,
+          className: 'componentNameRootLabel',
+          fontObject: this.ROOT_COMPONENT_NAME_FONT
+        };
+        artifactIdLabel = {
+          text: artifactId,
+          width: this._getTextWidth(artifactId, this._fontObjectToString(this.ROOT_COMPONENT_NAME_FONT)),
+          height: this.ROOT_COMPONENT_NAME_FONT.size,
+          className: 'componentNameRootLabel',
+          fontObject: this.ROOT_COMPONENT_NAME_FONT
+        };
+      }
 
       return {
-        labels: labels,
-        width: Math.max(memberIdWidth, artifactIdWidth, webpackageInfoWidth),
-        height: memberIdHeight + webpackageInfoHeight + artifactIdHeight + this.HEADER_MARGIN * 4
+        labels: [memberIdLabel, webpackageInfoLabel, artifactIdLabel],
+        width: Math.max(memberIdLabel.width, webpackageInfoLabel.width, artifactIdLabel.width) + this.HEADER_MARGIN * 2,
+        height: memberIdLabel.height + webpackageInfoLabel.height + artifactIdLabel.height + this.HEADER_MARGIN * 3
       };
     },
 
@@ -244,7 +257,7 @@
       var slotLabelWidth;
       for (var l in member.slots) {
         for (var m in member.slots[l].direction) {
-          slotLabelWidth = member.slots[l].slotId.length * this.SLOT_LABEL_LETTER_WIDTH;
+          slotLabelWidth = this._getTextWidth(member.slots[l].slotId, this._fontObjectToString(this.SLOT_LABEL_FONT));
           if (member.slots[l].direction[m] === 'input') {
             maxSlotWidthLeft = Math.max(slotLabelWidth, maxSlotWidthLeft);
             inputSlots++;
@@ -280,7 +293,9 @@
         },
         labels: [{
           text: slot.slotId,
-          height: this.SLOT_LABEL_HEIGHT
+          height: this.SLOT_LABEL_FONT.size,
+          // width: this._getTextWidth(slot.slotId, this._fontObjectToString(this.SLOT_LABEL_FONT)),
+          fontObject: this.SLOT_LABEL_FONT
         }],
         height: this.SLOT_DIAMETER,
         description: slot.description || '-',
@@ -336,8 +351,9 @@
         id: compoundConnection.connectionId,
         labels: [{
           text: compoundConnection.connectionId,
-          width: compoundConnection.connectionId.length * this.CONNECTION_LABEL_LETTER_WIDTH,
-          height: this.CONNECTION_HEIGHT
+          width: this._getTextWidth(compoundConnection.connectionId, this._fontObjectToString(this.CONNECTION_LABEL_FONT)),
+          height: this.CONNECTION_LABEL_FONT.size,
+          fontObject: this.CONNECTION_LABEL_FONT
         }],
         source: source,
         sourcePort: sourcePort,
@@ -550,6 +566,18 @@
         })
         .attr('class', function (d) {
           return 'componentViewHeaderLabel ' + d.className + ' ' + self.is;
+        })
+        .style('font-size', function (d) {
+          return d.fontObject.size;
+        })
+        .style('font-weight', function (d) {
+          return d.fontObject.weight;
+        })
+        .style('font-style', function (d) {
+          return d.fontObject.style;
+        })
+        .style('font-family', function (d) {
+          return d.fontObject.family;
         });
 
       componentViewLabel.transition()
@@ -604,7 +632,19 @@
         .attr('y', function (d) {
           return Math.abs(d.height / 2 - self.SLOT_RADIUS / 2);
         })
-        .attr('class', 'slotViewLabel ' + self.is);
+        .attr('class', 'slotViewLabel ' + self.is)
+        .style('font-size', function (d) {
+          return d.fontObject.size;
+        })
+        .style('font-weight', function (d) {
+          return d.fontObject.weight;
+        })
+        .style('font-style', function (d) {
+          return d.fontObject.style;
+        })
+        .style('font-family', function (d) {
+          return d.fontObject.family;
+        });
 
       slotView.transition()
         .attr('transform', function (d) {
@@ -656,6 +696,18 @@
         })
         .text(function (d) {
           return d.labels[0].text || '';
+        })
+        .style('font-size', function (d) {
+          return d.labels[0].fontObject.size;
+        })
+        .style('font-weight', function (d) {
+          return d.labels[0].fontObject.weight;
+        })
+        .style('font-style', function (d) {
+          return d.labels[0].fontObject.style;
+        })
+        .style('font-family', function (d) {
+          return d.labels[0].fontObject.family;
         });
 
       // Apply connections routes
@@ -668,6 +720,39 @@
         path += 'L' + (d.targetPoint.x - self.SLOT_RADIUS) + ' ' + d.targetPoint.y + ' ';
         return path;
       });
+    },
+
+    /**
+     * Uses canvas.measureText to compute and return the width of the given text of given font in pixels.
+     *
+     * @param {string} text - The text to be rendered.
+     * @param {string} font - The css font descriptor that text is to be rendered with (e.g. 'bold 14px verdana')
+     * @returns {number} width of the string
+     * @private
+     * @see http://stackoverflow.com/questions/118241/calculate-text-width-with-javascript/21015393#21015393
+     */
+    _getTextWidth: function (text, font) {
+      // re-use canvas object for better performance
+      var canvas = this._getTextWidth.canvas || (this._getTextWidth.canvas = document.createElement('canvas'));
+      var context = canvas.getContext('2d');
+      context.font = font;
+      var metrics = context.measureText(text);
+      return metrics.width;
+    },
+
+    /**
+     * Returns a css font descriptor given an object
+     * @param {object} fontObject - Object that has the properties of the font
+     * @returns {string} css font descriptor
+     * @private
+     */
+    _fontObjectToString: function (fontObject) {
+      var fontString = '';
+      if (fontObject.size) fontString += fontObject.size + 'px ';
+      if (fontObject.family) fontString += fontObject.family + ' ';
+      if (fontObject.weight) fontString += fontObject.weight + ' ';
+      if (fontObject.style) fontString += fontObject.style + ' ';
+      return fontString;
     }
   });
 }());
