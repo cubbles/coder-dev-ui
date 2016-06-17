@@ -385,7 +385,6 @@
         // TODO: Use method from CRC
         var manifestUrl = window.cubx.CRC._baseUrl + member.componentId.substr(0, member.componentId.indexOf('/'));
         // var manifestUrl = '../../' + member.componentId.substr(0, member.componentId.indexOf('/'));
-        console.log(manifestUrl);
         $.ajaxSetup({async: false});
         $.getJSON(manifestUrl, function (response) {
           manifest = response;
