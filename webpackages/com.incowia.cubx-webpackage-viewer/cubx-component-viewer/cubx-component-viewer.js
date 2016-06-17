@@ -574,16 +574,16 @@
         .attr('class', function (d) {
           return 'componentViewHeaderLabel ' + d.className + ' ' + self.is;
         })
-        .style('font-size', function (d) {
+        .attr('font-size', function (d) {
           return d.fontObject.size;
         })
-        .style('font-weight', function (d) {
+        .attr('font-weight', function (d) {
           return d.fontObject.weight;
         })
-        .style('font-style', function (d) {
+        .attr('font-style', function (d) {
           return d.fontObject.style;
         })
-        .style('font-family', function (d) {
+        .attr('font-family', function (d) {
           return d.fontObject.family;
         });
 
@@ -640,16 +640,16 @@
           return Math.abs(d.height / 2 - self.SLOT_RADIUS / 2);
         })
         .attr('class', 'slotViewLabel ' + self.is)
-        .style('font-size', function (d) {
+        .attr('font-size', function (d) {
           return d.fontObject.size;
         })
-        .style('font-weight', function (d) {
+        .attr('font-weight', function (d) {
           return d.fontObject.weight;
         })
-        .style('font-style', function (d) {
+        .attr('font-style', function (d) {
           return d.fontObject.style;
         })
-        .style('font-family', function (d) {
+        .attr('font-family', function (d) {
           return d.fontObject.family;
         });
 
@@ -703,16 +703,16 @@
         .text(function (d) {
           return d.labels[0].text || '';
         })
-        .style('font-size', function (d) {
+        .attr('font-size', function (d) {
           return d.labels[0].fontObject.size;
         })
-        .style('font-weight', function (d) {
+        .attr('font-weight', function (d) {
           return d.labels[0].fontObject.weight;
         })
-        .style('font-style', function (d) {
+        .attr('font-style', function (d) {
           return d.labels[0].fontObject.style;
         })
-        .style('font-family', function (d) {
+        .attr('font-family', function (d) {
           return d.labels[0].fontObject.family;
         });
 
