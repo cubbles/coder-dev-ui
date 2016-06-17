@@ -498,6 +498,17 @@
           crossMin: 'LAYER_SWEEP',
           algorithm: 'de.cau.cs.kieler.klay.layered'
         });
+
+      // Tooltip
+      this.infoToolTip = d3.tip()
+        .attr('class', 'info_tooltip ' + this.is)
+        .offset([-10, 0])
+        .html(function (d) {
+          return '<label>Description:</label> ' + d.description + '<br>' + '<label>Type:</label> ' + d.type;
+        });
+
+      this.svg.call(this.infoToolTip);
+
       layouter.on('finish', function (d) {
         var components = layouter.nodes();
         var connections = layouter.links(components);
@@ -631,14 +642,8 @@
       slotView.append('circle')
         .attr('class', 'slotViewAtom ' + self.is)
         .attr('r', self.SLOT_RADIUS)
-        .attr('onmousemove', function (d) {
-          return 'com_incowia_cubx_data_flow_viewer.showTooltip(' +
-            'evt,' +
-            '\"<label>Description:</label> ' + d.description + '<br>' +
-            '<label>Type:</label> ' + d.type +
-            '\")';
-        })
-        .attr('onmouseout', 'com_incowia_cubx_data_flow_viewer.hideTooltip()');
+        .on('mousemove', self.infoToolTip.show)
+        .on('mouseout', self.infoToolTip.hide);
 
       // slots labels
       slotView.selectAll('.slotViewLabel')

@@ -105,7 +105,8 @@
             "dependencies": [
               "cubx.core.rte@1.9.0/cubxpolymer/main",
               "klayjsd3-0.3.5@1.0.2/klayjs-d3/html-import",
-              "jquery-2.1.4@1.0.0/jquery/html-import"
+              "jquery-2.1.4@1.0.0/jquery/html-import",
+              "this/d3-tip/html-import"
             ]
           }
         ],
@@ -142,6 +143,7 @@
           {
             "slotId": "viewerHeight",
             "type": "string",
+            "description": "slot \"a\" of this mini example",
             "direction": [
               "input"
             ]
@@ -496,6 +498,28 @@
         ]
       }
     ],
-    "utilities": []
+    "utilities": [
+      {
+        "artifactId": "d3-tip",
+        "description": "d3-tip library v 0.6.7",
+        "endpoints": [
+          {
+            "endpointId": "main",
+            "resources": [
+              "d3-tip.js"
+            ],
+            "dependencies": []
+          },
+          {
+            "endpointId": "html-import",
+            "description": "This is recommended for you use with webcomponents.",
+            "resources": [
+              "html-import.html"
+            ],
+            "dependencies": []
+          }
+        ]
+      }
+    ]
   }
 }
