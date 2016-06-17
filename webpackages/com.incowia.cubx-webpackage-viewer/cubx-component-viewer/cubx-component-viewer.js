@@ -15,7 +15,6 @@
 
     _cubxReady: false,
     _maxRootInputSlotWidth: 0,
-    DEFAULT_VIEWER_HEIGHT: window.innerHeight * 0.7,
     ROOT_BORDER_SPACE: 70,
     HEADER_MARGIN: 10,
     ROOT_COMPONENT_NAME_FONT: {size: 16, family: 'arial'},
@@ -23,7 +22,7 @@
     MEMBER_ID_NAME_FONT: {size: 16, family: 'arial', weight: 'bold'},
     COMPOUND_TITLE: 'Dataflow view',
     ELEMENTARY_TITLE: 'Interface view',
-    VIEW_HOLDER_CSS_CLASS: 'component_view_holder',
+    VIEW_HOLDER_ID: 'component_view_holder',
     SLOT_LABELS_SPACE: 10,
     SLOT_LABEL_FONT: {size: 12, family: 'arial'},
     SLOT_RADIUS: 5,
@@ -43,6 +42,12 @@
      * Manipulate an element’s local DOM when the element is created and initialized.
      */
     ready: function () {
+      var viewHolder = this.$$('#' + this.VIEW_HOLDER_ID);
+      viewHolder.id = this.VIEW_HOLDER_ID;
+      viewHolder.style.width = this.getViewerWidth();
+      viewHolder.style.height = this.getViewerHeight() || window.innerHeight * 0.7 + 'px';
+      viewHolder.style.overflow = 'hidden';
+      viewHolder.style.resize = 'vertical';
     },
 
     /**
@@ -56,6 +61,20 @@
      */
     cubxReady: function () {
       this._cubxReady = true;
+    },
+
+    /**
+     *  Observe the Cubbles-Component-Model: If value for slot 'viewerWidth' has changed ...
+     */
+    modelViewerWidthChanged: function (viewerWidth) {
+      this.$$('#' + this.VIEW_HOLDER_ID).style.width = viewerWidth;
+    },
+
+    /**
+     *  Observe the Cubbles-Component-Model: If value for slot 'viewerHeight' has changed ...
+     */
+    modelViewerHeightChanged: function (viewerHeight) {
+      this.$$('#' + this.VIEW_HOLDER_ID).style.height = viewerHeight;
     },
 
     /**
@@ -84,7 +103,7 @@
         this._maxRootInputSlotWidth = 0;
         this.setComponent(component);
         if (this.getShowTitle()) {
-          $('#' + this.VIEW_HOLDER_CSS_CLASS + '_title').css('display', 'inline-block');
+          $('#' + this.VIEW_HOLDER_ID + '_title').css('display', 'inline-block');
           if (component.members) {
             this.setViewerTitle(this.COMPOUND_TITLE);
           } else {
@@ -433,8 +452,8 @@
      * @private
      */
     _centerDiagramAndSetZoomBehavior: function () {
-      var componentViewHolderSvg = $('#' + this.VIEW_HOLDER_CSS_CLASS + '_svg');
-      var componentViewHolderContainer = d3.select('#' + this.VIEW_HOLDER_CSS_CLASS + '_container');
+      var componentViewHolderSvg = $('#' + this.VIEW_HOLDER_ID + '_svg');
+      var componentViewHolderContainer = d3.select('#' + this.VIEW_HOLDER_ID + '_container');
       var newX = (componentViewHolderSvg.width() / 2) - (componentViewHolderContainer.node().getBBox().width / 2);
       var newY = (componentViewHolderSvg.height() / 2) - (componentViewHolderContainer.node().getBBox().height / 2);
       componentViewHolderContainer.transition()
@@ -446,7 +465,7 @@
         .on('zoom', function () {
           self.svg.attr('transform', 'translate(' + d3.event.translate + ')' + ' scale(' + d3.event.scale + ')');
         });
-      d3.select('#' + this.VIEW_HOLDER_CSS_CLASS).call(zoom);
+      d3.select('#' + this.VIEW_HOLDER_ID).call(zoom);
     },
 
     /**
@@ -456,20 +475,17 @@
      */
     _drawComponent: function (componentGraph) {
       // group
-      d3.select('#' + this.VIEW_HOLDER_CSS_CLASS).html('');
+      d3.select('#' + this.VIEW_HOLDER_ID).html('');
       var self = this;
-      if (!this.getViewerHeight()) {
-        this.setViewerHeight(this.DEFAULT_VIEWER_HEIGHT);
-      }
-      this.svg = d3.select('#' + this.VIEW_HOLDER_CSS_CLASS)
+      this.svg = d3.select('#' + this.VIEW_HOLDER_ID)
         .append('svg')
-        .attr('width', this.getViewerWidth())
-        .attr('height', this.getViewerHeight())
-        .attr('id', this.VIEW_HOLDER_CSS_CLASS + '_svg')
+        .attr('width', '100%')
+        .attr('height', '100%')
+        .attr('id', this.VIEW_HOLDER_ID + '_svg')
         .append('g')
-        .attr('id', this.VIEW_HOLDER_CSS_CLASS + '_container');
-      var realWidth = $('#' + this.VIEW_HOLDER_CSS_CLASS).width();
-      var realHeight = $('#' + this.VIEW_HOLDER_CSS_CLASS).height();
+        .attr('id', this.VIEW_HOLDER_ID + '_container');
+      var realWidth = $('#' + this.VIEW_HOLDER_ID).width();
+      var realHeight = $('#' + this.VIEW_HOLDER_ID).height();
       var root = this.svg.append('g');
       var layouter = klay.d3kgraph()
         .size([realWidth, realHeight])

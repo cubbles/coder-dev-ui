@@ -1,7 +1,3 @@
-#component_view_holder{
-    border: solid 1px #ddd;
-}
-
 #o_slots_info_div, #i_slots_info_div {
     display: none;
 }
