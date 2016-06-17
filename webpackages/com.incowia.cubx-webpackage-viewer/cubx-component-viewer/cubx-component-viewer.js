@@ -14,6 +14,7 @@
     is: 'cubx-component-viewer',
 
     _cubxReady: false,
+    _maxRootInputSlotWidth: 0,
     DEFAULT_VIEWER_HEIGHT: window.innerHeight * 0.7,
     ROOT_BORDER_SPACE: 70,
     HEADER_MARGIN: 10,
@@ -80,6 +81,7 @@
     _updateView: function () {
       var component = this._searchComponentInManifest(this.getComponentArtifactId(), this.getManifest());
       if (component) {
+        this._maxRootInputSlotWidth = 0;
         this.setComponent(component);
         if (this.getShowTitle()) {
           $('#' + this.VIEW_HOLDER_CSS_CLASS + '_title').css('display', 'inline-block');
@@ -154,7 +156,7 @@
       if (member) {
         memberId = member.memberId;
       }
-      var graphMemberSlots = this._generateGraphMemberSlots(component, memberId || component.artifactId);
+      var graphMemberSlots = this._generateGraphMemberSlots(component, component.artifactId, memberId);
       var webpackageQName = (manifest.groupId) ? manifest.groupId + '.' + manifest.name : manifest.name;
       var webpackageInfo = ':' + webpackageQName + '@' + manifest.version;
       var artifactId = '/' + component.artifactId;
@@ -242,12 +244,13 @@
 
     /**
      * Generate the slots (ports) of a GraphMember (KNode)
-     * @param {object} member - Component which is a member of a compound component
-     * @param {string} memberId - memberId of the component within a compoundComponent
+     * @param {object} component - Component that contains the slots
+     * @param {string} artifactId - artifactId  of the component
+     * @param {string} memberId - memberId  of the component (if it is a member of a compound, otherwise undefined)
      * @returns {{slots: Array, slotsWidth: number}} - List of slots and the width of the widest slot
      * @private
      */
-    _generateGraphMemberSlots: function (member, memberId) {
+    _generateGraphMemberSlots: function (component, artifactId, memberId) {
       var graphMemberSlots = [];
       var graphMemberSlot;
       var maxSlotWidthLeft = 0;
@@ -255,17 +258,22 @@
       var inputSlots = 0;
       var outputSlots = 0;
       var slotLabelWidth;
-      for (var l in member.slots) {
-        for (var m in member.slots[l].direction) {
-          slotLabelWidth = this._getTextWidth(member.slots[l].slotId, this._fontObjectToString(this.SLOT_LABEL_FONT));
-          if (member.slots[l].direction[m] === 'input') {
+      for (var l in component.slots) {
+        for (var m in component.slots[l].direction) {
+          slotLabelWidth = this._getTextWidth(component.slots[l].slotId, this._fontObjectToString(this.SLOT_LABEL_FONT));
+          if (component.slots[l].direction[m] === 'input') {
             maxSlotWidthLeft = Math.max(slotLabelWidth, maxSlotWidthLeft);
+            if (!memberId) {
+              this._maxRootInputSlotWidth = maxSlotWidthLeft;
+            }
             inputSlots++;
           } else {
             maxSlotWidthRight = Math.max(slotLabelWidth, maxSlotWidthRight);
             outputSlots++;
           }
-          graphMemberSlot = this._generateGraphMemberSlot(member.slots[l], member.slots[l].direction[m], memberId);
+          graphMemberSlot = this._generateGraphMemberSlot(
+            component.slots[l], component.slots[l].direction[m], memberId || artifactId
+          );
           graphMemberSlots.push(graphMemberSlot);
         }
       }
@@ -277,16 +285,16 @@
     },
 
     /**
-     * Generate a slot (port) of a GraphMember (KNode)
+     * Generate a slot (port) of a component (KNode)
      * @param {string} slot - Slot to be displayed
-     * @param {string} memberId - memberId of the component within a compoundComponent
+     * @param {string} componentId - Identifier of the component (memberId or artifactId for root component)
      * @param {string} direction - direction of the slot (input, output)
      * @returns {object} Generated slot (port)
      * @private
      */
-    _generateGraphMemberSlot: function (slot, direction, memberId) {
+    _generateGraphMemberSlot: function (slot, direction, componentId) {
       var graphMemberSlot = {
-        id: slot.slotId + '_' + memberId + '_' + direction,
+        id: slot.slotId + '_' + componentId + '_' + direction,
         properties: {
           portSide: (direction === 'input') ? 'WEST' : 'EAST',
           portAnchor: (direction === 'input') ? '(0.0, 0.5)' : '(0.0, 0.5)'
@@ -294,7 +302,7 @@
         labels: [{
           text: slot.slotId,
           height: this.SLOT_LABEL_FONT.size,
-          // width: this._getTextWidth(slot.slotId, this._fontObjectToString(this.SLOT_LABEL_FONT)),
+          width: this._getTextWidth(slot.slotId, this._fontObjectToString(this.SLOT_LABEL_FONT)),
           fontObject: this.SLOT_LABEL_FONT
         }],
         height: this.SLOT_DIAMETER,
@@ -687,9 +695,8 @@
       connectionData.enter()
         .append('text')
         .attr('class', 'connectionViewLabel ' + self.is)
-        .attr('text-anchor', 'start')
         .attr('x', function (d) {
-          return d.labels[0].x + self.CONNECTION_LABEL_MARGIN;
+          return d.labels[0].x + self._maxRootInputSlotWidth + self.CONNECTION_LABEL_MARGIN;
         })
         .attr('y', function (d) {
           return d.labels[0].y + d.labels[0].height * 2.5;
