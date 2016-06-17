@@ -18,7 +18,7 @@
         "description": "App to visualize the structure of any webpackage using its manifest url",
         "runnables": [
           {
-            "name": "My Hello World App.",
+            "name": "Any Webpackage App.",
             "path": "/index.html",
             "description": "Call this app as a simple demo."
           }
@@ -220,11 +220,6 @@
             "name": "demo",
             "path": "/demo/index.html",
             "description": "Demo app..."
-          },
-          {
-            "name": "Any webpackage viewer",
-            "path": "/anyWebpackeageApp/index.html",
-            "description": "Demo app to visualize the structure of any webpackage using its manifest url"
           }
         ],
         "endpoints": [

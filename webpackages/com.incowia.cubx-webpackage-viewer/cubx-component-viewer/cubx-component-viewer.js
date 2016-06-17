@@ -24,6 +24,7 @@
     VIEW_HOLDER_CSS_CLASS: 'component_view_holder',
     SLOT_LABELS_SPACE: 10,
     SLOT_LABEL_LETTER_WIDTH: 7,
+    SLOT_LABEL_HEIGHT: 11,
     SLOT_RADIUS: 5,
     SLOTS_AREA_MARGIN: 10,
     SLOT_SPACE: 11,
@@ -279,7 +280,8 @@
         },
         labels: [{
           text: slot.slotId,
-          width: slot.slotId.length * this.SLOT_LABEL_LETTER_WIDTH
+          width: slot.slotId.length * this.SLOT_LABEL_LETTER_WIDTH,
+          height: this.SLOT_LABEL_HEIGHT
         }],
         height: this.SLOT_DIAMETER,
         description: slot.description || '-',
@@ -594,10 +596,15 @@
         .enter()
         .append('text')
         .text(function (d) { return d.text; })
-        .attr('dominant-baseline', 'central')
-        .attr('text-anchor', function (d) { return (d.x > 0) ? 'start' : 'end'; })
-        .attr('x', function (d) { return (d.x > 0) ? d.x + self.SLOT_RADIUS : -self.SLOT_RADIUS * 2; })
-        .attr('y', 0)
+        .attr('text-anchor', function (d) {
+          return (d.x > 0) ? 'start' : 'end';
+        })
+        .attr('x', function (d) {
+          return (d.x > 0) ? d.x + self.SLOT_RADIUS : -self.SLOT_DIAMETER;
+        })
+        .attr('y', function (d) {
+          return Math.abs(d.height / 2 - self.SLOT_RADIUS / 2);
+        })
         .attr('class', 'slotViewLabel ' + self.is);
 
       slotView.transition()
@@ -642,12 +649,15 @@
         .append('text')
         .attr('class', 'connectionViewLabel ' + self.is)
         .attr('text-anchor', 'start')
-        .attr('dominant-baseline', 'text-before-edge')
         .attr('x', function (d) {
           return d.sourcePoint.x + self.CONNECTION_LABEL_MARGIN;
         })
-        .attr('y', function (d) { return d.labels[0].y + d.labels[0].height + self.SLOT_RADIUS; })
-        .text(function (d) { return d.labels[0].text || ''; });
+        .attr('y', function (d) {
+          return d.labels[0].y + d.labels[0].height * 2.5;
+        })
+        .text(function (d) {
+          return d.labels[0].text || '';
+        });
 
       // Apply connections routes
       connectionView.transition().attr('d', function (d) {
