@@ -29,13 +29,7 @@
       {
         "artifactId": "cubx-structure-viewer",
         "description": "Component to visualize the structure of a webpackage using the manifest.webpackage file",
-        "runnables": [
-          {
-            "name": "demo",
-            "path": "/demo/index.html",
-            "description": "Demo app..."
-          }
-        ],
+        "runnables": [],
         "endpoints": [
           {
             "endpointId": "main",
