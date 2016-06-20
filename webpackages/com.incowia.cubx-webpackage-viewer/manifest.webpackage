@@ -143,7 +143,6 @@
           {
             "slotId": "viewerHeight",
             "type": "string",
-            "description": "slot \"a\" of this mini example",
             "direction": [
               "input"
             ]
