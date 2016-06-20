@@ -502,10 +502,11 @@
       // Tooltip
       this.infoToolTip = d3.tip()
         .attr('class', 'info_tooltip ' + this.is)
-        .offset([-10, 0])
+        .offset([30, 0])
         .html(function (d) {
-          return '<label>Description:</label> ' + d.description + '<br>' + '<label>Type:</label> ' + d.type;
+          return '<strong>Description:</strong> ' + d.description + '<br>' + '<strong>Type:</strong> ' + d.type;
         });
+      this.infoToolTip.direction('e');
 
       this.svg.call(this.infoToolTip);
 
@@ -642,7 +643,7 @@
       slotView.append('circle')
         .attr('class', 'slotViewAtom ' + self.is)
         .attr('r', self.SLOT_RADIUS)
-        .on('mousemove', self.infoToolTip.show)
+        .on('mouseover', self.infoToolTip.show)
         .on('mouseout', self.infoToolTip.hide);
 
       // slots labels
