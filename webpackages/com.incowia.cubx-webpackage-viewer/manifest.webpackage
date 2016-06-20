@@ -106,7 +106,8 @@
               "cubx.core.rte@1.9.0/cubxpolymer/main",
               "klayjsd3-0.3.5@1.0.2/klayjs-d3/html-import",
               "jquery-2.1.4@1.0.0/jquery/html-import",
-              "this/d3-tip/html-import"
+              "this/d3-tip/html-import",
+              "this/file-saver/html-import"
             ]
           }
         ],
@@ -514,6 +515,32 @@
             "description": "This is recommended for you use with webcomponents.",
             "resources": [
               "html-import.html"
+            ],
+            "dependencies": []
+          }
+        ]
+      },
+      {
+        "artifactId": "file-saver",
+        "description": "Utility to use the FileSaver.js library v 1.3.2",
+        "endpoints": [
+          {
+            "endpointId": "main",
+            "resources": [
+              {
+                "prod" : "FileSaver.min.js",
+                "dev" : "FileSaver.js"
+              }
+            ],
+            "dependencies": []
+          },
+          {
+            "endpointId": "html-import",
+            "resources": [
+              {
+                "prod" : "file-saver.min.html",
+                "dev" : "file-saver.html"
+              }
             ],
             "dependencies": []
           }

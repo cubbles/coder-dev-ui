@@ -1,4 +1,4 @@
-/*global $, d3, klay*/
+/*global $, d3, klay, XMLSerializer, Blob, saveAs*/
 (function () {
   'use strict';
   /**
@@ -781,6 +781,68 @@
       if (fontObject.weight) fontString += fontObject.weight + ' ';
       if (fontObject.style) fontString += fontObject.style + ' ';
       return fontString;
+    },
+
+    /**
+     * Save the diagram as svg file
+     * @private
+     */
+    _saveAsSvg: function () {
+      var serializer = new XMLSerializer();
+      var svg = document.querySelector('#' + this.VIEW_HOLDER_ID + '_svg');
+      svg.insertBefore(this._getDefsStyleElement(), svg.firstChild);
+      var source = serializer.serializeToString(svg).replace('</style>', '<![CDATA[' + this._getStylesString() + ']]>' + '</style>');
+      // add name spaces.
+      if (!source.match(/^<svg[^>]+xmlns="http\:\/\/www\.w3\.org\/2000\/svg"/)) {
+        source = source.replace(/^<svg/, '<svg xmlns="http://www.w3.org/2000/svg"');
+      }
+      if (!source.match(/^<svg[^>]+"http\:\/\/www\.w3\.org\/1999\/xlink"/)) {
+        source = source.replace(/^<svg/, '<svg xmlns:xlink="http://www.w3.org/1999/xlink"');
+      }
+      // add xml declaration
+      source = '<?xml version="1.0" standalone="no"?>\r\n' + source;
+
+      var blob = new Blob([source], {type: 'image/svg+xml'});
+      saveAs(blob, 'diagram.svg');
+    },
+
+    /**
+     * Creates a 'defs' element with an empty 'style' element inside
+     * @returns {Element} - 'defs' element
+     * @private
+     */
+    _getDefsStyleElement: function () {
+      var styleEl = document.createElement('style');
+      styleEl.setAttribute('type', 'text/css');
+      var defsEl = document.createElement('defs');
+      defsEl.appendChild(styleEl);
+      return defsEl;
+    },
+
+    /**
+     * Get a string with the styles definitions for the cubx-component-viewer element
+     * @returns {string} - Css rules difinitions
+     * @private
+     */
+    _getStylesString: function () {
+      var styles = '';
+      var styleSheets = document.styleSheets;
+      var cssRules;
+      var rule;
+      if (styleSheets) {
+        for (var i = 0; i < styleSheets.length; i++) {
+          cssRules = styleSheets[i].cssRules;
+          if (cssRules) {
+            for (var j = 0; j < cssRules.length; j++) {
+              rule = cssRules[j];
+              if (rule.type === 1) {
+                styles += '\n' + rule.cssText;
+              }
+            }
+          }
+        }
+      }
+      return styles;
     }
   });
 }());
