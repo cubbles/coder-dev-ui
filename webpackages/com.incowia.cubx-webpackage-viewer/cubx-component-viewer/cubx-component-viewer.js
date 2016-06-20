@@ -676,7 +676,10 @@
         });
 
       slotView.transition()
-        .attr('transform', function (d) {
+        .attr('transform', function (d, i, j) {
+          if (d.properties.portSide === 'EAST' && d.x === 0) {
+            d.x = slotView[j].parentNode.__data__.width;
+          }
           return 'translate(' + (d.x || 0) + ' ' + (d.y || 0) + ')';
         });
     },
