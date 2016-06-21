@@ -104,7 +104,7 @@
         this.setComponent(component);
         if (this.getShowTitle()) {
           $('#' + this.VIEW_HOLDER_ID + '_title').css('display', 'inline-block');
-          if (component.members) {
+          if (component.members && !this.setViewerTitle()) {
             this.setViewerTitle(this.COMPOUND_TITLE);
           } else {
             this.setViewerTitle(this.ELEMENTARY_TITLE);
@@ -807,7 +807,7 @@
       source = '<?xml version="1.0" standalone="no"?>\r\n' + source;
 
       var blob = new Blob([source], {type: 'image/svg+xml'});
-      saveAs(blob, 'diagram.svg');
+      saveAs(blob, this.getComponentArtifactId() + '.svg');
     },
 
     /**
