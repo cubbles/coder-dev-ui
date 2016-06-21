@@ -50,11 +50,13 @@
             "direction": [
               "input"
             ],
+            "description": "Boolean indicating whether the schema has loaded",
             "value": false
           },
           {
             "slotId": "manifestLoaded",
             "type": "boolean",
+            "description": "Boolean indicating whether the manifest has loaded",
             "direction": [
               "input"
             ],
@@ -63,6 +65,7 @@
           {
             "slotId": "manifest",
             "type": "object",
+            "description": "Valid manifest of a webpackage",
             "direction": [
               "input",
               "output"
@@ -71,6 +74,7 @@
           {
             "slotId": "schema",
             "type": "object",
+            "description": "JSON schema of the manifest",
             "direction": [
               "input"
             ]
@@ -78,6 +82,7 @@
           {
             "slotId": "currentComponentArtifactId",
             "type": "string",
+            "description": "'artifactId' of the component which is to be displayed",
             "direction": [
               "output"
             ]
@@ -115,6 +120,7 @@
           {
             "slotId": "componentArtifactId",
             "type": "string",
+            "description": "'artifactId' of the current component",
             "direction": [
               "input"
             ]
@@ -122,6 +128,7 @@
           {
             "slotId": "component",
             "type": "object",
+            "description": "Current component (component object from a valid manifest)",
             "direction": [
               "output"
             ]
@@ -129,12 +136,14 @@
           {
             "slotId": "manifest",
             "type": "object",
+            "description": "Webpackage manifest object of the component",
             "direction": [
               "input"
             ]
           },
           {
             "slotId": "viewerWidth",
+            "description": "Width of the component viewer (e.g. 100%, 100px, 100em). By default it is '100%'",
             "type": "string",
             "direction": [
               "input"
@@ -144,6 +153,7 @@
           {
             "slotId": "viewerHeight",
             "type": "string",
+            "description": "Height of the component viewer (e.g. 100%, 100px, 100em).",
             "direction": [
               "input"
             ]
@@ -151,6 +161,7 @@
           {
             "slotId": "viewerTitle",
             "type": "string",
+            "description": "Title for the component viewer. By default it is 'Interface view' for an elementary component and 'Dataflow view' for a compound component",
             "direction": [
               "input"
             ]
@@ -158,6 +169,7 @@
           {
             "slotId": "showTitle",
             "type": "boolean",
+            "description": "Boolean indicating whether the title should be displayed",
             "direction": [
               "input"
             ],
@@ -192,6 +204,7 @@
           {
             "slotId": "component",
             "type": "object",
+            "description": "Component to be used to fill the information tables (component object from a valid manifest)",
             "direction": [
               "input"
             ]
@@ -202,6 +215,7 @@
             "direction": [
               "input"
             ],
+            "description": "Title for this component. By default it is 'Interface details'",
             "value": "Interface details"
           }
         ]
@@ -237,12 +251,14 @@
           {
             "slotId": "schemaUrl",
             "type": "string",
+            "description": "Url of the JSON schema of the webpackage manifest. By default it is the url of the 'manifestWebpackage-8.3.1.schema.json' in GitHub",
             "direction": [
               "input"
             ]
           },
           {
             "slotId": "manifestUrl",
+            "description": "Url of the webpackage manifest. It can be relative or absolute.",
             "type": "string",
             "direction": [
               "input"
@@ -396,6 +412,7 @@
           {
             "slotId": "componentArtifactId",
             "type": "string",
+            "description": "'artifactId' of the current component",
             "direction": [
               "input"
             ]
@@ -403,6 +420,7 @@
           {
             "slotId": "manifest",
             "type": "object",
+            "description": "Webpackage manifest of the current component, not necessary if the 'manifestUrl' slot the needed value",
             "direction": [
               "input"
             ]
@@ -410,6 +428,7 @@
           {
             "slotId": "manifestUrl",
             "type": "string",
+            "description": "Webpackage manifest url of the current component, not necessary if the 'manifest' slot the needed value",
             "direction": [
               "input"
             ]
@@ -501,7 +520,7 @@
     "utilities": [
       {
         "artifactId": "d3-tip",
-        "description": "d3-tip library v 0.6.7",
+        "description": "Utility to use the d3-tip library v 0.6.7",
         "endpoints": [
           {
             "endpointId": "main",
@@ -514,7 +533,7 @@
             "endpointId": "html-import",
             "description": "This is recommended for you use with webcomponents.",
             "resources": [
-              "html-import.html"
+              "d3-tip.html"
             ],
             "dependencies": []
           }
