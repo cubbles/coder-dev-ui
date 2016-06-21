@@ -5,8 +5,6 @@ This webpackage contains components to visualize the structure of a (Cubbles) we
 The generated documentation for this webpackage and its artifacts is available [here][demoWebPV].
 
 ## Artifacts of the webpackage
-
-### Compound Components
 | Name | Type | Description | Links |
 |--------------------------------|----------------------|-----------------------------------------------------------------------------------------------------------------------------------------|---------------------------|
 | **cubx-component-viewer** | Elementary component | Viewer of components,  interface for elementary components and dataflow for compound components | [Demo][demoCompV] |
