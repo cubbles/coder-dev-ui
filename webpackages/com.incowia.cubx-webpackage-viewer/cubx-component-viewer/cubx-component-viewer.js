@@ -385,7 +385,8 @@
         source: source,
         sourcePort: sourcePort,
         target: target,
-        targetPort: targetPort
+        targetPort: targetPort,
+        hookFunction: compoundConnection.hookFunction || ''
       };
       return connection;
     },
@@ -732,7 +733,7 @@
           return d.labels[0].fontObject.size;
         })
         .attr('font-weight', function (d) {
-          return d.labels[0].fontObject.weight;
+          return d.hookFunction ? 'bold' : d.labels[0].fontObject.weight;
         })
         .attr('font-style', function (d) {
           return d.labels[0].fontObject.style;
