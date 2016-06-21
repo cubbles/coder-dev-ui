@@ -1,13 +1,65 @@
 # cubx-webpackage-viewer
-This webpackage contains componentns to visualize the structure of a (Cubbles) webpackage using its manifest.webpackege config file, and the dataflow of its compound components.
+This webpackage contains components to visualize the structure of a (Cubbles) webpackage using its manifest.webpackege config file, the dataflow of compound components and interface of elementary components.
 
-## Components of the webpackage
+## Docs
+The generated documentation for this webpackage and its artifacts is available [here][demoWebPV].
+
+## Artifacts of the webpackage
 
 ### Compound Components
-- **cubx-webpackage-viewer:** Component to visualize the structure of a webpackage and a graphic view of its components [Demo](https://cubbles.world/sandbox/com.incowia.cubx-webpackage-viewer-package@1.1.0/cubx-webpackage-viewer/demo/index.html)
-- **cubx-component-docs-viewer:** Component to visualize a graphic view and information of a component [Demo](https://cubbles.world/sandbox/com.incowia.cubx-webpackage-viewer-package@1.1.0/cubx-component-docs-viewer/demo/index.html)
+| Name | Type | Description | Links |
+|--------------------------------|----------------------|-----------------------------------------------------------------------------------------------------------------------------------------|---------------------------|
+| **cubx-component-viewer** | Elementary component | Viewer of components,  interface for elementary components and dataflow for compound components | [Demo][demoCompV] |
+| **cubx-structure-viewer** | Elementary component | Component to visualize the structure of a webpackage using the manifest.webpackage file |  |
+| **cubx-component-info-viewer** | Elementary component | Viewer of components information (by the moment only interface details) | [Demo][demoCompInfV] |
+| **cubx-webpackage-viewer** | Compound component | Component to visualize the structure of a webpackage and the dataflow of its compound components | [Demo][demoWebPV] |
+| **cubx-component-docs-viewer** | Compound component | Component to visualize a component (dataflow of a compound and interface of an elementary) and its interface details | [Demo][demoCompDocsV] |
+| **any-webpackage-viewer** | Application | App to visualize the structure of any webpackage using its manifest url. This application uses the {{cubx-webpackage-viewer}} component | [App][anyWPApp] |
+| **d3-tip** | Utility | Utility to use the d3-tip library v 0.6.7 | [Lib info][d3TipInfo] |
+| **file-saver** | Utility | Utility to use the FileSaver.js library v 1.3.2 | [Lib info][fileSaverInfo] |
 
-### Elemenary components
-- **cubx-component-viewer:** Component to visualize a graphic view of components [Demo](https://cubbles.world/sandbox/com.incowia.cubx-webpackage-viewer-package@1.1.0/cubx-component-viewer/demo/index.html)
-- **cubx-component-info-viewer:** Component to visulize interface details (slots) of components [Demo](https://cubbles.world/sandbox/com.incowia.cubx-webpackage-viewer-package@1.1.0/cubx-component-info-viewer/demo/index.html)
-- **cubx-structure-viewer:** Component to visualize the structure of a webpackage, using its manifest.webpackage file.
+## Use of components
+
+The html file should contain the desire component using its tag, for example the `<cubx-webpackage-viewer>`, as follows:
+
+```html
+<div cubx-core-crc>
+     <cubx-webpackage-viewer cubx-dependency="com.incowia.cubx-webpackage-viewer@1.2.0/cubx-component-docs-viewer/main">
+     </cubx-webpackage-viewer>
+</div>
+```
+
+This component can be optionally initialized using the `<cubx-core-slot-init>` tag (available from _cubx.core.rte_ version 1.9.0). For example, lets initilize the 'manifestURl' slot as follows:
+
+```html
+<div cubx-core-crc>
+     <cubx-webpackage-viewer cubx-dependency="com.incowia.cubx-webpackage-viewer@1.2.0/cubx-component-docs-viewer/main">
+       <!--Initilization-->
+	     <cubx-core-init>
+		    <cubx-core-slot-init slot="manifestURl">"../../manifest.webpackage"</cubx-core-slot-init>
+         </cubx-core-init>
+     </cubx-webpackage-viewer>
+</div>
+```
+Or it can be initialized and later manipulated from Javascript as follows:
+
+```javascript
+var webpackageViewer= document.querySelector('cubx-webpackage-viewer');
+var manifestUrl = "../../manifest.webpackage";
+
+// Wait until Cif is ready
+document.addEventListener('cifReady', function() {
+	// Manipulate slots
+	webpackageViewer.setManifestUrl(manifestUrl);
+});
+```
+
+The same process is valid for the other elements.
+
+[demoWebPV]: https://cubbles.world/shared/com.incowia.cubx-webpackage-viewer@1.2.0/cubx-webpackage-viewer/demo/index.html
+[demoCompV]: https://cubbles.world/shared/com.incowia.cubx-webpackage-viewer@1.2.0/cubx-component-viewer/demo/index.html
+[demoCompInfV]: https://cubbles.world/shared/com.incowia.cubx-webpackage-viewer@1.2.0/cubx-component-info-viewer/demo/index.html
+[demoCompDocsV]: https://cubbles.world/shared/com.incowia.cubx-webpackage-viewer@1.2.0/cubx-component-docs-viewer/demo/index.html
+[anyWPApp]: https://cubbles.world/shared/com.incowia.cubx-webpackage-viewer@1.2.0/any-webpackage-viewer/index.html
+[d3TipInfo]: https://github.com/Caged/d3-tip 
+[fileSaverInfo]: https://github.com/eligrey/FileSaver.js/
