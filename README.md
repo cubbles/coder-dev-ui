@@ -54,7 +54,7 @@ document.addEventListener('cifReady', function() {
 });
 ```
 
-The same process is valid for the other elements.
+The same process is valid for the other components.
 
 [demoWebPV]: https://cubbles.world/shared/com.incowia.cubx-webpackage-viewer@1.2.0/cubx-webpackage-viewer/demo/index.html
 [demoCompV]: https://cubbles.world/shared/com.incowia.cubx-webpackage-viewer@1.2.0/cubx-component-viewer/demo/index.html
