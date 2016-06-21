@@ -91,7 +91,7 @@
       },
       {
         "artifactId": "cubx-component-viewer",
-        "description": "Viewer of components interface and dataflow for compound components",
+        "description": "Viewer of components,  interface for elementary components and dataflow for compound components",
         "runnables": [
           {
             "name": "demo",
@@ -179,7 +179,7 @@
       },
       {
         "artifactId": "cubx-component-info-viewer",
-        "description": "Viewer of components information (slots)",
+        "description": "Viewer of components information (by the moment only interface details)",
         "runnables": [
           {
             "name": "demo",
