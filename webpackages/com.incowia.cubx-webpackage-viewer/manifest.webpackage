@@ -1,7 +1,7 @@
 {
   "name": "cubx-webpackage-viewer",
   "groupId": "com.incowia",
-  "version": "1.2.0-SNAPSHOT",
+  "version": "1.2.0",
   "modelVersion": "8.3.0",
   "docType": "webpackage",
   "author": {
@@ -9,7 +9,7 @@
     "email": "edwin.gamboa@incowia.com"
   },
   "license": "MIT",
-  "keywords": [],
+  "keywords": ["webpackage viewer", "component viewer", "docs viewer"],
   "man": [],
   "artifacts": {
     "apps": [
