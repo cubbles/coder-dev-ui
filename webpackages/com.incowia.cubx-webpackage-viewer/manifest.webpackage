@@ -420,7 +420,7 @@
           {
             "slotId": "manifest",
             "type": "object",
-            "description": "Webpackage manifest of the current component, not necessary if the 'manifestUrl' slot the needed value",
+            "description": "Webpackage manifest of the current component, not necessary if the 'manifestUrl' slot already has the needed value",
             "direction": [
               "input"
             ]
@@ -428,7 +428,7 @@
           {
             "slotId": "manifestUrl",
             "type": "string",
-            "description": "Webpackage manifest url of the current component, not necessary if the 'manifest' slot the needed value",
+            "description": "Webpackage manifest url of the current component, not necessary if the 'manifest' slot already has the needed value",
             "direction": [
               "input"
             ]
