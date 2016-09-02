@@ -131,7 +131,7 @@
         this.getManifest(),
         {portLabelPlacement: 'OUTSIDE', borderSpacing: this.ROOT_BORDER_SPACE}
       );
-      rootComponent.children = this._generateGraphMembers(this.getComponent().members);
+      rootComponent.children = this._generateGraphMembers(this.getComponent());
 
       componentGraph.children.push(rootComponent);
       componentGraph.edges = this._generateGraphConnections(this.getComponent().connections,
@@ -146,14 +146,15 @@
      * @returns {Array} List of GraphMembers (KNodes)
      * @private
      */
-    _generateGraphMembers: function (compoundsMembers) {
+    _generateGraphMembers: function (compound) {
       var graphMember;
       var component;
       var manifest;
+      var compoundsMembers = compound.members;
       var graphMembers = [];
       for (var k in compoundsMembers) {
-        var componentArtifactId = compoundsMembers[k].componentId.substr(compoundsMembers[k].componentId.indexOf('/') + 1);
-        manifest = this._manifestOfMember(compoundsMembers[k]);
+        var componentArtifactId = compoundsMembers[k].artifactId;
+        manifest = this._manifestOfMember(compoundsMembers[k], compound);
         component = this._searchComponentInManifest(componentArtifactId, manifest);
         graphMember = this._generateGraphMember(component, compoundsMembers[k], manifest);
         graphMembers.push(graphMember);
@@ -394,16 +395,18 @@
     /**
      * Returns the manifest of a member
      * @param {object} member - Member of a compound component
+     * @param {object} parentComponent the parent compound
      * @returns {object} - Manifest of the component
      * @private
      */
-    _manifestOfMember: function (member) {
+    _manifestOfMember: function (member, parentComponent) {
       var manifest = {};
-      if (member.componentId.indexOf('this/') !== -1) {
+      var dependency = this._searchDependencyInComponent(member.artifactId, parentComponent);
+      if (!dependency.webpackageId) {
         return this.getManifest();
       } else {
         // TODO: Use method from CRC
-        var manifestUrl = window.cubx.CRC._baseUrl + member.componentId.substr(0, member.componentId.indexOf('/'));
+        var manifestUrl = window.cubx.CRC._baseUrl + dependency.webpackageId;
         // var manifestUrl = '../../' + member.componentId.substr(0, member.componentId.indexOf('/'));
         $.ajaxSetup({async: false});
         $.getJSON(manifestUrl, function (response) {
@@ -430,6 +433,19 @@
         componentDefinition = this._searchComponentInList(componentArtifactId, manifest.artifacts.compoundComponents);
       }
       return componentDefinition;
+    },
+
+    /**
+     * Get the dependency with the artifactId in component with parentComponentId
+     * @param {string} artifactId the artifactId of the dependency
+     * @param {string} parentComponent  the parent component
+     * @private
+     */
+    _searchDependencyInComponent: function (artifactId, parentComponent) {
+      var dependency = parentComponent.dependencies.find(function (dep) {
+        return dep.artifactId === artifactId;
+      });
+      return dependency;
     },
 
     /**
