@@ -17,18 +17,18 @@
     _maxRootInputSlotWidth: 0,
     ROOT_BORDER_SPACE: 70,
     HEADER_MARGIN: 10,
-    ROOT_COMPONENT_NAME_FONT: {size: 16, family: 'arial'},
-    MEMBER_COMPONENT_NAME_FONT: {size: 12, family: 'arial'},
-    MEMBER_ID_NAME_FONT: {size: 16, family: 'arial', weight: 'bold'},
+    ROOT_COMPONENT_NAME_FONT: { size: 16, family: 'arial' },
+    MEMBER_COMPONENT_NAME_FONT: { size: 12, family: 'arial' },
+    MEMBER_ID_NAME_FONT: { size: 16, family: 'arial', weight: 'bold' },
     COMPOUND_TITLE: 'Dataflow view',
     ELEMENTARY_TITLE: 'Interface view',
     VIEW_HOLDER_ID: 'component_view_holder',
     SLOT_LABELS_SPACE: 10,
-    SLOT_LABEL_FONT: {size: 12, family: 'arial'},
+    SLOT_LABEL_FONT: { size: 12, family: 'arial' },
     SLOT_RADIUS: 5,
     SLOTS_AREA_MARGIN: 10,
     SLOT_SPACE: 11,
-    CONNECTION_LABEL_FONT: {size: 10, family: 'arial'},
+    CONNECTION_LABEL_FONT: { size: 10, family: 'arial' },
     CONNECTION_LABEL_MARGIN: 10,
 
     /**
@@ -124,12 +124,12 @@
      */
     _generateComponentGraph: function () {
       if (!this._cubxReady) { return; }
-      var componentGraph = {id: 'root', children: []};
+      var componentGraph = { id: 'root', children: [] };
       var rootComponent = this._generateGraphMember(
         this.getComponent(),
         undefined,
         this.getManifest(),
-        {portLabelPlacement: 'OUTSIDE', borderSpacing: this.ROOT_BORDER_SPACE}
+        { portLabelPlacement: 'OUTSIDE', borderSpacing: this.ROOT_BORDER_SPACE }
       );
       rootComponent.children = this._generateGraphMembers(this.getComponent());
 
@@ -153,10 +153,15 @@
       var compoundsMembers = compound.members;
       var graphMembers = [];
       for (var k in compoundsMembers) {
-        var componentArtifactId = compoundsMembers[k].artifactId;
-        manifest = this._manifestOfMember(compoundsMembers[k], compound);
+        var componentArtifactId;
+        if (compoundsMembers[k].componentId){
+          componentArtifactId = compoundsMembers[k].componentId.substr(compoundsMembers[k].componentId.indexOf('/') + 1);
+        } else {
+          componentArtifactId = compoundsMembers[ k ].artifactId;
+        }
+        manifest = this._manifestOfMember(compoundsMembers[ k ], compound);
         component = this._searchComponentInManifest(componentArtifactId, manifest);
-        graphMember = this._generateGraphMember(component, compoundsMembers[k], manifest);
+        graphMember = this._generateGraphMember(component, compoundsMembers[ k ], manifest);
         graphMembers.push(graphMember);
       }
       return graphMembers;
@@ -238,7 +243,7 @@
           fontObject: this.MEMBER_COMPONENT_NAME_FONT
         };
       } else {
-        memberIdLabel = {text: '', width: 0, height: 0, className: 'memberIdLabel', fontObject: {}};
+        memberIdLabel = { text: '', width: 0, height: 0, className: 'memberIdLabel', fontObject: {} };
         webpackageInfoLabel = {
           text: webpackageInfo,
           width: this._getTextWidth(webpackageInfo, this._fontObjectToString(this.ROOT_COMPONENT_NAME_FONT)),
@@ -256,7 +261,7 @@
       }
 
       return {
-        labels: [memberIdLabel, webpackageInfoLabel, artifactIdLabel],
+        labels: [ memberIdLabel, webpackageInfoLabel, artifactIdLabel ],
         width: Math.max(memberIdLabel.width, webpackageInfoLabel.width, artifactIdLabel.width) + this.HEADER_MARGIN * 2,
         height: memberIdLabel.height + webpackageInfoLabel.height + artifactIdLabel.height + this.HEADER_MARGIN * 3
       };
@@ -279,9 +284,9 @@
       var outputSlots = 0;
       var slotLabelWidth;
       for (var l in component.slots) {
-        for (var m in component.slots[l].direction) {
-          slotLabelWidth = this._getTextWidth(component.slots[l].slotId, this._fontObjectToString(this.SLOT_LABEL_FONT));
-          if (component.slots[l].direction[m] === 'input') {
+        for (var m in component.slots[ l ].direction) {
+          slotLabelWidth = this._getTextWidth(component.slots[ l ].slotId, this._fontObjectToString(this.SLOT_LABEL_FONT));
+          if (component.slots[ l ].direction[ m ] === 'input') {
             maxSlotWidthLeft = Math.max(slotLabelWidth, maxSlotWidthLeft);
             if (!memberId) {
               this._maxRootInputSlotWidth = maxSlotWidthLeft;
@@ -292,7 +297,7 @@
             outputSlots++;
           }
           graphMemberSlot = this._generateGraphMemberSlot(
-            component.slots[l], component.slots[l].direction[m], memberId || artifactId
+            component.slots[ l ], component.slots[ l ].direction[ m ], memberId || artifactId
           );
           graphMemberSlots.push(graphMemberSlot);
         }
@@ -319,12 +324,12 @@
           portSide: (direction === 'input') ? 'WEST' : 'EAST',
           portAnchor: (direction === 'input') ? '(0.0, 0.5)' : '(0.0, 0.5)'
         },
-        labels: [{
+        labels: [ {
           text: slot.slotId,
           height: this.SLOT_LABEL_FONT.size,
           width: this._getTextWidth(slot.slotId, this._fontObjectToString(this.SLOT_LABEL_FONT)),
           fontObject: this.SLOT_LABEL_FONT
-        }],
+        } ],
         height: this.SLOT_DIAMETER,
         description: slot.description || '-',
         type: slot.type || 'any'
@@ -343,7 +348,7 @@
       var connection;
       var connections = [];
       for (var n in compoundConnections) {
-        connection = this._generateGraphConnection(compoundConnections[n], compoundId);
+        connection = this._generateGraphConnection(compoundConnections[ n ], compoundId);
         connections.push(connection);
       }
       return connections;
@@ -377,12 +382,12 @@
       }
       var connection = {
         id: compoundConnection.connectionId,
-        labels: [{
+        labels: [ {
           text: compoundConnection.connectionId,
           width: this._getTextWidth(compoundConnection.connectionId, this._fontObjectToString(this.CONNECTION_LABEL_FONT)),
           height: this.CONNECTION_LABEL_FONT.size,
           fontObject: this.CONNECTION_LABEL_FONT
-        }],
+        } ],
         source: source,
         sourcePort: sourcePort,
         target: target,
@@ -400,23 +405,44 @@
      * @private
      */
     _manifestOfMember: function (member, parentComponent) {
-      var manifest = {};
-      var dependency = this._searchDependencyInComponent(member.artifactId, parentComponent);
-      if (!dependency.webpackageId) {
-        return this.getManifest();
+      var manifest;
+      if (member.componentId) {
+        manifest = this._manifestOfMemberForModelVersion8(member, parentComponent);
       } else {
-        // TODO: Use method from CRC
-        var manifestUrl = window.cubx.CRC._baseUrl + dependency.webpackageId;
-        // var manifestUrl = '../../' + member.componentId.substr(0, member.componentId.indexOf('/'));
-        $.ajaxSetup({async: false});
-        $.getJSON(manifestUrl, function (response) {
-          manifest = response;
-        });
-        $.ajaxSetup({async: true});
+        manifest = this._manifestOfMemberForModelVersion9(member, parentComponent);
       }
       return manifest;
     },
+    _manifestOfMemberForModelVersion8: function (member, parentComponent) {
+      var manifest = {};
+      if (member.componentId && member.componentId.indexOf('this/') !== -1) {
+        return this.getManifest();
+      } else {
+        var manifestUrl = window.cubx.CRC._baseUrl + member.componentId.substr(0, member.componentId.indexOf('/'));
+        $.ajaxSetup({ async: false });
+        $.getJSON(manifestUrl, function (response) {
+          manifest = response;
+        });
+        $.ajaxSetup({ async: true });
+        return manifest;
+      }
+    },
 
+    _manifestOfMemberForModelVersion9: function (member, parentComponent) {
+      var manifest = {};
+      var dependency = this._searchDependencyInComponent(member.artifactId, parentComponent);
+      if (!dependency || !dependency.webpackageId) {
+        return this.getManifest();
+      } else {
+        var manifestUrl = window.cubx.CRC._baseUrl + window.cubx.CRC._baseUrl + dependency.webpackageId;
+        $.ajaxSetup({ async: false });
+        $.getJSON(manifestUrl, function (response) {
+          manifest = response;
+        });
+        $.ajaxSetup({ async: true });
+        return manifest;
+      }
+    },
     /**
      * Search a component in a determined manifest
      * @param {string} componentArtifactId - Artifact id of the component
@@ -442,7 +468,11 @@
      * @private
      */
     _searchDependencyInComponent: function (artifactId, parentComponent) {
-      var dependency = parentComponent.dependencies.find(function (dep) {
+      var dependency;
+      if (!parentComponent.dependencies) {
+        return dependency;
+      }
+      dependency = parentComponent.dependencies.find(function (dep) {
         return dep.artifactId === artifactId;
       });
       return dependency;
@@ -457,8 +487,8 @@
      */
     _searchComponentInList: function (componentId, componentsList) {
       for (var i in componentsList) {
-        if (componentsList[i].artifactId === componentId) {
-          return componentsList[i];
+        if (componentsList[ i ].artifactId === componentId) {
+          return componentsList[ i ];
         }
       }
       return false;
@@ -478,7 +508,7 @@
 
       var self = this;
       var zoom = d3.behavior.zoom()
-        .translate([newX, newY])
+        .translate([ newX, newY ])
         .on('zoom', function () {
           self.svg.attr('transform', 'translate(' + d3.event.translate + ')' + ' scale(' + d3.event.scale + ')');
         });
@@ -505,7 +535,7 @@
       var realHeight = $('#' + this.VIEW_HOLDER_ID).height();
       var root = this.svg.append('g');
       var layouter = klay.d3kgraph()
-        .size([realWidth, realHeight])
+        .size([ realWidth, realHeight ])
         .transformGroup(root)
         .options({
           intCoordinates: true,
@@ -519,7 +549,7 @@
       // Tooltip
       this.infoToolTip = d3.tip()
         .attr('class', 'info_tooltip ' + this.is)
-        .offset([30, 0])
+        .offset([ 30, 0 ])
         .html(function (d) {
           return '<strong>Description:</strong> ' + d.description + '<br>' + '<strong>Type:</strong> ' + d.type;
         });
@@ -633,7 +663,7 @@
         });
 
       componentViewLabel.transition()
-        .attr('x', function (d, i, j) { return componentViewLabel[j].parentNode.__data__.width / 2; })
+        .attr('x', function (d, i, j) { return componentViewLabel[ j ].parentNode.__data__.width / 2; })
         .attr('y', function (d) { return d.y + d.height + self.HEADER_MARGIN; });
 
       this._drawComponentsSlots(componentsData);
@@ -695,7 +725,7 @@
       slotView.transition()
         .attr('transform', function (d, i, j) {
           if (d.properties.portSide === 'EAST' && d.x === 0) {
-            d.x = slotView[j].parentNode.__data__.width;
+            d.x = slotView[ j ].parentNode.__data__.width;
           }
           return 'translate(' + (d.x || 0) + ' ' + (d.y || 0) + ')';
         });
@@ -710,7 +740,7 @@
       var self = this;
       // build the arrow.
       this.svg.append('svg:defs').selectAll('marker')
-        .data(['end'])                 // define connectionView/path types
+        .data([ 'end' ])                 // define connectionView/path types
         .enter().append('svg:marker')    // add arrows
         .attr('id', String)
         .attr('class', 'arrowEnd ' + self.is)
@@ -737,25 +767,25 @@
         .append('text')
         .attr('class', 'connectionViewLabel ' + self.is)
         .attr('x', function (d) {
-          return d.labels[0].x + self._maxRootInputSlotWidth + self.CONNECTION_LABEL_MARGIN;
+          return d.labels[ 0 ].x + self._maxRootInputSlotWidth + self.CONNECTION_LABEL_MARGIN;
         })
         .attr('y', function (d) {
-          return d.labels[0].y + d.labels[0].height * 2.5;
+          return d.labels[ 0 ].y + d.labels[ 0 ].height * 2.5;
         })
         .text(function (d) {
-          return d.labels[0].text || '';
+          return d.labels[ 0 ].text || '';
         })
         .attr('font-size', function (d) {
-          return d.labels[0].fontObject.size;
+          return d.labels[ 0 ].fontObject.size;
         })
         .attr('font-weight', function (d) {
-          return d.hookFunction ? 'bold' : d.labels[0].fontObject.weight;
+          return d.hookFunction ? 'bold' : d.labels[ 0 ].fontObject.weight;
         })
         .attr('font-style', function (d) {
-          return d.labels[0].fontObject.style;
+          return d.labels[ 0 ].fontObject.style;
         })
         .attr('font-family', function (d) {
-          return d.labels[0].fontObject.family;
+          return d.labels[ 0 ].fontObject.family;
         });
 
       // Apply connections routes
@@ -813,16 +843,16 @@
       svg.insertBefore(this._getDefsStyleElement(), svg.firstChild);
       var source = serializer.serializeToString(svg).replace('</style>', '<![CDATA[' + this._getStylesString() + ']]>' + '</style>');
       // add name spaces.
-      if (!source.match(/^<svg[^>]+xmlns="http\:\/\/www\.w3\.org\/2000\/svg"/)) {
+      if (!source.match(/^<svg[^>]+xmlns="http:\/\/www\.w3\.org\/2000\/svg"/)) {
         source = source.replace(/^<svg/, '<svg xmlns="http://www.w3.org/2000/svg"');
       }
-      if (!source.match(/^<svg[^>]+"http\:\/\/www\.w3\.org\/1999\/xlink"/)) {
+      if (!source.match(/^<svg[^>]+"http:\/\/www\.w3\.org\/1999\/xlink"/)) {
         source = source.replace(/^<svg/, '<svg xmlns:xlink="http://www.w3.org/1999/xlink"');
       }
       // add xml declaration
       source = '<?xml version="1.0" standalone="no"?>\r\n' + source;
 
-      var blob = new Blob([source], {type: 'image/svg+xml'});
+      var blob = new Blob([ source ], { type: 'image/svg+xml' });
       saveAs(blob, this.getComponentArtifactId() + '.svg');
     },
 
@@ -851,10 +881,10 @@
       var rule;
       if (styleSheets) {
         for (var i = 0; i < styleSheets.length; i++) {
-          cssRules = styleSheets[i].cssRules;
+          cssRules = styleSheets[ i ].cssRules;
           if (cssRules) {
             for (var j = 0; j < cssRules.length; j++) {
-              rule = cssRules[j];
+              rule = cssRules[ j ];
               if (rule.type === 1) {
                 styles += '\n' + rule.cssText;
               }
