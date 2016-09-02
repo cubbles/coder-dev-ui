@@ -154,7 +154,7 @@
       var graphMembers = [];
       for (var k in compoundsMembers) {
         var componentArtifactId;
-        if (compoundsMembers[k].componentId){
+        if (compoundsMembers[k].componentId) {
           componentArtifactId = compoundsMembers[k].componentId.substr(compoundsMembers[k].componentId.indexOf('/') + 1);
         } else {
           componentArtifactId = compoundsMembers[ k ].artifactId;
