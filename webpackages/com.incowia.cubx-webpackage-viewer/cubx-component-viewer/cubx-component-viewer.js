@@ -434,7 +434,7 @@
       if (!dependency || !dependency.webpackageId) {
         return this.getManifest();
       } else {
-        var manifestUrl = window.cubx.CRC._baseUrl + window.cubx.CRC._baseUrl + dependency.webpackageId;
+        var manifestUrl = window.cubx.CRC._baseUrl + dependency.webpackageId;
         $.ajaxSetup({ async: false });
         $.getJSON(manifestUrl, function (response) {
           manifest = response;
