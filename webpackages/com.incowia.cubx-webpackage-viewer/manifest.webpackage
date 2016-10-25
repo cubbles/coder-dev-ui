@@ -1,7 +1,7 @@
 {
   "name": "cubx-webpackage-viewer",
   "groupId": "com.incowia",
-  "version": "1.3.2",
+  "version": "1.3.3-SNAPSHOT",
   "modelVersion": "9.1.0",
   "docType": "webpackage",
   "author": {
@@ -316,7 +316,7 @@
               "memberIdRef": "manifestRequester",
               "slot": "config"
             },
-            "hookFunction": "window.com_incowia_cubxWebpackageViewer_cubxWebpackageViewer.buildConfigObject"
+            "hookFunction": "window.com_incowia_cubxWebpackageViewer_cubxWebpackageViewer.checkManifestUrl"
           },
           {
             "connectionId": "manifestLoadedCon",
@@ -350,7 +350,7 @@
               "memberIdRef": "schemaRequester",
               "slot": "config"
             },
-            "hookFunction": "window.com_incowia_cubxWebpackageViewer_cubxWebpackageViewer.buildConfigObject"
+            "hookFunction": "window.com_incowia_cubxWebpackageViewer_cubxWebpackageViewer.buildRequestConfigObject"
           },
           {
             "connectionId": "schemaLoadedCon",
@@ -497,7 +497,7 @@
               "memberIdRef": "manifestRequester",
               "slot": "config"
             },
-            "hookFunction": "window.com_incowia_cubxWebpackageViewer_cubxComponentViewer.buildConfigObject"
+            "hookFunction": "window.com_incowia_cubxWebpackageViewer_cubxComponentViewer.buildRequestConfigObject"
           },
           {
             "connectionId": "resultToManifest",
