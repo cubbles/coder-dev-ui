@@ -41,24 +41,7 @@
     <cubx-webpackage-viewer cubx-webpackage-id="this"></cubx-webpackage-viewer>
 </div>
 
-<script>
-    var loadB = document.querySelector('#loadB');
-    var urlTF = document.querySelector('#urlTF');
-    var alertD = document.querySelector('#alertD');
-    var alertDText = document.querySelector('#alertDText');
-    var cubxWebpackageV = document.querySelector('cubx-webpackage-viewer');
-    document.addEventListener('cifReady', function () {
-        loadB.removeAttribute('disabled');
-    });
-    loadB.addEventListener('click', function () {
-        if (urlTF.value !== '') {
-            cubxWebpackageV.setManifestUrl(urlTF.value);
-        } else {
-            alertDText.textContent = 'Please fill out the File url field';
-            alertD.style.display = 'block';
-        }
-    });
-</script>
+<script src="index.js"></script>
 
 </body>
 </html>
