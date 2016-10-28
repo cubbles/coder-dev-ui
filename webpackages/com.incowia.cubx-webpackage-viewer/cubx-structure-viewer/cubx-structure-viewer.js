@@ -14,7 +14,7 @@
     is: 'cubx-structure-viewer',
 
     currentComponentIndex: 0,
-    structureHolderId: 'structure_view_holder',
+    structureHolderId: 'structureViewHolder',
     componentViewModalId: 'dataflow_view_modal',
 
     /**
@@ -39,7 +39,6 @@
      * Manipulate an element’s local DOM when the cubbles framework is initialized and ready to work.
      */
     cubxReady: function () {
-      this.$$('#hideElementsButton').style.display = 'none';
       this._addListenerToHideElementsButton();
     },
 
@@ -48,7 +47,9 @@
      */
     modelManifestChanged: function (manifest) {
       this.setCurrentComponentArtifactId(undefined);
-      if (!this.getSchemaLoaded()) return;
+      if (!this.getSchemaLoaded()) {
+        return;
+      }
       this._loadStructureView();
     },
 
@@ -118,10 +119,10 @@
      * @private
      */
     _beforeLoadingStructure: function () {
-      this.$$('#hideElementsButton').style.display = 'none';
+      this.$$('#structureViewHolder').style.display = 'none';
       var viewer = this.$$('[data-schemaid="root"]');
       if (viewer) {
-        this.$$('#structure_view_holder').removeChild(viewer);
+        this.$$('#structureViewHolder').removeChild(viewer);
       }
     },
     /**
@@ -132,7 +133,7 @@
       this._hideRootLabel();
       this._addViewDataflowButtons();
       this._hideEmptyProperties();
-      this.$$('#hideElementsButton').style.display = 'block';
+      this.$$('#structureViewHolder').style.display = 'block';
       $('[data-toggle="popover"]').popover();
       $('[data-toggle="tooltip"]').tooltip();
     },
