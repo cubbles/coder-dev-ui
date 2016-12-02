@@ -16,7 +16,7 @@
     checkManifestUrl: function (url, next) {
       var self = window.com_incowia_cubxWebpackageViewer_cubxWebpackageViewer;
       if (url.indexOf('/manifest.webpackage') < 0) {
-        if(url.lastIndexOf('/') !== url.length - 1) {
+        if (url.lastIndexOf('/') !== url.length - 1) {
           url += '/';
         }
         url += 'manifest.webpackage';

@@ -1,7 +1,7 @@
 {
   "name": "cubx-webpackage-viewer",
   "groupId": "com.incowia",
-  "version": "1.4.1",
+  "version": "1.4.2-SNAPSHOT",
   "modelVersion": "9.1.0",
   "docType": "webpackage",
   "author": {
@@ -497,7 +497,7 @@
               "memberIdRef": "manifestRequester",
               "slot": "config"
             },
-            "hookFunction": "window.com_incowia_cubxWebpackageViewer_cubxComponentViewer.buildRequestConfigObject"
+            "hookFunction": "window.com_incowia_cubxWebpackageViewer_cubxComponentViewer.checkManifestUrl"
           },
           {
             "connectionId": "resultToManifest",

@@ -418,9 +418,13 @@
       if (member.componentId && member.componentId.indexOf('this/') !== -1) {
         return this.getManifest();
       } else {
-        var manifestUrl = window.cubx.CRC._baseUrl + member.componentId.substr(0, member.componentId.indexOf('/'));
+        var manifestUrl = window.cubx.CRC._baseUrl +
+          member.componentId.substr(0, member.componentId.indexOf('/')) +
+          '/manifest.webpackage';
+
         $.ajaxSetup({ async: false });
         $.getJSON(manifestUrl, function (response) {
+          console.log('manifestUrl: ' + manifestUrl);
           manifest = response;
         });
         $.ajaxSetup({ async: true });
@@ -434,7 +438,7 @@
       if (!dependency || !dependency.webpackageId) {
         return this.getManifest();
       } else {
-        var manifestUrl = window.cubx.CRC._baseUrl + dependency.webpackageId;
+        var manifestUrl = window.cubx.CRC._baseUrl + dependency.webpackageId + '/manifest.webpackage';
         $.ajaxSetup({ async: false });
         $.getJSON(manifestUrl, function (response) {
           manifest = response;
