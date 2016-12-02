@@ -8,7 +8,7 @@
   window.com_incowia_cubxWebpackageViewer_cubxComponentViewer = {
 
     // Hook function to build the config object to be send to ajaxRequest
-    buildConfigObject: function (url, next) {
+    buildRequestConfigObject: function (url, next) {
       next({url: url});
     }
   };
