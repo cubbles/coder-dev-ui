@@ -94,7 +94,7 @@
         ],
         "dependencies": [
           {
-            "webpackageId": "cubx.core.rte@2.0.1",
+            "webpackageId": "cubx.core.rte@2.1.0",
             "artifactId": "cubxpolymer"
           },
           {
@@ -115,7 +115,7 @@
         ],
         "dependencies": [
           {
-            "webpackageId": "cubx.core.rte@2.0.1",
+            "webpackageId": "cubx.core.rte@2.1.0",
             "artifactId": "cubxpolymer"
           },
           {
@@ -213,7 +213,7 @@
         ],
         "dependencies": [
           {
-            "webpackageId": "cubx.core.rte@2.0.1",
+            "webpackageId": "cubx.core.rte@2.1.0",
             "artifactId": "cubxpolymer"
           },
           {
@@ -266,7 +266,7 @@
             "artifactId": "cubx-structure-viewer"
           },
           {
-            "webpackageId": "com.incowia.ajax@0.2.0",
+            "webpackageId": "com.incowia.ajax@0.2.1",
             "artifactId": "ajax-request"
           }
         ],
@@ -536,7 +536,7 @@
             "artifactId": "cubx-component-info-viewer"
           },
           {
-            "webpackageId": "com.incowia.ajax@0.2.0",
+            "webpackageId": "com.incowia.ajax@0.2.1",
             "artifactId": "ajax-request"
           }
         ]
