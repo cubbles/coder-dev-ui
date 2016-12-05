@@ -10,12 +10,7 @@
       "proxy": "",
       "debug": false
     },
-    "shared": {
-      "url": "https://cubbles.world/shared",
-      "proxy": "",
-      "debug": false
-    },
-    "core": {
+    "release": {
       "url": "https://cubbles.world/core",
       "proxy": "",
       "debug": false
