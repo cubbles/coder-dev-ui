@@ -43,42 +43,76 @@
      */
     modelComponentChanged: function (component) {
       if (!this._cubxReady) { return; }
-      this._updateSlotsInformation();
+      this._updateInterfaceInfo();
     },
 
     /**
-     * Update the table which contains the information of the compound component slots
+     * Update slots and inits information of the component
      * @private
      */
-    _updateSlotsInformation: function () {
-      var iSlotsInfoTable = document.getElementById('i_slots_info_table');
-      var oSlotsInfoTable = document.getElementById('o_slots_info_table');
-      var row;
-      var slotId;
-      var type;
-      var description;
+    _updateInterfaceInfo: function () {
+      var compoundInits = {};
+      if ('inits' in this.getComponent()) {
+        compoundInits = this._updateMembersInits();
+      }
+      this._updateSlotsInfo(compoundInits);
+    },
+
+    /**
+     * Update input and output slots information of the component
+     * @param {object} compoundInits - Object containing (if any) init values in case this the
+     * component is a compound
+     * @private
+     */
+    _updateSlotsInfo: function (compoundInits) {
+      var iSlotsInfoTable = document.querySelector('#i_slots_info_table');
+      var oSlotsInfoTable = document.querySelector('#o_slots_info_table');
       var slots = this.getComponent().slots;
       for (var i in slots) {
         for (var j in slots[i].direction) {
+          var row;
           if (slots[i].direction[j] === 'input') {
             row = iSlotsInfoTable.insertRow(iSlotsInfoTable.rows.length);
           } else {
             row = oSlotsInfoTable.insertRow(oSlotsInfoTable.rows.length);
           }
-          slotId = row.insertCell(0);
-          type = row.insertCell(1);
-          description = row.insertCell(2);
+          var slotId = row.insertCell(0);
+          var type = row.insertCell(1);
+          var description = row.insertCell(2);
+          var value = row.insertCell(3);
           slotId.innerHTML = slots[i].slotId;
           type.innerHTML = slots[i].type;
           description.innerHTML = slots[i].description || '';
+          value.innerHTML = 'value' in slots[i] ?
+            JSON.stringify(slots[i].value) : compoundInits[slots[i].slotId] || '';
         }
       }
-      if (iSlotsInfoTable.rows.length > 1) {
-        document.getElementById('i_slots_info_div').style.display = 'block';
+    },
+
+    /**
+     * Update initial values of the members in case the component is a compound
+     * @returns {{slotId: value}} - object containing members' initial values
+     * @private
+     */
+    _updateMembersInits: function () {
+      var compoundInits = {};
+      var membersInitsTable = document.querySelector('#members_inits_table');
+      var inits = this.getComponent().inits;
+      for (var k in inits) {
+        if ('memberIdRef' in inits[k]) {
+          var row = membersInitsTable.insertRow(membersInitsTable.rows.length);
+          var memberId = row.insertCell(0);
+          var slotId = row.insertCell(1);
+          var value = row.insertCell(2);
+
+          memberId.innerHTML = inits[k].memberIdRef;
+          slotId.innerHTML = inits[k].slot;
+          value.innerHTML = JSON.stringify(inits[k].value);
+        } else {
+          compoundInits[inits[k].slot] = JSON.stringify(inits[k].value);
+        }
       }
-      if (oSlotsInfoTable.rows.length > 1) {
-        document.getElementById('o_slots_info_div').style.display = 'block';
-      }
+      return compoundInits;
     }
   });
 }());

@@ -4,7 +4,7 @@
     <template>
         <style include="cubx-component-info-viewer-style"></style>
         <h2>{{model.title}}</h2>
-        <div id="i_slots_info_div">
+        <div>
             <h3>Input slots</h3>
             <table id="i_slots_info_table" class="table table-hover">
                 <thead>
@@ -12,6 +12,7 @@
                         <th>slotId</th>
                         <th>type</th>
                         <th>description</th>
+                        <th>initial value</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -19,7 +20,7 @@
             </table>
         </div>
 
-        <div id="o_slots_info_div">
+        <div>
             <h3>Output slots</h3>
             <table id="o_slots_info_table" class="table table-hover">
                 <thead>
@@ -27,6 +28,22 @@
                     <th>slotId</th>
                     <th>type</th>
                     <th>description</th>
+                    <th>initial value</th>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+
+        <div>
+            <h3>Members' inits defined in this compound</h3>
+            <table id="members_inits_table" class="table table-hover">
+                <thead>
+                <tr>
+                    <th>memberIdRef</th>
+                    <th>slot</th>
+                    <th>initial value</th>
                 </tr>
                 </thead>
                 <tbody>
