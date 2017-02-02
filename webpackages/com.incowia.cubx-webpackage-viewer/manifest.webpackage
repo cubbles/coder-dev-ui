@@ -1,8 +1,8 @@
 {
   "name": "cubx-webpackage-viewer",
   "groupId": "com.incowia",
-  "version": "1.4.2",
-  "modelVersion": "9.1.0",
+  "version": "1.5.0-SNAPSHOT",
+  "modelVersion": "9.1.1",
   "docType": "webpackage",
   "author": {
     "name": "Edwin Gamboa",
@@ -195,6 +195,14 @@
               "input"
             ],
             "value": false
+          },
+          {
+            "slotId": "rootDependency",
+            "type": "object",
+            "description": "Root dependency of this component, e.g. {\"artifactId\": \"my-artifact\", \"webpackageId\": \"my-pack@1.0.0\"}",
+            "direction": [
+              "output"
+            ]
           }
         ]
       },
@@ -416,6 +424,27 @@
             "description": "Demo app..."
           }
         ],
+        "resources": [
+          "css/cubx-component-docs-viewer.css",
+          "template.html",
+          "jsFunctions.js"
+        ],
+        "dependencies": [
+          {
+            "artifactId": "cubx-component-viewer"
+          },
+          {
+            "artifactId": "cubx-component-info-viewer"
+          },
+          {
+            "webpackageId": "com.incowia.ajax@0.2.1",
+            "artifactId": "ajax-request"
+          },
+          {
+            "artifactId": "cubx-deps-tree-viewer",
+            "webpackageId": "dep-tree-viewer@1.0.1-SNAPSHOT"
+          }
+        ],
         "slots": [
           {
             "slotId": "componentArtifactId",
@@ -454,6 +483,10 @@
           {
             "memberId": "manifestRequester",
             "artifactId": "ajax-request"
+          },
+          {
+            "memberId": "depsTreeViewer",
+            "artifactId": "cubx-deps-tree-viewer"
           }
         ],
         "connections": [
@@ -509,6 +542,18 @@
               "memberIdRef": "componentViewer",
               "slot": "manifest"
             }
+          },
+          {
+            "connectionId": "rootDepCon",
+            "source": {
+              "memberIdRef": "componentViewer",
+              "slot": "rootDependency"
+            },
+            "destination": {
+              "memberIdRef": "depsTreeViewer",
+              "slot": "rootDependencies"
+            },
+            "hookFunction": "window.com_incowia_cubxWebpackageViewer_cubxComponentViewer.dependencyIntoArray"
           }
         ],
         "inits": [
@@ -521,23 +566,6 @@
             "slot": "showTitle",
             "value": true,
             "memberIdRef": "componentViewer"
-          }
-        ],
-        "resources": [
-          "css/cubx-component-docs-viewer.css",
-          "template.html",
-          "jsFunctions.js"
-        ],
-        "dependencies": [
-          {
-            "artifactId": "cubx-component-viewer"
-          },
-          {
-            "artifactId": "cubx-component-info-viewer"
-          },
-          {
-            "webpackageId": "com.incowia.ajax@0.2.1",
-            "artifactId": "ajax-request"
           }
         ]
       }

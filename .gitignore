@@ -21,6 +21,8 @@ webpackages/*_pack/
 webpackages/*_dist/
 **/.tmp/
 
+*.schema.json
+
 webpackages/**/test-results
 
 .workspace

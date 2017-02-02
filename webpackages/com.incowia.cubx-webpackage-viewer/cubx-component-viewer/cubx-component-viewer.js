@@ -1,4 +1,4 @@
-/*global $, d3, klay, XMLSerializer, Blob, saveAs*/
+/* global $, d3, klay, XMLSerializer, Blob, saveAs */
 (function () {
   'use strict';
   /**
@@ -82,7 +82,7 @@
      */
     modelComponentArtifactIdChanged: function (componentArtifactId) {
       if (!this.getManifest() || !componentArtifactId) return;
-      this._updateView();
+      this._startWorking();
     },
 
     /**
@@ -90,31 +90,47 @@
      */
     modelManifestChanged: function (manifest) {
       if (!this.getComponentArtifactId()) return;
-      this._updateView();
+      this._startWorking();
+    },
+
+    /**
+     *
+     * @private
+     */
+    _startWorking: function () {
+      var component = this._searchComponentInManifest(this.getComponentArtifactId(), this.getManifest());
+      if (component) {
+        this.setRootDependency(
+          {
+            artifactId: component.artifactId,
+            webpackageId: (this.getManifest().groupId ? this.getManifest().groupId + '.' : '') +
+            this.getManifest().name + '@' + this.getManifest().version
+          }
+        );
+        console.log(this.getRootDependency());
+        this.setComponent(component);
+        this._updateView(component);
+      } else {
+        console.error('The component with ' + this.getComponentArtifactId() + ' artifactId was not found');
+      }
     },
 
     /**
      * Update the view after the manifest or the componentArtifactId slots have changed
+     * @param {object} component - Component to be visualized
      * @private
      */
-    _updateView: function () {
-      var component = this._searchComponentInManifest(this.getComponentArtifactId(), this.getManifest());
-      if (component) {
-        this._maxRootInputSlotWidth = 0;
-        this.setComponent(component);
-        if (this.getShowTitle()) {
-          $('#' + this.VIEW_HOLDER_ID + '_title').css('display', 'inline-block');
-          if (component.members && !this.setViewerTitle()) {
-            this.setViewerTitle(this.COMPOUND_TITLE);
-          } else {
-            this.setViewerTitle(this.ELEMENTARY_TITLE);
-          }
+    _updateView: function (component) {
+      this._maxRootInputSlotWidth = 0;
+      if (this.getShowTitle()) {
+        $('#' + this.VIEW_HOLDER_ID + '_title').css('display', 'inline-block');
+        if (component.members && !this.setViewerTitle()) {
+          this.setViewerTitle(this.COMPOUND_TITLE);
+        } else {
+          this.setViewerTitle(this.ELEMENTARY_TITLE);
         }
-        this._drawComponent(this._generateComponentGraph());
-      } else {
-        console.error('The component with ' + this.getComponentArtifactId() + ' artifactId was not found');
-        return;
       }
+      this._drawComponent(this._generateComponentGraph());
     },
 
     /**
@@ -142,7 +158,7 @@
     /**
      * Generate a list of GraphMembers (KNodes) using a a list of components which belong to a compound component that
      * is defined in manifest
-     * @param {Array} compoundsMembers - Components which belong to a compound component
+     * @param {object} compounds - Compound component
      * @returns {Array} List of GraphMembers (KNodes)
      * @private
      */

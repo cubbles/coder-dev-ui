@@ -22,6 +22,12 @@
         url += 'manifest.webpackage';
       }
       self.buildRequestConfigObject(url, next);
+    },
+
+    // Hook function to send the root dependency within an array
+    dependencyIntoArray: function (dep, next) {
+      next([dep]);
     }
+
   };
 })();
