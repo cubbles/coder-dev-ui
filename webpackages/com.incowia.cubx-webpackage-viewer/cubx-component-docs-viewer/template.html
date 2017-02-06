@@ -1,14 +1,21 @@
 <template id="cubx-component-docs-viewer">
     <ajax-request  member-id-ref="manifestRequester"> </ajax-request>
     <div class="container">
-        <div class="row">
-            <cubx-component-viewer member-id-ref="componentViewer" class="col-md-12"></cubx-component-viewer>
-        </div>
-        <div class="row">
-            <cubx-component-info-viewer  member-id-ref="componentInfoViewer" class="col-md-12"></cubx-component-info-viewer>
-        </div>
-        <div class="row">
-            <cubx-deps-tree-viewer  member-id-ref="depsTreeViewer" class="col-md-12"></cubx-deps-tree-viewer>
+        <ul class="nav nav-tabs">
+            <li class="active"><a data-toggle="tab" href="#componentViewerD">Interface/Dataflow view</a></li>
+            <li><a data-toggle="tab" href="#componentInfoViewerD">Interface Details</a></li>
+            <li><a data-toggle="tab" href="#depsTreeViewerD">Dependency Tree</a></li>
+        </ul>
+        <div class="tab-content">
+            <div id="componentViewerD"  class="tab-pane fade in active">
+                <cubx-component-viewer member-id-ref="componentViewer"></cubx-component-viewer>
+            </div>
+            <div id="componentInfoViewerD" class="tab-pane fade">
+                <cubx-component-info-viewer member-id-ref="componentInfoViewer"></cubx-component-info-viewer>
+            </div>
+            <div id="depsTreeViewerD" class="tab-pane fade">
+                <cubx-deps-tree-viewer member-id-ref="depsTreeViewer"></cubx-deps-tree-viewer>
+            </div>
         </div>
     </div>
 </template>
