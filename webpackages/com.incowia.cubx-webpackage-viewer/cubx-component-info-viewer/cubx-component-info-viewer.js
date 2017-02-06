@@ -36,6 +36,7 @@
      */
     cubxReady: function () {
       this._cubxReady = true;
+      this.$$('h2').style.display = 'none';
     },
 
     /**
@@ -44,6 +45,18 @@
     modelComponentChanged: function (component) {
       if (!this._cubxReady) { return; }
       this._updateInterfaceInfo();
+    },
+
+    /**
+     *  Observe the Cubbles-Component-Model: If value for slot 'showTitle' has changed ...
+     */
+    modelShowTitleChanged: function (showTitle) {
+      var titleElement = this.$$('h2');
+      if (showTitle) {
+        titleElement.style.display = 'block';
+      } else {
+        titleElement.style.display = 'none';
+      }
     },
 
     /**
@@ -65,8 +78,8 @@
      * @private
      */
     _updateSlotsInfo: function (compoundInits) {
-      var iSlotsInfoTable = document.querySelector('#i_slots_info_table');
-      var oSlotsInfoTable = document.querySelector('#o_slots_info_table');
+      var iSlotsInfoTable = this.$$('#i_slots_info_table');
+      var oSlotsInfoTable = this.$$('#o_slots_info_table');
       var slots = this.getComponent().slots;
       for (var i in slots) {
         for (var j in slots[i].direction) {
@@ -83,8 +96,8 @@
           slotId.innerHTML = slots[i].slotId;
           type.innerHTML = slots[i].type;
           description.innerHTML = slots[i].description || '';
-          value.innerHTML = 'value' in slots[i] ?
-            JSON.stringify(slots[i].value) : compoundInits[slots[i].slotId] || '';
+          value.innerHTML = 'value' in slots[i] ? JSON.stringify(slots[i].value)
+            : compoundInits[slots[i].slotId] || '';
         }
       }
     },
@@ -96,7 +109,7 @@
      */
     _updateMembersInits: function () {
       var compoundInits = {};
-      var membersInitsTable = document.querySelector('#members_inits_table');
+      var membersInitsTable = this.$$('#members_inits_table');
       var inits = this.getComponent().inits;
       for (var k in inits) {
         if ('memberIdRef' in inits[k]) {

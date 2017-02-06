@@ -184,7 +184,8 @@
             "type": "string",
             "description": "Title for the component viewer. By default it is 'Interface view' for an elementary component and 'Dataflow view' for a compound component",
             "direction": [
-              "input"
+              "input",
+              "output"
             ]
           },
           {
@@ -246,6 +247,15 @@
             ],
             "description": "Title for this component. By default it is 'Interface details'",
             "value": "Interface details"
+          },
+          {
+            "slotId": "showTitle",
+            "type": "boolean",
+            "description": "Boolean indicating whether the title should be displayed",
+            "direction": [
+              "input"
+            ],
+            "value": false
           }
         ]
       }
@@ -559,13 +569,13 @@
         "inits": [
           {
             "slot": "viewerHeight",
-            "value": "500px",
+            "value": "30em",
             "memberIdRef": "componentViewer"
           },
           {
-            "slot": "showTitle",
-            "value": true,
-            "memberIdRef": "componentViewer"
+            "slot": "height",
+            "value": "30em",
+            "memberIdRef": "depsTreeViewer"
           }
         ]
       }
