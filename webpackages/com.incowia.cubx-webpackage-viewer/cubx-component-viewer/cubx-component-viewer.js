@@ -107,7 +107,6 @@
             this.getManifest().name + '@' + this.getManifest().version
           }
         );
-        console.log(this.getRootDependency());
         this.setComponent(component);
         this._updateView(component);
       } else {
@@ -440,7 +439,6 @@
 
         $.ajaxSetup({ async: false });
         $.getJSON(manifestUrl, function (response) {
-          console.log('manifestUrl: ' + manifestUrl);
           manifest = response;
         });
         $.ajaxSetup({ async: true });
