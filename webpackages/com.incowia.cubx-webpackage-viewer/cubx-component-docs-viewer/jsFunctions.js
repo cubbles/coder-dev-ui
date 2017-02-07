@@ -1,3 +1,4 @@
+/* global $ */
 /**
  * Contains hookFunctions for component travel-planner
  */
@@ -26,8 +27,35 @@
 
     // Hook function to send the root dependency within an array
     dependencyIntoArray: function (dep, next) {
+      var docsV = document.querySelector('cubx-component-docs-viewer');
+      window.com_incowia_cubxWebpackageViewer_cubxComponentViewer.handleInitialScale(
+        'depsTreeViewerT',
+        function (scale) {
+          docsV.setDepsTreeVScale(scale);
+        });
       next([dep]);
-    }
+    },
 
+    handleInitialScale: function (tabId, setScaleFunction, context) {
+      var tab = $('#' + tabId);
+      if ($('ul.nav-tabs li.active a').attr('id') === tabId) {
+        setScaleFunction('auto');
+      } else {
+        setScaleFunction('none');
+        tab.on('shown.bs.tab', function (e) {
+          if (e.target.id === tabId) {
+            setScaleFunction('auto');
+            tab.off('shown.bs.tab');
+          }
+        });
+      }
+    }
   };
+  // document.addEventListener('cifReady', function () {
+  //   $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+  //     if (e.target.id === 'depsTreeViewerT') {
+  //       document.querySelector('cubx-deps-tree-viewer').setScale('auto');
+  //     }
+  //   });
+  // });
 })();
