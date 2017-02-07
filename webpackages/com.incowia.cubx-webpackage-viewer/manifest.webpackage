@@ -204,6 +204,14 @@
             "direction": [
               "output"
             ]
+          },
+          {
+            "slotId": "scale",
+            "type": "string",
+            "description": "Ratio for the viewer to be scaled, note that it should be a STRING. Use 'auto' if you want it to be automatically calculated. Or 'none' to avoid scaling.",
+            "direction": [
+              "input"
+            ]
           }
         ]
       },
@@ -479,6 +487,22 @@
             "direction": [
               "input"
             ]
+          },
+          {
+            "slotId": "componentVScale",
+            "type": "string",
+            "description": "Ratio for the viewer to be scaled, note that it should be a STRING. Use 'auto' if you want it to be automatically calculated. Or 'none' to avoid scaling.",
+            "direction": [
+              "input"
+            ]
+          },
+          {
+            "slotId": "depsTreeVScale",
+            "type": "string",
+            "description": "Ratio for the tree to be scaled, note that it should be a STRING. Use 'auto' if you want it to be automatically calculated. Or 'none' to avoid scaling.",
+            "direction": [
+              "input"
+            ]
           }
         ],
         "members": [
@@ -564,6 +588,28 @@
               "slot": "rootDependencies"
             },
             "hookFunction": "window.com_incowia_cubxWebpackageViewer_cubxComponentViewer.dependencyIntoArray"
+          },
+          {
+            "connectionId": "componentVScaleCon",
+            "source": {
+              "slot": "componentVScale"
+            },
+            "destination": {
+              "memberIdRef": "componentViewer",
+              "slot": "scale"
+            },
+            "repeatedValues": true
+          },
+          {
+            "connectionId": "depsTreeVScaleCon",
+            "source": {
+              "slot": "depsTreeVScale"
+            },
+            "destination": {
+              "memberIdRef": "depsTreeViewer",
+              "slot": "scale"
+            },
+            "repeatedValues": true
           }
         ],
         "inits": [
