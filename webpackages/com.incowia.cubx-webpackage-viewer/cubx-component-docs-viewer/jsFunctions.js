@@ -27,16 +27,26 @@
 
     // Hook function to send the root dependency within an array
     dependencyIntoArray: function (dep, next) {
+      next([dep]);
+    },
+
+    handleArtifactChange: function (artifactId, next) {
       var docsV = document.querySelector('cubx-component-docs-viewer');
       window.com_incowia_cubxWebpackageViewer_cubxComponentViewer.handleInitialScale(
         'depsTreeViewerT',
         function (scale) {
           docsV.setDepsTreeVScale(scale);
         });
-      next([dep]);
+      window.com_incowia_cubxWebpackageViewer_cubxComponentViewer.handleInitialScale(
+        'componentViewerT',
+        function (scale) {
+          docsV.setComponentVScale(scale);
+        });
+      next(artifactId);
     },
 
-    handleInitialScale: function (tabId, setScaleFunction, context) {
+    // Aid function to handle initial scale of cubx-component-viewer and cubx-deps-tree-viewer
+    handleInitialScale: function (tabId, setScaleFunction) {
       var tab = $('#' + tabId);
       if ($('ul.nav-tabs li.active a').attr('id') === tabId) {
         setScaleFunction('auto');

@@ -542,7 +542,8 @@
             "destination": {
               "memberIdRef": "componentViewer",
               "slot": "componentArtifactId"
-            }
+            },
+            "hookFunction": "window.com_incowia_cubxWebpackageViewer_cubxComponentViewer.handleArtifactChange"
           },
           {
             "connectionId": "componentCon",
