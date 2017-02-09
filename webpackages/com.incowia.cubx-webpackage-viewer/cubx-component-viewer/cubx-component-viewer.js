@@ -94,10 +94,56 @@
     },
 
     /**
-     *
+     *  Observe the Cubbles-Component-Model: If value for slot 'scale' has changed ...
+     */
+    modelScaleChanged: function (scale) {
+      if (this.status === 'ready') {
+        if (!this._isValidScale(scale)) {
+          console.error('Invalid value of scale. Possible values are \'none\', \'auto\', or a positive float ' +
+            'passed as STRING.');
+          return;
+        }
+        if (scale === 'none') {
+          return;
+        }
+        if (scale === 'auto') {
+          this._autoScaleAndCenterDiagram(this.svg, this.g);
+        } else {
+          this._scaleDiagram(this.svg, this.g, scale);
+        }
+
+      }
+    },
+
+    /**
+     * Indicate whether the given 'scale' is valid
+     * @param {string} scale - Scale to be validated
+     * @returns {boolean} True if scale is valid, otherwise false
+     * @private
+     */
+    _isValidScale: function (scale) {
+      if (!scale) {
+        return false;
+      }
+      if (scale !== 'auto' && scale !== 'none') {
+        scale = parseFloat(scale);
+        if (isNaN(scale)) {
+          return false;
+        }
+      }
+      if (scale < 0) {
+        return false;
+      }
+      return true;
+    },
+
+    /**
+     * Checks if component is within the manifest and starts the process to draw the component on
+     * the viewer
      * @private
      */
     _startWorking: function () {
+      this.status = 'init';
       var component = this._searchComponentInManifest(this.getComponentArtifactId(), this.getManifest());
       if (component) {
         this.setRootDependency(
@@ -157,7 +203,7 @@
     /**
      * Generate a list of GraphMembers (KNodes) using a a list of components which belong to a compound component that
      * is defined in manifest
-     * @param {object} compounds - Compound component
+     * @param {object} compound - Compound component
      * @returns {Array} List of GraphMembers (KNodes)
      * @private
      */
@@ -422,13 +468,20 @@
     _manifestOfMember: function (member, parentComponent) {
       var manifest;
       if (member.componentId) {
-        manifest = this._manifestOfMemberForModelVersion8(member, parentComponent);
+        manifest = this._manifestOfMemberForModelVersion8(member);
       } else {
         manifest = this._manifestOfMemberForModelVersion9(member, parentComponent);
       }
       return manifest;
     },
-    _manifestOfMemberForModelVersion8: function (member, parentComponent) {
+
+    /**
+     * Returns the manifest of a member according to model version 8
+     * @param {object} member - Member of a compound component
+     * @returns {object} - Manifest of the component
+     * @private
+     */
+    _manifestOfMemberForModelVersion8: function (member) {
       var manifest = {};
       if (member.componentId && member.componentId.indexOf('this/') !== -1) {
         return this.getManifest();
@@ -446,6 +499,13 @@
       }
     },
 
+    /**
+     * Returns the manifest of a member according to model version 9
+     * @param {object} member - Member of a compound component
+     * @param {object} parentComponent the parent compound
+     * @returns {object} - Manifest of the component
+     * @private
+     */
     _manifestOfMemberForModelVersion9: function (member, parentComponent) {
       var manifest = {};
       var dependency = this._searchDependencyInComponent(member.artifactId, parentComponent);
@@ -461,6 +521,7 @@
         return manifest;
       }
     },
+
     /**
      * Search a component in a determined manifest
      * @param {string} componentArtifactId - Artifact id of the component
@@ -513,24 +574,143 @@
     },
 
     /**
-     * Center the component view horizontally and vertically and set and translate the zoom behavior to the center
+     * Scale and center the tree within the svg that contains it
+     * @param {object} svg - D3 selection of the svg element
+     * @param {object} g - D3 selection of the svg group (<g>) that wraps the tree
+     * @param {number} scale - Scale ratio to be use when scaling the depTree
+     * @returns {{x: number, y: number, scale: *}} - Final position and scale ratio
      * @private
      */
-    _centerDiagramAndSetZoomBehavior: function () {
-      var componentViewHolderSvg = $('#' + this.VIEW_HOLDER_ID + '_svg');
-      var componentViewHolderContainer = d3.select('#' + this.VIEW_HOLDER_ID + '_container');
-      var newX = (componentViewHolderSvg.width() / 2) - (componentViewHolderContainer.node().getBBox().width / 2);
-      var newY = (componentViewHolderSvg.height() / 2) - (componentViewHolderContainer.node().getBBox().height / 2);
-      componentViewHolderContainer.transition()
-        .attr('transform', 'translate(' + newX + ',' + newY + ')');
+    _scaleDiagram: function (svg, g, scale) {
+      this._applyTransform(svg, g, {scale: scale});
+    },
 
-      var self = this;
-      var zoom = d3.behavior.zoom()
-        .translate([ newX, newY ])
+    /**
+     * Calculate the right scale to fit 'g' into 'svg'
+     * @param {Element} svg - Svg element containing 'g'
+     * @param {Element} g - Svg group to be fitted into the 'svg' element
+     * @returns {number} - Calculated scale
+     * @private
+     */
+    _calculateAutoScale: function (svg, g) {
+      var svgSize;
+      var gSize;
+      svgSize = {width: svg.node().parentNode.clientWidth, height: svg.node().parentNode.clientHeight};
+      gSize = {width: g.node().getBBox().width, height: g.node().getBBox().height};
+      var scale = Math.min(svgSize.width / gSize.width, svgSize.height / gSize.height);
+      if (isNaN(scale)) {
+        console.warn('Dimensions and position of the dependency tree(s) containers could not be ' +
+          'calculated. The component should be attached to the DOM.');
+        return;
+      }
+      return scale;
+    },
+
+    /**
+     * Center the 'g' element horizontally and vertically within the 'svg'
+     * @param {Element} svg - Svg element containing 'g'
+     * @param {Element} g - Svg group to be centered into the 'svg' element
+     * @private
+     */
+    _centerDiagram: function (svg, g) {
+      this._applyTransform(svg, g, this._calculateCenterCoordinates(svg, g));
+    },
+
+    /**
+     * Calculate the right scale and coordinates to fit and center 'g' within 'svg'
+     * @param {Element} svg - Svg element containing 'g'
+     * @param {Element} g - Svg group to be centered and fitted into the 'svg' element
+     * @private
+     */
+    _autoScaleAndCenterDiagram: function (svg, g) {
+      var scale = this._calculateAutoScale(svg, g);
+      var transform = this._calculateCenterCoordinates(svg, g, scale);
+      transform.scale = scale;
+      this._applyTransform(svg, g, transform);
+    },
+
+    /**
+     * Apply a transform to 'g', which can be a translation, a scale or both. The updates the zoom
+     * behavior according to the applied transform.
+     * @param {Element} svg - Svg element containing 'g'
+     * @param {Element} g - Svg group to be transformed
+     * @param {object} transform - Object containing current coordinates and scale of the viewer,
+     * e.g: {x: 0, y: 10, scale: 0.5}
+     * @private
+     */
+    _applyTransform: function (svg, g, transform) {
+      var transformString = '';
+      if ('x' in transform && 'y' in transform) {
+        transformString += 'translate(' + transform.x + ',' + transform.y + ') ';
+      }
+      if ('scale' in transform) {
+        transformString += 'scale(' + transform.scale + ')';
+      }
+      g.transition()
+        .attr('transform', transformString);
+      this._updateZoom(svg, g, transform);
+    },
+
+    /**
+     * Calculate the coordinates to center the 'g' element within 'svg'. It considers a scale if
+     * needed
+     * @param {Element} svg - Svg element containing 'g'
+     * @param {Element} g - Svg group to be fitted into the 'svg' element
+     * @param {number} [scale=1] - Scale to be considered in the calculation
+     * @returns {{x: number, y: number}} - Coordinates to center 'g'
+     * @private
+     */
+    _calculateCenterCoordinates: function (svg, g, scale) {
+      scale = scale || 1;
+      var svgSize = {
+        width: svg.node().parentNode.clientWidth,
+        height: svg.node().parentNode.clientHeight
+      };
+      var gSize = {width: g.node().getBBox().width, height: g.node().getBBox().height};
+      var newX = Math.abs(svgSize.width - gSize.width * scale) / 2;
+      var newY = Math.abs(svgSize.height - gSize.height * scale) / 2;
+      return {x: newX, y: newY};
+    },
+
+    /**
+     * Add zoom behavior to the viewer based on the given transform
+     * @param {Element} svg - Svg element containing 'g'
+     * @param {Element} g - Svg group within the 'svg' element
+     * @param {object} transform - Object containing current coordinates and scale of the viewer,
+     * i.e. {x: x, y: y, scale: z}
+     */
+    _updateZoom: function (svg, g, transform) {
+      if ('x' in transform && 'y' in transform) {
+        this.zoom.translate([transform.x, transform.y]);
+      }
+      if ('scale' in transform) {
+        this.zoom.scale(transform.scale);
+      }
+      svg.call(this.zoom);
+    },
+
+    /**
+     * Add zoom behavior to the viewer based on the given initial transform, if any.
+     * @param {Element} svg - Svg element containing 'g'
+     * @param {Element} g - Svg group within the 'svg' element
+     * @param {object} [initialTransform] - Object containing initial coordinates and scale of the
+     * viewer, i.e. {x: x, y: y, scale: z}
+     * @private
+     */
+    _setZoomBehavior: function (svg, g, initialTransform) {
+      this.zoom = d3.behavior.zoom()
         .on('zoom', function () {
-          self.svg.attr('transform', 'translate(' + d3.event.translate + ')' + ' scale(' + d3.event.scale + ')');
+          g.attr('transform', 'translate(' + d3.event.translate + ')' + ' scale(' + d3.event.scale + ')');
         });
-      d3.select('#' + this.VIEW_HOLDER_ID).call(zoom);
+      if (initialTransform) {
+        if ('x' in initialTransform && 'y' in initialTransform) {
+          this.zoom.translate([initialTransform.x, initialTransform.y]);
+        }
+        if ('scale' in initialTransform) {
+          this.zoom.scale(initialTransform.scale);
+        }
+      }
+      svg.call(this.zoom);
     },
 
     /**
@@ -545,13 +725,11 @@
       this.svg = d3.select('#' + this.VIEW_HOLDER_ID)
         .append('svg')
         .attr('width', '100%')
-        .attr('height', '100%')
-        .attr('id', this.VIEW_HOLDER_ID + '_svg')
-        .append('g')
-        .attr('id', this.VIEW_HOLDER_ID + '_container');
+        .attr('height', '100%');
       var realWidth = $('#' + this.VIEW_HOLDER_ID).width();
       var realHeight = $('#' + this.VIEW_HOLDER_ID).height();
-      var root = this.svg.append('g');
+      this.g = this.svg.append('g');
+      var root = this.g.append('g');
       var layouter = klay.d3kgraph()
         .size([ realWidth, realHeight ])
         .transformGroup(root)
@@ -563,6 +741,8 @@
           crossMin: 'LAYER_SWEEP',
           algorithm: 'de.cau.cs.kieler.klay.layered'
         });
+
+      this._setZoomBehavior(this.svg, this.g);
 
       // Tooltip
       this.infoToolTip = d3.tip()
@@ -588,6 +768,7 @@
         self._drawConnections(connectionsData);
       });
       layouter.kgraph(componentGraph);
+      this.status = 'ready';
     },
 
     /**
@@ -650,7 +831,7 @@
         .attr('height', function (d) { return d.height; })
         .each('end', function (d) {
           if (d.id === 'root') {
-            self._centerDiagramAndSetZoomBehavior();
+            self._centerDiagram(self.svg, self.g);
           }
         });
 
@@ -857,7 +1038,7 @@
      */
     _saveAsSvg: function () {
       var serializer = new XMLSerializer();
-      var svg = document.querySelector('#' + this.VIEW_HOLDER_ID + '_svg');
+      var svg = this.svg.node();
       svg.insertBefore(this._getDefsStyleElement(), svg.firstChild);
       var source = serializer.serializeToString(svg).replace('</style>', '<![CDATA[' + this._getStylesString() + ']]>' + '</style>');
       // add name spaces.
