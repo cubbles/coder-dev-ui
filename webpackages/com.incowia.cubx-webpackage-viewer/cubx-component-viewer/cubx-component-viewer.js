@@ -180,7 +180,6 @@
 
     /**
      * Generate the KGraph that represents a component
-     * @returns {{id: string, children: Array}} KGraph to be used to build and display the component
      * @private
      */
     _generateAndDrawComponentGraph: function () {
@@ -206,20 +205,22 @@
     },
 
     /**
-     * Generate a list of GraphMembers (KNodes) using a a list of components which belong to a compound component that
+     * Generate a list of GraphMembers (KNodes) using a a list of components which belong to a
+     * compound component that
      * is defined in manifest
      * @param {object} compound - Compound component
-     * @returns {Array} List of GraphMembers (KNodes)
+     * @param {function} aftMembersGenerated - Callback function to be called when all graph members
+     * are generated
      * @private
      */
-    _generateGraphMembers: function (compound, drawCallback) {
+    _generateGraphMembers: function (compound, aftMembersGenerated) {
       var graphMembers = [];
       var componentArtifactId;
       if (compound.members) {
         var compoundsMembers = compound.members;
         compoundsMembers.forEach(getManifestOfMember.bind(this));
       } else {
-        drawCallback(graphMembers);
+        aftMembersGenerated(graphMembers);
       }
 
       function getManifestOfMember (member, i) {
@@ -236,7 +237,7 @@
         var graphMember = this._generateGraphMember(component, compoundsMembers[memberIndex], manifest);
         graphMembers.push(graphMember);
         if (memberIndex === compoundsMembers.length - 1) {
-          drawCallback(graphMembers);
+          aftMembersGenerated(graphMembers);
         }
       }
     },
@@ -386,8 +387,8 @@
     /**
      * Generate a slot (port) of a component (KNode)
      * @param {string} slot - Slot to be displayed
-     * @param {string} componentId - Identifier of the component (memberId or artifactId for root component)
      * @param {string} direction - direction of the slot (input, output)
+     * @param {string} componentId - Identifier of the component (memberId or artifactId for root component)
      * @returns {object} Generated slot (port)
      * @private
      */
@@ -475,10 +476,12 @@
      * Returns the manifest of a member
      * @param {object} member - Member of a compound component
      * @param {object} parentComponent the parent compound
-     * @returns {object} - Manifest of the component
+     * @param {number} i - index of the 'member' within the members list of 'parentComponent'
+     * @param {function} afterManifestDetermined - Callback function to be called when the manifest
+     * is determined
      * @private
      */
-    _manifestOfMember: function (member, parentComponent, i, callback) {
+    _manifestOfMember: function (member, parentComponent, i, afterManifestDetermined) {
       var manifestUrl;
       if (member.componentId) {
         manifestUrl = this._manifestUrlModelVersion8(member);
@@ -486,16 +489,16 @@
         manifestUrl = this._manifestUrlModelVersion9(member, parentComponent);
       }
       if (manifestUrl === 'this') {
-        callback(this.getManifest(), i);
+        afterManifestDetermined(this.getManifest(), i);
       } else {
-        this._requestManifest(manifestUrl, i, callback);
+        this._requestManifest(manifestUrl, i, afterManifestDetermined);
       }
     },
 
     /**
      * Returns the manifest of a member according to model version 8
      * @param {object} member - Member of a compound component
-     * @returns {object} - Manifest of the component
+     * @returns {string} - Manifest url of the member's component
      * @private
      */
     _manifestUrlModelVersion8: function (member) {
@@ -510,7 +513,7 @@
      * Returns the manifest of a member according to model version 9
      * @param {object} member - Member of a compound component
      * @param {object} parentComponent the parent compound
-     * @returns {object} - Manifest of the component
+     * @returns {object} - {string} - Manifest url of the member's component
      * @private
      */
     _manifestUrlModelVersion9: function (member, parentComponent) {
@@ -521,6 +524,14 @@
       return window.cubx.CRC._baseUrl + dependency.webpackageId + '/manifest.webpackage';
     },
 
+    /**
+     * Request the manifest using given 'manifestUrl'
+     * @param {string} manifestUrl - Url of the manifest to be requested
+     * @param {number} i - index of the 'member' within the members list of 'parentComponent'
+     * @param {function} afterManifestLoaded - Callback function to be called when the manifest
+     * is loaded
+     * @private
+     */
     _requestManifest: function (manifestUrl, i, afterManifestLoaded) {
       $.getJSON(manifestUrl, function (response) {
         afterManifestLoaded(response, i);
@@ -549,6 +560,7 @@
      * Get the dependency with the artifactId in component with parentComponentId
      * @param {string} artifactId the artifactId of the dependency
      * @param {string} parentComponent  the parent component
+     * @return {object} - Dependency of the component
      * @private
      */
     _searchDependencyInComponent: function (artifactId, parentComponent) {
@@ -566,7 +578,7 @@
      * Search a component in a components list using its id
      * @param {string} componentId - Id of the component to be searched
      * @param {Array} componentsList - Array where the component will be searched
-     * @returns {*}
+     * @returns {*} - Found component
      * @private
      */
     _searchComponentInList: function (componentId, componentsList) {
