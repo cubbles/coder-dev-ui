@@ -479,10 +479,16 @@
      * @private
      */
     _manifestOfMember: function (member, parentComponent, i, callback) {
+      var manifestUrl;
       if (member.componentId) {
-        this._manifestOfMemberForModelVersion8(member, i, callback);
+        manifestUrl = this._manifestUrlModelVersion8(member);
       } else {
-        this._manifestOfMemberForModelVersion9(member, i, parentComponent, callback);
+        manifestUrl = this._manifestUrlModelVersion9(member, parentComponent);
+      }
+      if (manifestUrl === 'this') {
+        callback(this.getManifest(), i);
+      } else {
+        this._requestManifest(manifestUrl, i, callback);
       }
     },
 
@@ -492,15 +498,12 @@
      * @returns {object} - Manifest of the component
      * @private
      */
-    _manifestOfMemberForModelVersion8: function (member, i, callback) {
+    _manifestUrlModelVersion8: function (member) {
       if (member.componentId && member.componentId.indexOf('this/') !== -1) {
-        callback(this.getManifest(), i);
-      } else {
-        var manifestUrl = window.cubx.CRC._baseUrl +
-          member.componentId.substr(0, member.componentId.indexOf('/')) +
-          '/manifest.webpackage';
-        this._requestManifest(manifestUrl, i, callback);
+        return 'this';
       }
+      return window.cubx.CRC._baseUrl + member.componentId.substr(0, member.componentId.indexOf('/')) +
+          '/manifest.webpackage';
     },
 
     /**
@@ -510,19 +513,17 @@
      * @returns {object} - Manifest of the component
      * @private
      */
-    _manifestOfMemberForModelVersion9: function (member, i, parentComponent, callback) {
+    _manifestUrlModelVersion9: function (member, parentComponent) {
       var dependency = this._searchDependencyInComponent(member.artifactId, parentComponent);
       if (!dependency || !dependency.webpackageId) {
-        callback(this.getManifest(), i);
-      } else {
-        var manifestUrl = window.cubx.CRC._baseUrl + dependency.webpackageId + '/manifest.webpackage';
-        this._requestManifest(manifestUrl, i, callback);
+        return 'this';
       }
+      return window.cubx.CRC._baseUrl + dependency.webpackageId + '/manifest.webpackage';
     },
 
-    _requestManifest: function (manifestUrl, i, callback) {
+    _requestManifest: function (manifestUrl, i, afterManifestLoaded) {
       $.getJSON(manifestUrl, function (response) {
-        callback(response, i);
+        afterManifestLoaded(response, i);
       });
     },
 
