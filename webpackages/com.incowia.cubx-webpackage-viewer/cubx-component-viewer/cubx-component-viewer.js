@@ -175,7 +175,7 @@
           this.setViewerTitle(this.ELEMENTARY_TITLE);
         }
       }
-      this._drawComponent(this._generateComponentGraph());
+      this._generateAndDrawComponentGraph();
     },
 
     /**
@@ -183,7 +183,7 @@
      * @returns {{id: string, children: Array}} KGraph to be used to build and display the component
      * @private
      */
-    _generateComponentGraph: function () {
+    _generateAndDrawComponentGraph: function () {
       if (!this._cubxReady) { return; }
       var componentGraph = { id: 'root', children: [] };
       var rootComponent = this._generateGraphMember(
@@ -192,12 +192,17 @@
         this.getManifest(),
         { portLabelPlacement: 'OUTSIDE', borderSpacing: this.ROOT_BORDER_SPACE }
       );
-      rootComponent.children = this._generateGraphMembers(this.getComponent());
+      this._generateGraphMembers(this.getComponent(), drawComponentGraph.bind(this));
 
-      componentGraph.children.push(rootComponent);
-      componentGraph.edges = this._generateGraphConnections(this.getComponent().connections,
-        this.getComponent().artifactId);
-      return componentGraph;
+      function drawComponentGraph (graphMembers) {
+        rootComponent.children = graphMembers;
+        componentGraph.children.push(rootComponent);
+        componentGraph.edges = this._generateGraphConnections(
+          this.getComponent().connections,
+          this.getComponent().artifactId
+        );
+        this._drawComponent(componentGraph);
+      }
     },
 
     /**
@@ -207,25 +212,33 @@
      * @returns {Array} List of GraphMembers (KNodes)
      * @private
      */
-    _generateGraphMembers: function (compound) {
-      var graphMember;
-      var component;
-      var manifest;
-      var compoundsMembers = compound.members;
+    _generateGraphMembers: function (compound, drawCallback) {
       var graphMembers = [];
-      for (var k in compoundsMembers) {
-        var componentArtifactId;
-        if (compoundsMembers[k].componentId) {
-          componentArtifactId = compoundsMembers[k].componentId.substr(compoundsMembers[k].componentId.indexOf('/') + 1);
-        } else {
-          componentArtifactId = compoundsMembers[ k ].artifactId;
-        }
-        manifest = this._manifestOfMember(compoundsMembers[ k ], compound);
-        component = this._searchComponentInManifest(componentArtifactId, manifest);
-        graphMember = this._generateGraphMember(component, compoundsMembers[ k ], manifest);
-        graphMembers.push(graphMember);
+      var componentArtifactId;
+      if (compound.members) {
+        var compoundsMembers = compound.members;
+        compoundsMembers.forEach(getManifestOfMember.bind(this));
+      } else {
+        drawCallback(graphMembers);
       }
-      return graphMembers;
+
+      function getManifestOfMember (member, i) {
+        if (member.componentId) {
+          componentArtifactId = member.componentId.substr(member.componentId.indexOf('/') + 1);
+        } else {
+          componentArtifactId = member.artifactId;
+        }
+        this._manifestOfMember(member, compound, i, addGraphMember.bind(this));
+      }
+
+      function addGraphMember (manifest, memberIndex) {
+        var component = this._searchComponentInManifest(componentArtifactId, manifest);
+        var graphMember = this._generateGraphMember(component, compoundsMembers[memberIndex], manifest);
+        graphMembers.push(graphMember);
+        if (memberIndex === compoundsMembers.length - 1) {
+          drawCallback(graphMembers);
+        }
+      }
     },
 
     /**
@@ -465,14 +478,12 @@
      * @returns {object} - Manifest of the component
      * @private
      */
-    _manifestOfMember: function (member, parentComponent) {
-      var manifest;
+    _manifestOfMember: function (member, parentComponent, i, callback) {
       if (member.componentId) {
-        manifest = this._manifestOfMemberForModelVersion8(member);
+        this._manifestOfMemberForModelVersion8(member, i, callback);
       } else {
-        manifest = this._manifestOfMemberForModelVersion9(member, parentComponent);
+        this._manifestOfMemberForModelVersion9(member, i, parentComponent, callback);
       }
-      return manifest;
     },
 
     /**
@@ -481,21 +492,14 @@
      * @returns {object} - Manifest of the component
      * @private
      */
-    _manifestOfMemberForModelVersion8: function (member) {
-      var manifest = {};
+    _manifestOfMemberForModelVersion8: function (member, i, callback) {
       if (member.componentId && member.componentId.indexOf('this/') !== -1) {
-        return this.getManifest();
+        callback(this.getManifest(), i);
       } else {
         var manifestUrl = window.cubx.CRC._baseUrl +
           member.componentId.substr(0, member.componentId.indexOf('/')) +
           '/manifest.webpackage';
-
-        $.ajaxSetup({ async: false });
-        $.getJSON(manifestUrl, function (response) {
-          manifest = response;
-        });
-        $.ajaxSetup({ async: true });
-        return manifest;
+        this._requestManifest(manifestUrl, i, callback);
       }
     },
 
@@ -506,20 +510,20 @@
      * @returns {object} - Manifest of the component
      * @private
      */
-    _manifestOfMemberForModelVersion9: function (member, parentComponent) {
-      var manifest = {};
+    _manifestOfMemberForModelVersion9: function (member, i, parentComponent, callback) {
       var dependency = this._searchDependencyInComponent(member.artifactId, parentComponent);
       if (!dependency || !dependency.webpackageId) {
-        return this.getManifest();
+        callback(this.getManifest(), i);
       } else {
         var manifestUrl = window.cubx.CRC._baseUrl + dependency.webpackageId + '/manifest.webpackage';
-        $.ajaxSetup({ async: false });
-        $.getJSON(manifestUrl, function (response) {
-          manifest = response;
-        });
-        $.ajaxSetup({ async: true });
-        return manifest;
+        this._requestManifest(manifestUrl, i, callback);
       }
+    },
+
+    _requestManifest: function (manifestUrl, i, callback) {
+      $.getJSON(manifestUrl, function (response) {
+        callback(response, i);
+      });
     },
 
     /**
