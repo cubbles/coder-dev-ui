@@ -3,29 +3,25 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>&lt;cubx-component-docs-viewer&gt;</title>
+    <title>&lt;cubx-component-docs-viewer&gt; Demo</title>
 
     <script src="../../../cubx.core.rte@2.1.0/webcomponents-lite/webcomponents-lite.js"></script>
     <script src="../../../cubx.core.rte@2.1.0/crc-loader/js/main.js" data-crcinit-loadcif="true"></script>
 
 </head>
 <body>
-<!--
-    The cubbles client-runtime-container is bound to the next element.
-    Place Cubbles-Component there as child element.
-    Note: Currently there is only one element supported. This will change in future (@see PLAT-205).
--->
-<h1>&lt;cubx-component-docs-viewer&gt; Docs</h1>
-<cubx-component-docs-viewer cubx-webpackage-id="this"></cubx-component-docs-viewer>
-
-<script>
-    var componentDocsViewer = document.getElementsByTagName('cubx-component-docs-viewer')[0];
-    var manifestUrl = "../../manifest.webpackage";
-    document.addEventListener('cifReady', function() {
-        componentDocsViewer.setManifestUrl(manifestUrl);
-        componentDocsViewer.setComponentArtifactId('cubx-component-docs-viewer');
-    });
-</script>
-
+<div class="container">
+    <div class="row">
+        <h1>&lt;cubx-component-docs-viewer&gt; Demo</h1>
+    </div>
+    <div cubx-core-crc class="row">
+        <cubx-component-docs-viewer cubx-webpackage-id="this">
+            <cubx-core-init style="display:none">
+                <cubx-core-slot-init slot="manifestUrl">"../../manifest.webpackage"</cubx-core-slot-init>
+                <cubx-core-slot-init slot="componentArtifactId">"cubx-component-docs-viewer"</cubx-core-slot-init>
+            </cubx-core-init>
+        </cubx-component-docs-viewer>
+    </div>
+</div>
 </body>
 </html>
