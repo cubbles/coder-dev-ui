@@ -1,3 +1,4 @@
+/* globals hljs*/
 (function () {
   'use strict';
   /**
@@ -96,8 +97,9 @@
           slotId.innerHTML = slots[i].slotId;
           type.innerHTML = slots[i].type;
           description.innerHTML = slots[i].description || '';
-          value.innerHTML = 'value' in slots[i] ? JSON.stringify(slots[i].value)
+          var valueText = 'value' in slots[i] ? JSON.stringify(slots[i].value)
             : compoundInits[slots[i].slotId] || '';
+          value.appendChild(this._createPreAndCodeElement(valueText));
         }
       }
     },
@@ -120,12 +122,26 @@
 
           memberId.innerHTML = inits[k].memberIdRef;
           slotId.innerHTML = inits[k].slot;
-          value.innerHTML = JSON.stringify(inits[k].value);
+          value.appendChild(this._createPreAndCodeElement(JSON.stringify(inits[k].value)));
         } else {
           compoundInits[inits[k].slot] = JSON.stringify(inits[k].value);
         }
       }
       return compoundInits;
+    },
+
+    _createPreAndCodeElement: function (codeText) {
+      if (codeText) {
+        var code = document.createElement('code');
+        code.className = 'javascript';
+        code.appendChild(document.createTextNode(codeText));
+        var pre = document.createElement('pre');
+        pre.className = this.is;
+        pre.appendChild(code);
+        hljs.highlightBlock(pre);
+        return pre;
+      }
+      return document.createTextNode('');
     }
   });
 }());
