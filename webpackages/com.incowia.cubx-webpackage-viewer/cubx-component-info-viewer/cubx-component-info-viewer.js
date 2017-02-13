@@ -1,4 +1,4 @@
-/* globals hljs*/
+/* globals hljs */
 (function () {
   'use strict';
   /**
