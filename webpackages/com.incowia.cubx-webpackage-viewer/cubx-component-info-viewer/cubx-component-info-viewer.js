@@ -130,6 +130,13 @@
       return compoundInits;
     },
 
+    /**
+     * Create a 'pre' element containing a 'code' to visualize slots values (JSON formatted). The
+     * value will be highlighted by 'highlightjs.
+     * @param {string} codeText - Vale of the slot as string
+     * @returns {*} - Created 'pre' element
+     * @private
+     */
     _createPreAndCodeElement: function (codeText) {
       if (codeText) {
         var code = document.createElement('code');
