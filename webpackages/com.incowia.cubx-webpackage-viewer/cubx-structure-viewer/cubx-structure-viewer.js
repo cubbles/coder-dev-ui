@@ -13,9 +13,9 @@
   CubxPolymer({
     is: 'cubx-structure-viewer',
 
-    currentComponentIndex: 0,
     structureHolderId: 'structureViewHolder',
     componentViewModalId: 'dataflow_view_modal',
+    depTreeModalId: 'dep_tree_view_modal',
 
     /**
      * Manipulate an element’s local DOM when the element is created.
@@ -172,7 +172,7 @@
     },
 
     /**
-     * Add a button to each compound components view, to display its dataflow view
+     * Add show Dataflow/Interface view and show Dependency Tree button to each component's view.
      * @private
      */
     _addViewDataflowButtons: function () {
@@ -180,43 +180,48 @@
       var types = ['compoundComponents', 'elementaryComponents'];
       var artifacts = this.getManifest().artifacts;
       for (var i in types) {
-        for (var j in artifacts[types[i]]) {
-          this._createViewComponentButton(j, types[i]);
+        var componentsType = types[i];
+        var buttonText = (componentsType === 'compoundComponents') ? ' Dataflow view' : ' Interface view';
+        for (var j = 0; j < artifacts[componentsType].length; j++) {
+          this._createComponentViewButton(j, componentsType, 'Dependency tree', this.depTreeModalId, showViewerModal);
+          this._createComponentViewButton(j, componentsType, buttonText, this.componentViewModalId, showViewerModal);
         }
       }
-      $('#dataflow_view_modal').on('shown.bs.modal', function () {
-        self._updateCurrentComponent(self.getManifest().artifacts[self.currentComponentsType][self.currentComponentIndex]);
-      });
+      function showViewerModal () {
+        var diagramContainer = $('#' + $(this).attr('data-modal-id'));
+        diagramContainer.find('.modal-title').text($(this).attr('data-modal-title'));
+        diagramContainer.modal('show');
+        self._updateCurrentComponent(self.getManifest()
+          .artifacts[$(this).attr('data-compound-type')][$(this).attr('data-compound-index')]);
+      }
     },
 
     /**
-     * Create a button to display the view of a certain component
+     * Create and append a button to the view of a certain component
      * @param {number} componentIndex - Index of the component within artifacts array of manifest
-     * @param {string} componentsKey - Key in artifacts -> compoundComponents or elementaryComponents
+     * @param {string} componentType - Key in artifacts -> compoundComponents or elementaryComponents
+     * @param {string} buttonText - Text to be set to the button
+     * @param {string} modalId - Id of the modal that will be shown when this button is clicked
+     * @param {function} onclick - Function to be called when the button is clicked
      * @private
      */
-    _createViewComponentButton: function (componentIndex, componentsKey) {
-      var self = this;
+    _createComponentViewButton: function (componentIndex, componentType, buttonText, modalId, onclick) {
       var viewDataflowButton = document.createElement('button');
       viewDataflowButton.setAttribute('type', 'button');
-      viewDataflowButton.setAttribute('class', 'btn btn-primary btn-view-diagram');
+      viewDataflowButton.setAttribute('class', 'btn btn-primary btn-component-view');
       viewDataflowButton.setAttribute('data-toggle', 'modal');
       viewDataflowButton.setAttribute('data-compound-index', componentIndex);
+      viewDataflowButton.setAttribute('data-compound-type', componentType);
+      viewDataflowButton.setAttribute('data-modal-id', modalId);
+      viewDataflowButton.setAttribute('data-modal-title', buttonText);
       var viewIcon = document.createElement('i');
       viewIcon.setAttribute('class', 'glyphicon glyphicon-eye-open');
       viewDataflowButton.appendChild(viewIcon);
-      var buttonText = document.createElement('span');
-      buttonText.innerText = (componentsKey === 'compoundComponents') ? ' Dataflow view' : ' Interface view';
-      viewDataflowButton.appendChild(buttonText);
-      viewDataflowButton.onclick = function () {
-        self.currentComponentIndex = $(this).attr('data-compound-index');
-        self.currentComponentsType = componentsKey;
-        $('#dataflow_view_holder').html('');
-        var diagramContainer = $('#' + self.componentViewModalId);
-        diagramContainer.find('.modal-title').text(buttonText.innerText);
-        diagramContainer.modal('show');
-      };
-      $('[data-schemapath="root.artifacts.' + componentsKey + '.' + componentIndex + '"]').prepend(viewDataflowButton);
+      var buttonTextSpan = document.createElement('span');
+      buttonTextSpan.innerText = buttonText;
+      viewDataflowButton.appendChild(buttonTextSpan);
+      viewDataflowButton.onclick = onclick;
+      $('[data-schemapath="root.artifacts.' + componentType + '.' + componentIndex + '"]').prepend(viewDataflowButton);
     },
 
     /**
@@ -226,6 +231,28 @@
      */
     _updateCurrentComponent: function (component) {
       this.setCurrentComponentArtifactId(component.artifactId);
+      this._handleInitialScale(this.depTreeModalId, this.setDepsTreeVScale.bind(this));
+      this._handleInitialScale(this.componentViewModalId, this.setComponentVScale.bind(this));
+    },
+
+    /**
+     * handle initial scale of cubx-component-viewer and cubx-deps-tree-viewer
+     * @param modalId
+     * @private
+     */
+    _handleInitialScale: function (modalId, setScaleFunction) {
+      var modal = $('#' + modalId);
+      if (modal.hasClass('in')) {
+        setScaleFunction('auto');
+      } else {
+        setScaleFunction('none');
+        modal.on('shown.bs.modal', function (e) {
+          if (e.target.id === modalId) {
+            setScaleFunction('auto');
+            modal.off('shown.bs.modal');
+          }
+        });
+      }
     },
 
     /**

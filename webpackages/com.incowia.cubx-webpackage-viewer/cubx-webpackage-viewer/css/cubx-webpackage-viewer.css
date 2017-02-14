@@ -2,6 +2,7 @@
     width: 80%;
 }
 
-.btn-view-diagram {
-    margin-bottom: 10px;
+.btn-component-view {
+    margin-bottom: 0.5em;
+    margin-right: 0.5em;
 }

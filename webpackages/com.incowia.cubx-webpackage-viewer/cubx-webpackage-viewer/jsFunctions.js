@@ -27,6 +27,11 @@
     // Hook function to parser the status of a request as boolean
     isLoaded: function (status, next) {
       next(status === 'idle');
+    },
+
+    // Hook function to send the root dependency within an array
+    dependencyIntoArray: function (dep, next) {
+      next([dep]);
     }
   };
 })();

@@ -87,6 +87,22 @@
             "direction": [
               "output"
             ]
+          },
+          {
+            "slotId": "depsTreeVScale",
+            "type": "string",
+            "description": "Ratio for the tree to be scaled, note that it should be a STRING. Use 'auto' if you want it to be automatically calculated. Or 'none' to avoid scaling.",
+            "direction": [
+              "output"
+            ]
+          },
+          {
+            "slotId": "componentVScale",
+            "type": "string",
+            "description": "Ratio for the viewer to be scaled, note that it should be a STRING. Use 'auto' if you want it to be automatically calculated. Or 'none' to avoid scaling.",
+            "direction": [
+              "output"
+            ]
           }
         ],
         "resources": [
@@ -296,6 +312,10 @@
             "artifactId": "cubx-structure-viewer"
           },
           {
+            "artifactId": "cubx-deps-tree-viewer",
+            "webpackageId": "dep-tree-viewer@1.0.1-SNAPSHOT"
+          },
+          {
             "webpackageId": "com.incowia.ajax@0.2.1",
             "artifactId": "ajax-request"
           }
@@ -334,6 +354,10 @@
           {
             "memberId": "schemaRequester",
             "artifactId": "ajax-request"
+          },
+          {
+            "memberId": "depsTreeViewer",
+            "artifactId": "cubx-deps-tree-viewer"
           }
         ],
         "connections": [
@@ -427,12 +451,58 @@
               "memberIdRef": "componentViewer",
               "slot": "manifest"
             }
+          },
+          {
+            "connectionId": "rootDepCon",
+            "source": {
+              "memberIdRef": "componentViewer",
+              "slot": "rootDependency"
+            },
+            "destination": {
+              "memberIdRef": "depsTreeViewer",
+              "slot": "rootDependencies"
+            },
+            "hookFunction": "window.com_incowia_cubxWebpackageViewer_cubxWebpackageViewer.dependencyIntoArray"
+          },
+          {
+            "connectionId": "depsTreeVScaleCon",
+            "source": {
+              "memberIdRef": "structureViewer",
+              "slot": "depsTreeVScale"
+            },
+            "destination": {
+              "memberIdRef": "depsTreeViewer",
+              "slot": "scale"
+            },
+            "repeatedValues": true
+          },
+          {
+            "connectionId": "componentVScaleCon",
+            "source": {
+              "memberIdRef": "structureViewer",
+              "slot": "componentVScale"
+            },
+            "destination": {
+              "memberIdRef": "componentViewer",
+              "slot": "scale"
+            },
+            "repeatedValues": true
           }
         ],
         "inits": [
           {
             "slot": "schemaUrl",
             "value": "https://raw.githubusercontent.com/cubbles/cubx-webpackage-document-api/master/lib/jsonSchema/manifestWebpackage-8.3.1.schema.json"
+          },
+          {
+            "slot": "viewerHeight",
+            "value": "30em",
+            "memberIdRef": "componentViewer"
+          },
+          {
+            "slot": "height",
+            "value": "30em",
+            "memberIdRef": "depsTreeViewer"
           }
         ]
       },
