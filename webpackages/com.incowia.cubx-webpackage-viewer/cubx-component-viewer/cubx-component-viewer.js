@@ -215,7 +215,6 @@
      */
     _generateGraphMembers: function (compound, aftMembersGenerated) {
       var graphMembers = [];
-      var componentArtifactId;
       if (compound.members) {
         var compoundsMembers = compound.members;
         compoundsMembers.forEach(getManifestOfMember.bind(this));
@@ -224,19 +223,26 @@
       }
 
       function getManifestOfMember (member, i) {
+        var componentArtifactId;
         if (member.componentId) {
           componentArtifactId = member.componentId.substr(member.componentId.indexOf('/') + 1);
         } else {
           componentArtifactId = member.artifactId;
         }
-        this._manifestOfMember(member, compound, i, addGraphMember.bind(this));
+        this._manifestOfMember(
+          {artifactId: componentArtifactId, memberIndex: i, member: member},
+          compound,
+          addGraphMember.bind(this)
+        );
       }
 
-      function addGraphMember (manifest, memberIndex) {
-        var component = this._searchComponentInManifest(componentArtifactId, manifest);
-        var graphMember = this._generateGraphMember(component, compoundsMembers[memberIndex], manifest);
+      function addGraphMember (manifest, memberInfo) {
+        var component = this._searchComponentInManifest(memberInfo.artifactId, manifest);
+        var graphMember = this._generateGraphMember(
+          component, compoundsMembers[memberInfo.memberIndex], manifest
+        );
         graphMembers.push(graphMember);
-        if (memberIndex === compoundsMembers.length - 1) {
+        if (memberInfo.memberIndex === compoundsMembers.length - 1) {
           aftMembersGenerated(graphMembers);
         }
       }
@@ -474,24 +480,24 @@
 
     /**
      * Returns the manifest of a member
-     * @param {object} member - Member of a compound component
+     * @param {object} memberInfo - Object containing member associated info i.e.
+     * {artifactId: componentArtifactId, memberIndex: i, member: member}
      * @param {object} parentComponent the parent compound
-     * @param {number} i - index of the 'member' within the members list of 'parentComponent'
      * @param {function} afterManifestDetermined - Callback function to be called when the manifest
      * is determined
      * @private
      */
-    _manifestOfMember: function (member, parentComponent, i, afterManifestDetermined) {
+    _manifestOfMember: function (memberInfo, parentComponent, afterManifestDetermined) {
       var manifestUrl;
-      if (member.componentId) {
-        manifestUrl = this._manifestUrlModelVersion8(member);
+      if (memberInfo.member.componentId) {
+        manifestUrl = this._manifestUrlModelVersion8(memberInfo.member);
       } else {
-        manifestUrl = this._manifestUrlModelVersion9(member, parentComponent);
+        manifestUrl = this._manifestUrlModelVersion9(memberInfo.member, parentComponent);
       }
       if (manifestUrl === 'this') {
-        afterManifestDetermined(this.getManifest(), i);
+        afterManifestDetermined(this.getManifest(), memberInfo);
       } else {
-        this._requestManifest(manifestUrl, i, afterManifestDetermined);
+        this._requestManifest(manifestUrl, memberInfo, afterManifestDetermined);
       }
     },
 
@@ -527,14 +533,15 @@
     /**
      * Request the manifest using given 'manifestUrl'
      * @param {string} manifestUrl - Url of the manifest to be requested
-     * @param {number} i - index of the 'member' within the members list of 'parentComponent'
+     * @param {object} memberInfo - Object containing member associated info i.e.
+     * {artifactId: componentArtifactId, memberIndex: i, member: member}
      * @param {function} afterManifestLoaded - Callback function to be called when the manifest
      * is loaded
      * @private
      */
-    _requestManifest: function (manifestUrl, i, afterManifestLoaded) {
+    _requestManifest: function (manifestUrl, memberInfo, afterManifestLoaded) {
       $.getJSON(manifestUrl, function (response) {
-        afterManifestLoaded(response, i);
+        afterManifestLoaded(response, memberInfo);
       });
     },
 
