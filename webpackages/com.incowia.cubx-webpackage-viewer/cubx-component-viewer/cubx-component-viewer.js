@@ -111,7 +111,6 @@
         } else {
           this._scaleDiagram(this.svg, this.g, scale);
         }
-
       }
     },
 
@@ -242,7 +241,7 @@
           component, compoundsMembers[memberInfo.memberIndex], manifest
         );
         graphMembers.push(graphMember);
-        if (memberInfo.memberIndex === compoundsMembers.length - 1) {
+        if (graphMembers.length === compoundsMembers.length) {
           aftMembersGenerated(graphMembers);
         }
       }
@@ -790,9 +789,9 @@
 
         self._drawMembers(componentsData);
         self._drawConnections(connectionsData);
+        self.status = 'ready';
       });
       layouter.kgraph(componentGraph);
-      this.status = 'ready';
     },
 
     /**
@@ -986,15 +985,9 @@
         .attr('d', 'M0 0')
         .attr('marker-end', 'url(#end)');
 
-      connectionData.enter()
+      var connectionViewLabel = connectionData.enter()
         .append('text')
         .attr('class', 'connectionViewLabel ' + self.is)
-        .attr('x', function (d) {
-          return d.labels[ 0 ].x + self._maxRootInputSlotWidth + self.CONNECTION_LABEL_MARGIN;
-        })
-        .attr('y', function (d) {
-          return d.labels[ 0 ].y + d.labels[ 0 ].height * 2.5;
-        })
         .text(function (d) {
           return d.labels[ 0 ].text || '';
         })
@@ -1009,6 +1002,13 @@
         })
         .attr('font-family', function (d) {
           return d.labels[ 0 ].fontObject.family;
+        });
+
+      connectionViewLabel.transition()
+        .attr('transform', function (d) {
+          var x = d.labels[ 0 ].x + self._maxRootInputSlotWidth + self.CONNECTION_LABEL_MARGIN;
+          var y = d.labels[ 0 ].y + d.labels[ 0 ].height * 2.5;
+          return 'translate(' + x + ' ' + y + ')';
         });
 
       // Apply connections routes
