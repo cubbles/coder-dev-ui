@@ -110,7 +110,7 @@
         ],
         "dependencies": [
           {
-            "webpackageId": "cubx.core.rte@2.1.0",
+            "webpackageId": "cubx.core.rte@2.1.2",
             "artifactId": "cubxpolymer"
           },
           {
@@ -131,7 +131,7 @@
         ],
         "dependencies": [
           {
-            "webpackageId": "cubx.core.rte@2.1.0",
+            "webpackageId": "cubx.core.rte@2.1.2",
             "artifactId": "cubxpolymer"
           },
           {
@@ -246,7 +246,7 @@
         ],
         "dependencies": [
           {
-            "webpackageId": "cubx.core.rte@2.1.0",
+            "webpackageId": "cubx.core.rte@2.1.2",
             "artifactId": "cubxpolymer"
           },
           {
@@ -313,10 +313,10 @@
           },
           {
             "artifactId": "cubx-deps-tree-viewer",
-            "webpackageId": "dep-tree-viewer@1.0.1-SNAPSHOT"
+            "webpackageId": "dep-tree-viewer@1.0.1"
           },
           {
-            "webpackageId": "com.incowia.ajax@0.2.1",
+            "webpackageId": "com.incowia.ajax@0.2.2",
             "artifactId": "ajax-request"
           }
         ],
@@ -529,12 +529,12 @@
             "artifactId": "cubx-component-info-viewer"
           },
           {
-            "webpackageId": "com.incowia.ajax@0.2.1",
+            "webpackageId": "com.incowia.ajax@0.2.2",
             "artifactId": "ajax-request"
           },
           {
             "artifactId": "cubx-deps-tree-viewer",
-            "webpackageId": "dep-tree-viewer@1.0.1-SNAPSHOT"
+            "webpackageId": "dep-tree-viewer@1.0.1"
           }
         ],
         "slots": [
