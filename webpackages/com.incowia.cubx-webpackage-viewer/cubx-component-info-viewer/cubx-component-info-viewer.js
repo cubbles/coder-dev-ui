@@ -97,7 +97,7 @@
           slotId.innerHTML = slots[i].slotId;
           type.innerHTML = slots[i].type;
           description.innerHTML = slots[i].description || '';
-          var valueText = 'value' in slots[i] ? JSON.stringify(slots[i].value)
+          var valueText = 'value' in slots[i] ? JSON.stringify(slots[i].value, null, '   ')
             : compoundInits[slots[i].slotId] || '';
           value.appendChild(this._createPreAndCodeElement(valueText));
         }
@@ -122,9 +122,9 @@
 
           memberId.innerHTML = inits[k].memberIdRef;
           slotId.innerHTML = inits[k].slot;
-          value.appendChild(this._createPreAndCodeElement(JSON.stringify(inits[k].value)));
+          value.appendChild(this._createPreAndCodeElement(JSON.stringify(inits[k].value, null, '   ')));
         } else {
-          compoundInits[inits[k].slot] = JSON.stringify(inits[k].value);
+          compoundInits[inits[k].slot] = JSON.stringify(inits[k].value, null, '   ');
         }
       }
       return compoundInits;
