@@ -21,13 +21,13 @@ The generated documentation for this webpackage and its artifacts is available [
 The html file should contain the desire component using its tag, in our case the `<cubx-webpackage-viewer>`, as follows:
 
 ```html
-<cubx-webpackage-viewer cubx-webpackage-id="com.incowia.cubx-webpackage-viewer@1.5.0"></cubx-webpackage-viewer>
+<cubx-webpackage-viewer cubx-webpackage-id="com.incowia.cubx-webpackage-viewer@1.5.1"></cubx-webpackage-viewer>
 ```
 
 This component can be optionally initialized using the `<cubx-core-slot-init>` tag (available from _cubx.core.rte_ version 1.9.0). For example, lets initilize the 'manifestURl' slot as follows:
 
 ```html
-<cubx-webpackage-viewer cubx-webpackage-id="com.incowia.cubx-webpackage-viewer@1.5.0">
+<cubx-webpackage-viewer cubx-webpackage-id="com.incowia.cubx-webpackage-viewer@1.5.1">
         <!--Initilization-->
         <cubx-core-init>
                 <cubx-core-slot-init slot="manifestURl">"../../manifest.webpackage"</cubx-core-slot-init>
@@ -49,10 +49,10 @@ document.addEventListener('cifReady', function() {
 
 The same process is valid for the other components.
 
-[demoWebPV]: https://cubbles.world/core/com.incowia.cubx-webpackage-viewer@1.5.0/cubx-webpackage-viewer/demo/index.html
-[demoCompV]: https://cubbles.world/core/com.incowia.cubx-webpackage-viewer@1.5.0/cubx-component-viewer/demo/index.html
-[demoCompInfV]: https://cubbles.world/core/com.incowia.cubx-webpackage-viewer@1.5.0/cubx-component-info-viewer/demo/index.html
-[demoCompDocsV]: https://cubbles.world/core/com.incowia.cubx-webpackage-viewer@1.5.0/cubx-component-docs-viewer/demo/index.html
-[anyWPApp]: https://cubbles.world/core/com.incowia.cubx-webpackage-viewer@1.5.0/any-webpackage-viewer/index.html
+[demoWebPV]: https://cubbles.world/core/com.incowia.cubx-webpackage-viewer@1.5.1/cubx-webpackage-viewer/demo/index.html
+[demoCompV]: https://cubbles.world/core/com.incowia.cubx-webpackage-viewer@1.5.1/cubx-component-viewer/demo/index.html
+[demoCompInfV]: https://cubbles.world/core/com.incowia.cubx-webpackage-viewer@1.5.1/cubx-component-info-viewer/demo/index.html
+[demoCompDocsV]: https://cubbles.world/core/com.incowia.cubx-webpackage-viewer@1.5.1/cubx-component-docs-viewer/demo/index.html
+[anyWPApp]: https://cubbles.world/core/com.incowia.cubx-webpackage-viewer@1.5.1/any-webpackage-viewer/index.html
 [d3TipInfo]: https://github.com/Caged/d3-tip 
 [fileSaverInfo]: https://github.com/eligrey/FileSaver.js/
