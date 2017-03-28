@@ -93,13 +93,15 @@
           var slotId = row.insertCell(0);
           var type = row.insertCell(1);
           var description = row.insertCell(2);
-          var value = row.insertCell(3);
           slotId.innerHTML = slots[i].slotId;
           type.innerHTML = slots[i].type;
           description.innerHTML = slots[i].description || '';
-          var valueText = 'value' in slots[i] ? JSON.stringify(slots[i].value, null, '   ')
-            : compoundInits[slots[i].slotId] || '';
-          value.appendChild(this._createPreAndCodeElement(valueText));
+          if (slots[i].direction[j] === 'input') {
+            var value = row.insertCell(3);
+            var valueText = 'value' in slots[i] ? JSON.stringify(slots[i].value, null, '   ')
+              : compoundInits[slots[i].slotId] || '';
+            value.appendChild(this._createPreAndCodeElement(valueText));
+          }
         }
       }
     },
