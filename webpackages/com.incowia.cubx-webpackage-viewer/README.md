@@ -49,6 +49,21 @@ document.addEventListener('cifReady', function() {
 
 The same process is valid for the other components.
 
+## Use of the any-webpackage-viewer app
+The `any-webpackage-viewer` app allows you to visualize the documentation of any webpackage by providing its manifest url. The app offers two options for providing this url:
+
+ 1. **Using the input field:** when you load the app you will find an input field and a *Load* button. So, you should type or copy and paste the manifest url of the desired webpackage and then click on `Load`.
+ 2. **Using the url parameter:** you can also provide the manifest url as parameter in the url of the application. The parameter is called `manifest-url`.  The pattern to use it would be:
+
+ ```
+ any-webpackage-app-url?manifest-url=desired--webpackge-manifest-url
+ ```
+An example of its use to show the documentation of the `ckeditor@1.0.0` webpackage is shown below:
+ ```
+https://cubbles.world/sandbox/com.incowia.cubx-webpackage-viewer@1.5.1/any-webpackage-viewer/index.html?manifest-url=https://cubbles.world/sandbox/ckeditor@1.0.0/manifest.webpackage
+```
+[Want to get to know the Cubbles Platform?](https://cubbles.github.io)
+
 [demoWebPV]: https://cubbles.world/core/com.incowia.cubx-webpackage-viewer@1.5.1/cubx-webpackage-viewer/demo/index.html
 [demoCompV]: https://cubbles.world/core/com.incowia.cubx-webpackage-viewer@1.5.1/cubx-component-viewer/demo/index.html
 [demoCompInfV]: https://cubbles.world/core/com.incowia.cubx-webpackage-viewer@1.5.1/cubx-component-info-viewer/demo/index.html
