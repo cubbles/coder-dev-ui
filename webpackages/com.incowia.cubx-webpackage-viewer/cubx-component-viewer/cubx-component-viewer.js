@@ -411,8 +411,8 @@
           fontObject: this.SLOT_LABEL_FONT
         } ],
         height: this.SLOT_DIAMETER,
-        description: slot.description || '-',
-        type: slot.type || 'any'
+        tooltipHTML: '<strong>Description:</strong> ' + (slot.description || '-') +
+        '<br>' + '<strong>Type:</strong> ' + (slot.type || 'any')
       };
       return graphMemberSlot;
     },
@@ -472,7 +472,8 @@
         sourcePort: sourcePort,
         target: target,
         targetPort: targetPort,
-        hookFunction: compoundConnection.hookFunction || ''
+        hookFunction: compoundConnection.hookFunction || '',
+        tooltipHTML: ('<strong>Hook function:</strong><p>' + compoundConnection.hookFunction + '</p>') || ''
       };
       return connection;
     },
@@ -772,7 +773,7 @@
         .attr('class', 'info_tooltip ' + this.is)
         .offset([ 30, 0 ])
         .html(function (d) {
-          return '<strong>Description:</strong> ' + d.description + '<br>' + '<strong>Type:</strong> ' + d.type;
+          return d.tooltipHTML;
         });
       this.infoToolTip.direction('e');
 
@@ -989,7 +990,7 @@
         .append('text')
         .attr('class', 'connectionViewLabel ' + self.is)
         .text(function (d) {
-          return d.labels[ 0 ].text || '';
+          return d.labels[ 0 ].text + (d.hookFunction ? '\t🛈' : '') || '';
         })
         .attr('font-size', function (d) {
           return d.labels[ 0 ].fontObject.size;
@@ -1010,6 +1011,10 @@
           var y = d.labels[ 0 ].y + d.labels[ 0 ].height * 2.5;
           return 'translate(' + x + ' ' + y + ')';
         });
+
+      connectionViewLabel.filter(function (d) { return d.hookFunction; })
+        .on('mouseover', self.infoToolTip.show)
+        .on('mouseout', self.infoToolTip.hide);
 
       // Apply connections routes
       connectionView.transition().attr('d', function (d) {
