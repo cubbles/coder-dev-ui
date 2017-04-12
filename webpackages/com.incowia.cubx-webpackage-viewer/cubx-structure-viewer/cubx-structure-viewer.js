@@ -131,7 +131,7 @@
      */
     _afterLoadingStructure: function () {
       this._hideRootLabel();
-      this._addViewDataflowButtons();
+      this._addFunctionButtons();
       this._hideEmptyProperties();
       this.$$('#structureViewHolder').style.display = 'block';
       $('[data-toggle="popover"]').popover();
@@ -175,17 +175,40 @@
      * Add show Dataflow/Interface view and show Dependency Tree button to each component's view.
      * @private
      */
-    _addViewDataflowButtons: function () {
+    _addFunctionButtons: function () {
       var self = this;
       var types = ['compoundComponents', 'elementaryComponents'];
       var artifacts = this.getManifest().artifacts;
       for (var i in types) {
-        var componentsType = types[i];
-        var buttonText = (componentsType === 'compoundComponents') ? ' Dataflow view' : ' Interface view';
-        for (var j = 0; j < artifacts[componentsType].length; j++) {
-          this._createComponentViewButton(j, componentsType, 'Dependency tree', this.depTreeModalId, showViewerModal);
-          this._createComponentViewButton(j, componentsType, buttonText, this.componentViewModalId, showViewerModal);
+        var componentType = types[i];
+        var buttonText = (componentType === 'compoundComponents') ? ' Dataflow view' : ' Interface view';
+        for (var j = 0; j < artifacts[componentType].length; j++) {
+          var loadExtDocsBton = this._createFunctionButton(
+            j, componentType, ' Load docs externally', 'glyphicon-new-window', null,
+            determineComponentDocsViewerFullUrl(componentType, j)
+          );
+          var viewDepTreeBton = this._createOpenModalButton(
+            j, componentType, ' Dependency tree', showViewerModal, this.depTreeModalId
+          );
+          var viewCompViewBton = this._createOpenModalButton(
+            j, componentType, buttonText, showViewerModal, this.componentViewModalId
+          );
+          addFunctionButton(loadExtDocsBton, j, componentType);
+          addFunctionButton(viewDepTreeBton, j, componentType);
+          addFunctionButton(viewCompViewBton, j, componentType);
         }
+      }
+      function determineComponentDocsViewerFullUrl (componentType, index) {
+        var manifestUrl = window.cubx.CRC._baseUrl +
+          (self.getManifest().groupId ? self.getManifest().groupId + '.' : '') +
+          self.getManifest().name + '@' + self.getManifest().version + '/manifest.webpackage';
+        var artifactId = artifacts[componentType][index].artifactId;
+        var webpackageViewerId = self.getRuntimeId().substr(0, self.getRuntimeId().indexOf('/'));
+        var anyComponentDocsViewerUrl = window.cubx.CRC._baseUrl + webpackageViewerId +
+          '/any-component-docs-viewer/index.html' +
+          '?manifest-url=' + manifestUrl +
+          '&artifact-id=' + artifactId;
+        return anyComponentDocsViewerUrl;
       }
       function showViewerModal () {
         var diagramContainer = $('#' + $(this).attr('data-modal-id'));
@@ -194,6 +217,9 @@
         self._updateCurrentComponent(self.getManifest()
           .artifacts[$(this).attr('data-compound-type')][$(this).attr('data-compound-index')]);
       }
+      function addFunctionButton (button, componentIndex, componentType) {
+        $('[data-schemapath="root.artifacts.' + componentType + '.' + componentIndex + '"]').prepend(button);
+      }
     },
 
     /**
@@ -201,27 +227,54 @@
      * @param {number} componentIndex - Index of the component within artifacts array of manifest
      * @param {string} componentType - Key in artifacts -> compoundComponents or elementaryComponents
      * @param {string} buttonText - Text to be set to the button
-     * @param {string} modalId - Id of the modal that will be shown when this button is clicked
      * @param {function} onclick - Function to be called when the button is clicked
+     * @param {string} modalId - Id of the modal that will be shown when this button is clicked
      * @private
      */
-    _createComponentViewButton: function (componentIndex, componentType, buttonText, modalId, onclick) {
-      var viewDataflowButton = document.createElement('button');
-      viewDataflowButton.setAttribute('type', 'button');
-      viewDataflowButton.setAttribute('class', 'btn btn-primary btn-component-view');
-      viewDataflowButton.setAttribute('data-toggle', 'modal');
-      viewDataflowButton.setAttribute('data-compound-index', componentIndex);
-      viewDataflowButton.setAttribute('data-compound-type', componentType);
-      viewDataflowButton.setAttribute('data-modal-id', modalId);
-      viewDataflowButton.setAttribute('data-modal-title', buttonText);
+    _createOpenModalButton: function (componentIndex, componentType, buttonText, onclick, modalId) {
+      var openModalBtn = this._createFunctionButton(
+        componentIndex,
+        componentType,
+        buttonText,
+        'glyphicon-eye-open',
+        onclick
+      );
+      openModalBtn.setAttribute('data-modal-id', modalId);
+      return openModalBtn;
+    },
+
+    /**
+     * Create and append a button to the view of a certain component
+     * @param {number} componentIndex - Index of the component within artifacts array of manifest
+     * @param {string} componentType - Key in artifacts -> compoundComponents or elementaryComponents
+     * @param {string} buttonText - Text to be set to the button
+     * @param {string} iconClass - Bootstrap particular class for the icon to be used
+     * @param {function} onclick - Function to be called when the button is clicked
+     * @param {string} href - Url to be loaded when needed
+     * @private
+     */
+    _createFunctionButton: function (componentIndex, componentType, buttonText, iconClass, onclick, href) {
+      var functionBton = document.createElement('a');
+      if (href) {
+        functionBton.setAttribute('href', href);
+        functionBton.setAttribute('target', '_blank');
+      }
+      if (onclick) {
+        functionBton.onclick = onclick;
+      }
+      functionBton.setAttribute('type', 'button');
+      functionBton.setAttribute('class', 'btn btn-primary btn-component-view');
+      functionBton.setAttribute('data-toggle', 'modal');
+      functionBton.setAttribute('data-compound-index', componentIndex);
+      functionBton.setAttribute('data-compound-type', componentType);
+      functionBton.setAttribute('data-modal-title', buttonText);
       var viewIcon = document.createElement('i');
-      viewIcon.setAttribute('class', 'glyphicon glyphicon-eye-open');
-      viewDataflowButton.appendChild(viewIcon);
+      viewIcon.setAttribute('class', 'glyphicon ' + iconClass);
+      functionBton.appendChild(viewIcon);
       var buttonTextSpan = document.createElement('span');
       buttonTextSpan.innerText = buttonText;
-      viewDataflowButton.appendChild(buttonTextSpan);
-      viewDataflowButton.onclick = onclick;
-      $('[data-schemapath="root.artifacts.' + componentType + '.' + componentIndex + '"]').prepend(viewDataflowButton);
+      functionBton.appendChild(buttonTextSpan);
+      return functionBton;
     },
 
     /**
