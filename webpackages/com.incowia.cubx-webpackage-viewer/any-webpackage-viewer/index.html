@@ -3,10 +3,21 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>&lt;cubx-component-docs-viewer&gt;</title>
+    <title>&lt;cubx-webpackage-viewer&gt;</title>
 
     <script src="../../cubx.core.rte@2.1.2/webcomponents-lite/webcomponents-lite.js"></script>
 
+    <script>
+        window.cubx = {
+            CRCInit: {
+                rootDependencies: [
+                    {
+                        artifactId: "cubx-webpackage-viewer-utils"
+                    }
+                ]
+            }
+        }
+    </script>
     <!--
         Refer to the crc-loader artifact from a Cubbles-Base.
         Take care: All other dependencies are expected to be available within the same Base!
