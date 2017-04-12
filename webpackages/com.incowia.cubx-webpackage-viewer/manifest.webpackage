@@ -24,7 +24,7 @@
     "component viewer",
     "docs viewer"
   ],
-  "man": [ ],
+  "man": [],
   "artifacts": {
     "apps": [
       {
@@ -34,7 +34,18 @@
           {
             "name": "Any Webpackage App.",
             "path": "/index.html",
-            "description": "Call this app as a simple demo."
+            "description": "Call this app to load a webpackage docs."
+          }
+        ]
+      },
+      {
+        "artifactId": "any-component-docs-viewer",
+        "description": "App to visualize the docs of a component using its manifestUrl and artifactId'",
+        "runnables": [
+          {
+            "name": "Any Component App.",
+            "path": "/index.html",
+            "description": "Call this app to load a component docs."
           }
         ]
       }
@@ -43,7 +54,7 @@
       {
         "artifactId": "cubx-structure-viewer",
         "description": "Component to visualize the structure of a webpackage using the manifest.webpackage file",
-        "runnables": [ ],
+        "runnables": [],
         "slots": [
           {
             "slotId": "schemaLoaded",
@@ -708,7 +719,7 @@
         "resources": [
           "d3-tip.html"
         ],
-        "dependencies": [ ]
+        "dependencies": []
       },
       {
         "artifactId": "file-saver",
@@ -719,7 +730,15 @@
             "dev": "vendor/file-saver.html"
           }
         ],
-        "dependencies": [ ]
+        "dependencies": []
+      },
+      {
+        "artifactId": "cubx-webpackage-viewer-utils",
+        "description": "General utilities (scripts) o be used within any artifact",
+        "resources": [
+          "html-import.html"
+        ],
+        "dependencies": []
       }
     ]
   }
