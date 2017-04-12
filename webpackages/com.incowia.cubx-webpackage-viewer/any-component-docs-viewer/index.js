@@ -20,6 +20,7 @@
     if (!artifactId) {
       errorMsgs.push('Please provide the artifactId of the component using the \'' +
         artifactIdParName + '\' parameter');
+      error = true;
     }
     if (!error) {
       updateAppTitle('<' + artifactId + '> generated Docs');
