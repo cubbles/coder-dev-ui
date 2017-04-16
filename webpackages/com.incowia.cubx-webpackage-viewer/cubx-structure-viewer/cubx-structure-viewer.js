@@ -1,3 +1,4 @@
+
 /*global $, JSONEditor*/
 (function () {
   'use strict';
