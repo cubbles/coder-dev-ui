@@ -325,7 +325,7 @@
           },
           {
             "artifactId": "cubx-deps-tree-viewer",
-            "webpackageId": "dep-tree-viewer@1.0.1"
+            "webpackageId": "dep-tree-viewer@1.1.0"
           },
           {
             "webpackageId": "com.incowia.ajax@0.2.2",
@@ -546,7 +546,7 @@
           },
           {
             "artifactId": "cubx-deps-tree-viewer",
-            "webpackageId": "dep-tree-viewer@1.0.1"
+            "webpackageId": "dep-tree-viewer@1.1.0"
           }
         ],
         "slots": [
