@@ -58,24 +58,35 @@
      *  Observe the Cubbles-Component-Model: If value for slot 'schema' has changed ...
      */
     modelSchemaChanged: function (schema) {
+      this._processSchema();
+      if (this.getManifestLoaded()) {
+        this._loadStructureView();
+      }
+    },
+
+    _processSchema: function () {
+      // Format for artifacts
       for (var prop in this.getSchema().properties.artifacts.properties) {
         this.getSchema().properties.artifacts.properties[prop].format = 'tabs';
       }
+      // Format for contributors
       this.getSchema().properties.contributors.format = 'table';
-
+      // Format for list of runnables and endpoints
       var artifacts = ['appArtifact', 'elementaryArtifact', 'compoundArtifact'];
       for (var i in artifacts) {
         this.getSchema().definitions[artifacts[i]].properties.runnables.format = 'table';
         this.getSchema().definitions[artifacts[i]].properties.endpoints.format = 'tabs';
       }
+      // Format for list of slots
       this.getSchema().definitions.elementaryArtifact.properties.slots.format = 'tabs';
       this.getSchema().definitions.compoundArtifact.properties.slots.format = 'tabs';
+      // Format for members, connections and inits
       this.getSchema().definitions.compoundArtifact.properties.members.format = 'table';
       this.getSchema().definitions.compoundArtifact.properties.connections.format = 'tabs';
       this.getSchema().definitions.compoundArtifact.properties.inits.format = 'table';
-      if (this.getManifestLoaded()) {
-        this._loadStructureView();
-      }
+      // Format for value of slots
+      this.getSchema().definitions.compoundArtifactInitItem.properties.value.format = 'json';
+      this.getSchema().definitions.elementaryArtifactSlotItem.properties.value.format = 'json';
     },
 
     /**
@@ -205,11 +216,10 @@
           self.getManifest().name + '@' + self.getManifest().version + '/manifest.webpackage';
         var artifactId = artifacts[componentType][index].artifactId;
         var webpackageViewerId = self.getRuntimeId().substr(0, self.getRuntimeId().indexOf('/'));
-        var anyComponentDocsViewerUrl = window.cubx.CRC._baseUrl + webpackageViewerId +
+        return window.cubx.CRC._baseUrl + webpackageViewerId +
           '/any-component-docs-viewer/index.html' +
           '?manifest-url=' + manifestUrl +
           '&artifact-id=' + artifactId;
-        return anyComponentDocsViewerUrl;
       }
       function showViewerModal () {
         var diagramContainer = $('#' + $(this).attr('data-modal-id'));
