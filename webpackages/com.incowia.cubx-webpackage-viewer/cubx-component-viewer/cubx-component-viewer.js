@@ -673,6 +673,7 @@
       g.transition()
         .attr('transform', transformString);
       this._updateZoom(svg, g, transform);
+      console.log('Transform applied: ' + transformString);
     },
 
     /**
@@ -852,12 +853,7 @@
 
       atoms.transition()
         .attr('width', function (d) { return d.width; })
-        .attr('height', function (d) { return d.height; })
-        .each('end', function (d) {
-          if (d.id === 'root') {
-            self._centerDiagram(self.svg, self.g);
-          }
-        });
+        .attr('height', function (d) { return d.height; });
 
       // Nodes labels
       var componentViewLabel = headingAtom.selectAll('.componentViewHeaderLabel')
