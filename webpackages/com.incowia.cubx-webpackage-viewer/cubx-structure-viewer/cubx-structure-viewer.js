@@ -64,6 +64,10 @@
       }
     },
 
+    /**
+     * Add format attributes to some manifest properties in order to be visualized correctly
+     * @private
+     */
     _processSchema: function () {
       // Format for artifacts
       for (var prop in this.getSchema().properties.artifacts.properties) {
