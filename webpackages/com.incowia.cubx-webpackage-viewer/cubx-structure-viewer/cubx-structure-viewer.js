@@ -215,7 +215,7 @@
         }
       }
       function determineComponentDocsViewerFullUrl (componentType, index) {
-        var manifestUrl = window.cubx.CRC._baseUrl +
+        var manifestUrl = '../../' +
           (self.getManifest().groupId ? self.getManifest().groupId + '.' : '') +
           self.getManifest().name + '@' + self.getManifest().version + '/manifest.webpackage';
         var artifactId = artifacts[componentType][index].artifactId;
