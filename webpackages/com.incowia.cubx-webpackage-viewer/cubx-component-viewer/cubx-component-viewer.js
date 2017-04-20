@@ -98,19 +98,28 @@
      */
     modelScaleChanged: function (scale) {
       if (this.status === 'ready') {
-        if (!this._isValidScale(scale)) {
-          console.error('Invalid value of scale. Possible values are \'none\', \'auto\', or a positive float ' +
-            'passed as STRING.');
-          return;
-        }
-        if (scale === 'none') {
-          return;
-        }
-        if (scale === 'auto') {
-          this._autoScaleAndCenterDiagram(this.svg, this.g);
-        } else {
-          this._scaleDiagram(this.svg, this.g, scale);
-        }
+        this._processScale(scale);
+      }
+    },
+
+    /**
+     * Process a scale value to then scale the diagram correctly
+     * @param {string} scale - Scale to be applied
+     * @private
+     */
+    _processScale: function (scale) {
+      if (!this._isValidScale(scale)) {
+        console.error('Invalid value of scale. Possible values are \'none\', \'auto\', or a positive float ' +
+          'passed as STRING.');
+        return;
+      }
+      if (scale === 'none') {
+        return;
+      }
+      if (scale === 'auto') {
+        this._autoScaleAndCenterDiagram(this.svg, this.g);
+      } else {
+        this._scaleDiagram(this.svg, this.g, scale);
       }
     },
 
@@ -637,7 +646,9 @@
      * @private
      */
     _centerDiagram: function (svg, g) {
-      this._applyTransform(svg, g, this._calculateCenterCoordinates(svg, g));
+      if (svg.node().parentNode.clientWidth > 0 && svg.node().parentNode.clientHeight > 0) {
+        this._applyTransform(svg, g, this._calculateCenterCoordinates(svg, g));
+      }
     },
 
     /**
@@ -673,7 +684,6 @@
       g.transition()
         .attr('transform', transformString);
       this._updateZoom(svg, g, transform);
-      console.log('Transform applied: ' + transformString);
     },
 
     /**
@@ -853,7 +863,12 @@
 
       atoms.transition()
         .attr('width', function (d) { return d.width; })
-        .attr('height', function (d) { return d.height; });
+        .attr('height', function (d) { return d.height; })
+        .each('end', function (d) {
+          if (d.id === 'root') {
+            self._centerDiagram(self.svg, self.g);
+          }
+        });
 
       // Nodes labels
       var componentViewLabel = headingAtom.selectAll('.componentViewHeaderLabel')
