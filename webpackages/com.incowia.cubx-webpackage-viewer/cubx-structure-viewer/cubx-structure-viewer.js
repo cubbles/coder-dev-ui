@@ -1,5 +1,4 @@
-
-/*global $, JSONEditor*/
+/* global $, JSONEditor */
 (function () {
   'use strict';
   /**
@@ -77,7 +76,7 @@
       this.getSchema().properties.contributors.format = 'table';
       // Format for list of runnables and endpoints
       var artifacts = ['appArtifact', 'elementaryArtifact', 'compoundArtifact'];
-      for (var i in artifacts) {
+      for (var i = 0; i < artifacts.length; i++) {
         this.getSchema().definitions[artifacts[i]].properties.runnables.format = 'table';
         this.getSchema().definitions[artifacts[i]].properties.endpoints.format = 'tabs';
       }
@@ -195,7 +194,7 @@
       var self = this;
       var types = ['compoundComponents', 'elementaryComponents'];
       var artifacts = this.getManifest().artifacts;
-      for (var i in types) {
+      for (var i = 0; types.length; i++) {
         var componentType = types[i];
         var buttonText = (componentType === 'compoundComponents') ? ' Dataflow view' : ' Interface view';
         for (var j = 0; j < artifacts[componentType].length; j++) {
