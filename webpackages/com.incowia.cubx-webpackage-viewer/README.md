@@ -12,7 +12,8 @@ The generated documentation for this webpackage and its artifacts is available [
 | **cubx-component-info-viewer** | Elementary component | Viewer of components information (by the moment only interface details) | [Demo][demoCompInfV] |
 | **cubx-webpackage-viewer** | Compound component | Component to visualize the structure of a webpackage and the dataflow of its compound components | [Demo][demoWebPV] |
 | **cubx-component-docs-viewer** | Compound component | Component to visualize a component (dataflow of a compound and interface of an elementary) and its interface details | [Demo][demoCompDocsV] |
-| **any-webpackage-viewer** | Application | App to visualize the structure of any webpackage using its manifest url. This application uses the {{cubx-webpackage-viewer}} component | [App][anyWPApp] |
+| **any-webpackage-viewer** | Application | App to visualize the structure of any webpackage using its manifest url. This application uses the `cubx-webpackage-viewer` component | [App][anyWPApp] |
+| **any-component-docs-viewer** | Application | App to visualize the generated docs of any component using its manifest url and artifact id. This application uses the `cubx-component-docs-viewer` component | [App][anyCDApp] |
 | **d3-tip** | Utility | Utility to use the d3-tip library v 0.6.7 | [Lib info][d3TipInfo] |
 | **file-saver** | Utility | Utility to use the FileSaver.js library v 1.3.2 | [Lib info][fileSaverInfo] |
 
@@ -21,13 +22,13 @@ The generated documentation for this webpackage and its artifacts is available [
 The html file should contain the desire component using its tag, in our case the `<cubx-webpackage-viewer>`, as follows:
 
 ```html
-<cubx-webpackage-viewer cubx-webpackage-id="com.incowia.cubx-webpackage-viewer@1.5.1"></cubx-webpackage-viewer>
+<cubx-webpackage-viewer cubx-webpackage-id="com.incowia.cubx-webpackage-viewer@1.6.0"></cubx-webpackage-viewer>
 ```
 
 This component can be optionally initialized using the `<cubx-core-slot-init>` tag (available from _cubx.core.rte_ version 1.9.0). For example, lets initilize the 'manifestURl' slot as follows:
 
 ```html
-<cubx-webpackage-viewer cubx-webpackage-id="com.incowia.cubx-webpackage-viewer@1.5.1">
+<cubx-webpackage-viewer cubx-webpackage-id="com.incowia.cubx-webpackage-viewer@1.6.0">
         <!--Initilization-->
         <cubx-core-init>
                 <cubx-core-slot-init slot="manifestURl">"../../manifest.webpackage"</cubx-core-slot-init>
@@ -56,18 +57,36 @@ The `any-webpackage-viewer` app allows you to visualize the documentation of any
  2. **Using the url parameter:** you can also provide the manifest url as parameter in the url of the application. The parameter is called `manifest-url`.  The pattern to use it would be:
 
  ```
- any-webpackage-app-url?manifest-url=desired--webpackge-manifest-url
+ any-webpackage-app-url?manifest-url=desired-webpackge-manifest-url
  ```
 An example of its use to show the documentation of the `ckeditor@1.0.0` webpackage is shown below:
  ```
-https://cubbles.world/sandbox/com.incowia.cubx-webpackage-viewer@1.5.1/any-webpackage-viewer/index.html?manifest-url=https://cubbles.world/sandbox/ckeditor@1.0.0/manifest.webpackage
+https://cubbles.world/sandbox/com.incowia.cubx-webpackage-viewer@1.6.0/any-webpackage-viewer/index.html?manifest-url=https://cubbles.world/sandbox/ckeditor@1.0.0/manifest.webpackage
 ```
+
+## Use of the any-component-docs-viewer app
+The `any-component-docs-viewer` app allows you to visualize the documentation of any component by providing its manifest url and its artifact id. To aim that you should use the available url parameters:
+
+ 1. **manifest-url:** use this parameter to provide the url of the manifest, which contains the definition of the desired component.
+ 2. **artifact-id:** use this parameter to provide `artifactId` of the desired component.
+ 
+ Both parameters are required for the application to work correctly. The pattern to use would be:
+
+ ```
+ any-component-docs-app-url?manifest-url=desired-webpackge-manifest-url&artifact-id=desired-component-artifact-id
+ ```
+An example of its use to show the documentation of the `cubx-ckeditor` component is shown below:
+ ```
+https://cubbles.world/sandbox/com.incowia.cubx-webpackage-viewer@1.6.0/any-component-docs-viewer/index.html?manifest-url=https://cubbles.world/sandbox/ckeditor@1.0.0/manifest.webpackage&artifact-id=cubx-ckeditor
+```
+
 [Want to get to know the Cubbles Platform?](https://cubbles.github.io)
 
-[demoWebPV]: https://cubbles.world/core/com.incowia.cubx-webpackage-viewer@1.5.1/cubx-webpackage-viewer/demo/index.html
-[demoCompV]: https://cubbles.world/core/com.incowia.cubx-webpackage-viewer@1.5.1/cubx-component-viewer/demo/index.html
-[demoCompInfV]: https://cubbles.world/core/com.incowia.cubx-webpackage-viewer@1.5.1/cubx-component-info-viewer/demo/index.html
-[demoCompDocsV]: https://cubbles.world/core/com.incowia.cubx-webpackage-viewer@1.5.1/cubx-component-docs-viewer/demo/index.html
-[anyWPApp]: https://cubbles.world/core/com.incowia.cubx-webpackage-viewer@1.5.1/any-webpackage-viewer/index.html
+[demoWebPV]: https://cubbles.world/core/com.incowia.cubx-webpackage-viewer@1.6.0/cubx-webpackage-viewer/demo/index.html
+[demoCompV]: https://cubbles.world/core/com.incowia.cubx-webpackage-viewer@1.6.0/cubx-component-viewer/demo/index.html
+[demoCompInfV]: https://cubbles.world/core/com.incowia.cubx-webpackage-viewer@1.6.0/cubx-component-info-viewer/demo/index.html
+[demoCompDocsV]: https://cubbles.world/core/com.incowia.cubx-webpackage-viewer@1.6.0/cubx-component-docs-viewer/demo/index.html
+[anyWPApp]: https://cubbles.world/core/com.incowia.cubx-webpackage-viewer@1.6.0/any-webpackage-viewer/index.html
+[anyCDApp]: https://cubbles.world/core/com.incowia.cubx-webpackage-viewer@1.6.0/any-component-docs-viewer/index.html
 [d3TipInfo]: https://github.com/Caged/d3-tip 
 [fileSaverInfo]: https://github.com/eligrey/FileSaver.js/
