@@ -82,8 +82,8 @@
       var iSlotsInfoTable = this.$$('#i_slots_info_table');
       var oSlotsInfoTable = this.$$('#o_slots_info_table');
       var slots = this.getComponent().slots;
-      for (var i in slots) {
-        for (var j in slots[i].direction) {
+      for (var i = 0; i < slots.length; i++) {
+        for (var j = 0; j < slots[i].direction.length; j++) {
           var row;
           if (slots[i].direction[j] === 'input') {
             row = iSlotsInfoTable.insertRow(iSlotsInfoTable.rows.length);
@@ -115,7 +115,7 @@
       var compoundInits = {};
       var membersInitsTable = this.$$('#members_inits_table');
       var inits = this.getComponent().inits;
-      for (var k in inits) {
+      for (var k = 0; k < inits.length; k++) {
         if ('memberIdRef' in inits[k]) {
           var row = membersInitsTable.insertRow(membersInitsTable.rows.length);
           var memberId = row.insertCell(0);

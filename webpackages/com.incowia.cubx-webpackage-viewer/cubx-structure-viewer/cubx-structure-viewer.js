@@ -194,7 +194,7 @@
       var self = this;
       var types = ['compoundComponents', 'elementaryComponents'];
       var artifacts = this.getManifest().artifacts;
-      for (var i = 0; types.length; i++) {
+      for (var i = 0; i < types.length; i++) {
         var componentType = types[i];
         var buttonText = (componentType === 'compoundComponents') ? ' Dataflow view' : ' Interface view';
         for (var j = 0; j < artifacts[componentType].length; j++) {

@@ -205,7 +205,7 @@
         rootComponent.children = graphMembers;
         componentGraph.children.push(rootComponent);
         componentGraph.edges = this._generateGraphConnections(
-          this.getComponent().connections,
+          this.getComponent().connections || [],
           this.getComponent().artifactId
         );
         this._drawComponent(componentGraph);
@@ -372,8 +372,8 @@
       var inputSlots = 0;
       var outputSlots = 0;
       var slotLabelWidth;
-      for (var l in component.slots) {
-        for (var m in component.slots[ l ].direction) {
+      for (var l = 0; l < component.slots.length; l++) {
+        for (var m = 0; m < component.slots[ l ].direction.length; m++) {
           slotLabelWidth = this._getTextWidth(component.slots[ l ].slotId, this._fontObjectToString(this.SLOT_LABEL_FONT));
           if (component.slots[ l ].direction[ m ] === 'input') {
             maxSlotWidthLeft = Math.max(slotLabelWidth, maxSlotWidthLeft);
@@ -436,7 +436,7 @@
     _generateGraphConnections: function (compoundConnections, compoundId) {
       var connection;
       var connections = [];
-      for (var n in compoundConnections) {
+      for (var n = 0; n < compoundConnections.length; n++) {
         connection = this._generateGraphConnection(compoundConnections[ n ], compoundId);
         connections.push(connection);
       }
@@ -598,7 +598,7 @@
      * @private
      */
     _searchComponentInList: function (componentId, componentsList) {
-      for (var i in componentsList) {
+      for (var i = 0; i < componentsList.length; i++) {
         if (componentsList[ i ].artifactId === componentId) {
           return componentsList[ i ];
         }
