@@ -81,7 +81,7 @@
     _updateSlotsInfo: function (compoundInits) {
       var iSlotsInfoTable = this.$$('#i_slots_info_table');
       var oSlotsInfoTable = this.$$('#o_slots_info_table');
-      var slots = this.getComponent().slots;
+      var slots = this.getComponent().slots || [];
       for (var i = 0; i < slots.length; i++) {
         for (var j = 0; j < slots[i].direction.length; j++) {
           var row;
