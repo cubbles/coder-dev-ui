@@ -60,10 +60,6 @@
       }
     },
 
-    _cleanTables: function () {
-
-    },
-
     /**
      * Update slots and inits information of the component
      * @private
@@ -83,8 +79,10 @@
      * @private
      */
     _updateSlotsInfo: function (compoundInits) {
-      var iSlotsInfoTable = this.$$('#i_slots_info_table');
-      var oSlotsInfoTable = this.$$('#o_slots_info_table');
+      var iSlotsInfoTable = this.$$('#i_slots_info');
+      var oSlotsInfoTable = this.$$('#o_slots_info');
+      iSlotsInfoTable.innerHTML = '';
+      oSlotsInfoTable.innerHTML = '';
       var slots = this.getComponent().slots || [];
       for (var i = 0; i < slots.length; i++) {
         for (var j = 0; j < slots[i].direction.length; j++) {
@@ -117,7 +115,8 @@
      */
     _updateMembersInits: function () {
       var compoundInits = {};
-      var membersInitsTable = this.$$('#members_inits_table');
+      var membersInitsTable = this.$$('#members_inits');
+      membersInitsTable.innerHTML = '';
       var inits = this.getComponent().inits;
       for (var k = 0; k < inits.length; k++) {
         if ('memberIdRef' in inits[k]) {
