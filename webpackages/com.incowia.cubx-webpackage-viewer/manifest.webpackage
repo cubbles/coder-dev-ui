@@ -1,7 +1,7 @@
 {
   "name": "cubx-webpackage-viewer",
   "groupId": "com.incowia",
-  "version": "1.6.1-SNAPSHOT",
+  "version": "1.6.1",
   "modelVersion": "9.1.1",
   "docType": "webpackage",
   "author": {
