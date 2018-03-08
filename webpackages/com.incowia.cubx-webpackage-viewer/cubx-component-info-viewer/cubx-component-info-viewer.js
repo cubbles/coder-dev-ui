@@ -60,6 +60,10 @@
       }
     },
 
+    _cleanTables: function () {
+
+    },
+
     /**
      * Update slots and inits information of the component
      * @private
