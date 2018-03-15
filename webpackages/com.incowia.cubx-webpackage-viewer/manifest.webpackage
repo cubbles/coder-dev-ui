@@ -1,7 +1,7 @@
 {
   "name": "cubx-webpackage-viewer",
   "groupId": "com.incowia",
-  "version": "1.6.1",
+  "version": "1.7.0-SNAPSHOT",
   "modelVersion": "9.1.1",
   "docType": "webpackage",
   "author": {
@@ -121,125 +121,12 @@
         ],
         "dependencies": [
           {
-            "webpackageId": "cubx.core.rte@2.2.3",
+            "webpackageId": "cubx.core.rte@2.4.0",
             "artifactId": "cubxpolymer"
           },
           {
             "webpackageId": "cubx-json-editor-0.7.25@1.1.2",
             "artifactId": "cubx-json-editor"
-          }
-        ]
-      },
-      {
-        "artifactId": "cubx-component-viewer",
-        "description": "Viewer of components,  interface for elementary components and dataflow for compound components",
-        "runnables": [
-          {
-            "name": "demo",
-            "path": "/demo/index.html",
-            "description": "Demo app..."
-          }
-        ],
-        "dependencies": [
-          {
-            "webpackageId": "cubx.core.rte@2.2.3",
-            "artifactId": "cubxpolymer"
-          },
-          {
-            "webpackageId": "klayjsd3-0.3.5@1.1.0",
-            "artifactId": "klayjs-d3"
-          },
-          {
-            "webpackageId": "jquery-2.1.4@1.2.0",
-            "artifactId": "jquery"
-          },
-          {
-            "webpackageId": "d3-tip-0.6.7@1.0.0",
-            "artifactId": "d3-tip"
-          },
-          {
-            "artifactId": "file-saver"
-          }
-        ],
-        "resources": [
-          "cubx-component-viewer.html",
-          "jsFunctions.js"
-        ],
-        "slots": [
-          {
-            "slotId": "componentArtifactId",
-            "type": "string",
-            "description": "'artifactId' of the current component",
-            "direction": [
-              "input"
-            ]
-          },
-          {
-            "slotId": "component",
-            "type": "object",
-            "description": "Current component (component object from a valid manifest)",
-            "direction": [
-              "output"
-            ]
-          },
-          {
-            "slotId": "manifest",
-            "type": "object",
-            "description": "Webpackage manifest object of the component",
-            "direction": [
-              "input"
-            ]
-          },
-          {
-            "slotId": "viewerWidth",
-            "description": "Width of the component viewer (e.g. 100%, 100px, 100em). By default it is '100%'",
-            "type": "string",
-            "direction": [
-              "input"
-            ],
-            "value": "100%"
-          },
-          {
-            "slotId": "viewerHeight",
-            "type": "string",
-            "description": "Height of the component viewer (e.g. 100%, 100px, 100em).",
-            "direction": [
-              "input"
-            ]
-          },
-          {
-            "slotId": "viewerTitle",
-            "type": "string",
-            "description": "Title for the component viewer. By default it is 'Interface view' for an elementary component and 'Dataflow view' for a compound component",
-            "direction": [
-              "input",
-              "output"
-            ]
-          },
-          {
-            "slotId": "showTitle",
-            "type": "boolean",
-            "description": "Boolean indicating whether the title should be displayed",
-            "direction": [
-              "input"
-            ],
-            "value": false
-          },
-          {
-            "slotId": "rootDependency",
-            "type": "object",
-            "description": "Root dependency of this component, e.g. {\"artifactId\": \"my-artifact\", \"webpackageId\": \"my-pack@1.0.0\"}",
-            "direction": [
-              "output"
-            ]
-          },
-          {
-            "slotId": "scale",
-            "type": "string",
-            "description": "Ratio for the viewer to be scaled, note that it should be a STRING. Use 'auto' if you want it to be automatically calculated. Or 'none' to avoid scaling.",
-            "direction": [
-              "input"
-            ]
           }
         ]
       },
@@ -258,7 +145,7 @@
         ],
         "dependencies": [
           {
-            "webpackageId": "cubx.core.rte@2.2.3",
+            "webpackageId": "cubx.core.rte@2.4.0",
             "artifactId": "cubxpolymer"
           },
           {
@@ -296,6 +183,74 @@
               "input"
             ],
             "value": false
+          }
+        ]
+      },
+      {
+        "artifactId": "cubx-manifest-defs-extractor",
+        "description": "Elementary to extract definitions of a Cubbles component from a manifest definitions, so that they can be used by the cubx-component-viewer",
+        "runnables": [
+          {
+            "name": "demo",
+            "path": "/demo/index.html",
+            "description": "Demo app..."
+          },
+          {
+            "name": "docs",
+            "path": "/docs/index.html",
+            "description": "Show the interface of this component."
+          }
+        ],
+        "resources": [
+          "cubx-manifest-defs-extractor.css",
+          "cubx-manifest-defs-extractor.html"
+        ],
+        "dependencies": [
+          {
+            "webpackageId": "cubx.core.rte@2.4.0",
+            "artifactId": "cubxpolymer"
+          }
+        ],
+        "slots": [
+          {
+            "slotId": "componentArtifactId",
+            "type": "string",
+            "description": "'artifactId' of the current component",
+            "direction": [
+              "input"
+            ]
+          },
+          {
+            "slotId": "manifest",
+            "type": "object",
+            "description": "Webpackage manifest object of the component",
+            "direction": [
+              "input"
+            ]
+          },
+          {
+            "slotId": "rootDependency",
+            "type": "object",
+            "description": "Root dependency of this component, e.g. {\"artifactId\": \"my-artifact\", \"webpackageId\": \"my-pack@1.0.0\"}",
+            "direction": [
+              "output"
+            ]
+          },
+          {
+            "slotId": "component",
+            "type": "object",
+            "description": "Current component (component object from a valid manifest)",
+            "direction": [
+              "output"
+            ]
+          },
+          {
+            "slotId": "componentDefinitions",
+            "type": "object",
+            "description": "Components, members and connections definitions associated to the processed component",
+            "direction": [
+              "output"
+            ]
           }
         ]
       }
