@@ -463,12 +463,12 @@
           },
           {
             "slot": "viewerHeight",
-            "value": "25em",
+            "value": "40vh",
             "memberIdRef": "componentViewer"
           },
           {
             "slot": "height",
-            "value": "30em",
+            "value": "45vh",
             "memberIdRef": "depsTreeViewer"
           }
         ]
@@ -822,16 +822,6 @@
             },
             "destination": {
               "slot": "component"
-            }
-          },
-          {
-            "connectionId": "scaleCon",
-            "source": {
-              "slot": "scale"
-            },
-            "destination": {
-              "memberIdRef": "componentViewer",
-              "slot": "scale"
             }
           },
           {
