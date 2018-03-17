@@ -125,7 +125,7 @@
             "artifactId": "cubxpolymer"
           },
           {
-            "webpackageId": "cubx-json-editor-0.7.25@1.1.2",
+            "webpackageId": "cubx-json-editor-0.7.25@1.2.0",
             "artifactId": "cubx-json-editor"
           }
         ]
@@ -149,7 +149,7 @@
             "artifactId": "cubxpolymer"
           },
           {
-            "webpackageId": "bootstrap-3.3.5@1.1.0",
+            "webpackageId": "bootstrap-3.3.5@1.4.0",
             "artifactId": "bootstrap"
           },
           {
@@ -280,10 +280,10 @@
           },
           {
             "artifactId": "cubx-deps-tree-viewer",
-            "webpackageId": "dep-tree-viewer@1.1.0"
+            "webpackageId": "dep-tree-viewer@1.3.1"
           },
           {
-            "webpackageId": "com.incowia.ajax@0.2.3",
+            "webpackageId": "com.incowia.ajax@0.2.6",
             "artifactId": "ajax-request"
           }
         ],
@@ -496,12 +496,12 @@
             "artifactId": "cubx-component-info-viewer"
           },
           {
-            "webpackageId": "com.incowia.ajax@0.2.3",
+            "webpackageId": "com.incowia.ajax@0.2.6",
             "artifactId": "ajax-request"
           },
           {
             "artifactId": "cubx-deps-tree-viewer",
-            "webpackageId": "dep-tree-viewer@1.1.0"
+            "webpackageId": "dep-tree-viewer@1.3.1"
           }
         ],
         "slots": [
@@ -657,13 +657,253 @@
         "inits": [
           {
             "slot": "viewerHeight",
-            "value": "30em",
+            "value": "50vh",
             "memberIdRef": "componentViewer"
           },
           {
             "slot": "height",
-            "value": "30em",
+            "value": "60vh",
             "memberIdRef": "depsTreeViewer"
+          }
+        ]
+      },
+      {
+        "artifactId": "cubx-component-viewer",
+        "description": "Component to visualize the dataflow/interface of a component",
+        "runnables": [
+          {
+            "name": "demo",
+            "path": "/demo/index.html",
+            "description": "Demo app..."
+          }
+        ],
+        "resources": [],
+        "dependencies": [
+          {
+            "artifactId": "cubx-manifest-defs-extractor"
+          },
+          {
+            "webpackageId": "cubx-generic-component-viewer@1.4.1",
+            "artifactId": "cubx-generic-component-viewer"
+          }
+        ],
+        "slots": [
+          {
+            "slotId": "componentArtifactId",
+            "type": "string",
+            "description": "'artifactId' of the current component",
+            "direction": [
+              "input"
+            ]
+          },
+          {
+            "slotId": "component",
+            "type": "object",
+            "description": "Current component (component object from a valid manifest)",
+            "direction": [
+              "output"
+            ]
+          },
+          {
+            "slotId": "manifest",
+            "type": "object",
+            "description": "Webpackage manifest object of the component",
+            "direction": [
+              "input"
+            ]
+          },
+          {
+            "slotId": "viewerWidth",
+            "description": "Width of the component viewer (e.g. 100%, 100px, 100em). By default it is '100%'",
+            "type": "string",
+            "direction": [
+              "input"
+            ]
+          },
+          {
+            "slotId": "viewerHeight",
+            "type": "string",
+            "description": "Height of the component viewer (e.g. 100%, 100px, 100em).",
+            "direction": [
+              "input"
+            ]
+          },
+          {
+            "slotId": "viewerTitle",
+            "type": "string",
+            "description": "Title for the component viewer. By default it is 'Interface view' for an elementary component and 'Dataflow view' for a compound component",
+            "direction": [
+              "input",
+              "output"
+            ]
+          },
+          {
+            "slotId": "showTitle",
+            "type": "boolean",
+            "description": "Boolean indicating whether the title should be displayed",
+            "direction": [
+              "input"
+            ]
+          },
+          {
+            "slotId": "rootDependency",
+            "type": "object",
+            "description": "Root dependency of this component, e.g. {\"artifactId\": \"my-artifact\", \"webpackageId\": \"my-pack@1.0.0\"}",
+            "direction": [
+              "output"
+            ]
+          },
+          {
+            "slotId": "scale",
+            "type": "string",
+            "description": "Ratio for the viewer to be scaled, note that it should be a STRING. Use 'auto' if you want it to be automatically calculated. Or 'none' to avoid scaling.",
+            "direction": [
+              "input"
+            ]
+          }
+        ],
+        "members": [
+          {
+            "memberId": "componentViewer",
+            "artifactId": "cubx-generic-component-viewer"
+          },
+          {
+            "memberId": "manifestDefsExtractor",
+            "artifactId": "cubx-manifest-defs-extractor"
+          }
+        ],
+        "connections": [
+          {
+            "connectionId": "definitionsCon",
+            "source": {
+              "memberIdRef": "manifestDefsExtractor",
+              "slot": "componentDefinitions"
+            },
+            "destination": {
+              "memberIdRef": "componentViewer",
+              "slot": "definitions"
+            }
+          },
+          {
+            "connectionId": "artifactIdCon",
+            "source": {
+              "slot": "componentArtifactId"
+            },
+            "destination": {
+              "memberIdRef": "manifestDefsExtractor",
+              "slot": "componentArtifactId"
+            }
+          },
+          {
+            "connectionId": "manifestCon",
+            "source": {
+              "slot": "manifest"
+            },
+            "destination": {
+              "memberIdRef": "manifestDefsExtractor",
+              "slot": "manifest"
+            }
+          },
+          {
+            "connectionId": "rootDepCon",
+            "source": {
+              "memberIdRef": "manifestDefsExtractor",
+              "slot": "rootDependency"
+            },
+            "destination": {
+              "slot": "rootDependency"
+            }
+          },
+          {
+            "connectionId": "componentCon",
+            "source": {
+              "memberIdRef": "manifestDefsExtractor",
+              "slot": "component"
+            },
+            "destination": {
+              "slot": "component"
+            }
+          },
+          {
+            "connectionId": "scaleCon",
+            "source": {
+              "slot": "scale"
+            },
+            "destination": {
+              "memberIdRef": "componentViewer",
+              "slot": "scale"
+            }
+          },
+          {
+            "connectionId": "scaleCon",
+            "source": {
+              "slot": "scale"
+            },
+            "destination": {
+              "memberIdRef": "componentViewer",
+              "slot": "scale"
+            }
+          },
+          {
+            "connectionId": "showTitleCon",
+            "source": {
+              "slot": "showTitle"
+            },
+            "destination": {
+              "memberIdRef": "componentViewer",
+              "slot": "showTitle"
+            }
+          },
+          {
+            "connectionId": "viewerTitleCon",
+            "source": {
+              "slot": "viewerTitle"
+            },
+            "destination": {
+              "memberIdRef": "componentViewer",
+              "slot": "viewerTitle"
+            }
+          },
+          {
+            "connectionId": "viewerTitleOutCon",
+            "source": {
+              "memberIdRef": "componentViewer",
+              "slot": "viewerTitle"
+            },
+            "destination": {
+              "slot": "viewerTitle"
+            }
+          },
+          {
+            "connectionId": "viewerHeightCon",
+            "source": {
+              "slot": "viewerHeight"
+            },
+            "destination": {
+              "memberIdRef": "componentViewer",
+              "slot": "viewerHeight"
+            }
+          },
+          {
+            "connectionId": "viewerWidthCon",
+            "source": {
+              "slot": "viewerWidth"
+            },
+            "destination": {
+              "memberIdRef": "componentViewer",
+              "slot": "viewerWidth"
+            }
+          }
+        ],
+        "inits": [
+          {
+            "slot": "showTitle",
+            "value": false
+          },
+          {
+            "slot": "viewerHeight",
+            "value": "50vh",
+            "memberIdRef": "componentViewer"
           }
         ]
       }
