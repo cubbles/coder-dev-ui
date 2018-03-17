@@ -82,11 +82,11 @@ https://cubbles.world/sandbox/com.incowia.cubx-webpackage-viewer@1.7.0/any-compo
 
 [Want to get to know the Cubbles Platform?](https://cubbles.github.io)
 
-[demoWebPV]: https://cubbles.world/core/com.incowia.cubx-webpackage-viewer@1.7.0/cubx-webpackage-viewer/demo/index.html
-[demoCompV]: https://cubbles.world/core/com.incowia.cubx-webpackage-viewer@1.7.0/cubx-component-viewer/demo/index.html
-[demoCompInfV]: https://cubbles.world/core/com.incowia.cubx-webpackage-viewer@1.7.0/cubx-component-info-viewer/demo/index.html
-[demoCompDocsV]: https://cubbles.world/core/com.incowia.cubx-webpackage-viewer@1.7.0/cubx-component-docs-viewer/demo/index.html
-[anyWPApp]: https://cubbles.world/core/com.incowia.cubx-webpackage-viewer@1.7.0/any-webpackage-viewer/index.html
-[anyCDApp]: https://cubbles.world/core/com.incowia.cubx-webpackage-viewer@1.7.0/any-component-docs-viewer/index.html
+[demoWebPV]: https://cubbles.world/shared/com.incowia.cubx-webpackage-viewer@1.7.0/cubx-webpackage-viewer/demo/index.html
+[demoCompV]: https://cubbles.world/shared/com.incowia.cubx-webpackage-viewer@1.7.0/cubx-component-viewer/demo/index.html
+[demoCompInfV]: https://cubbles.world/shared/com.incowia.cubx-webpackage-viewer@1.7.0/cubx-component-info-viewer/demo/index.html
+[demoCompDocsV]: https://cubbles.world/shared/com.incowia.cubx-webpackage-viewer@1.7.0/cubx-component-docs-viewer/demo/index.html
+[anyWPApp]: https://cubbles.world/shared/com.incowia.cubx-webpackage-viewer@1.7.0/any-webpackage-viewer/index.html
+[anyCDApp]: https://cubbles.world/shared/com.incowia.cubx-webpackage-viewer@1.7.0/any-component-docs-viewer/index.html
 [d3TipInfo]: https://github.com/Caged/d3-tip 
 [fileSaverInfo]: https://github.com/eligrey/FileSaver.js/
