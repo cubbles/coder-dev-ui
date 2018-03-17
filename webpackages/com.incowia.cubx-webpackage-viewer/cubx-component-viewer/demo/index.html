@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>&lt;cubx-component-viewer&gt; Demo</title>
-    <script src="../../../cubx.core.rte@2.2.3/webcomponents-lite/webcomponents-lite.js"></script>
+    <script src="../../../cubx.core.rte@2.4.0/webcomponents-lite/webcomponents-lite.js"></script>
     <script>
         window.cubx = {
             CRCInit: {
@@ -17,7 +17,7 @@
             }
         }
     </script>
-    <script src="../../../cubx.core.rte@2.2.3/crc-loader/js/main.js" data-crcinit-loadcif="true"></script>
+    <script src="../../../cubx.core.rte@2.4.0/crc-loader/js/main.js" data-crcinit-loadcif="true"></script>
 
 </head>
 <body>
@@ -34,10 +34,9 @@
     var componentViewer = document.querySelector('cubx-component-viewer');
     var manifestUrl = "../../manifest.webpackage";
     document.addEventListener('cifReady', function() {
-        componentViewer.setViewerHeight(window.innerHeight * 0.9);
         $.getJSON(manifestUrl, function (response) {
             componentViewer.setManifest(response);
-            componentViewer.setComponentArtifactId('cubx-webpackage-viewer');
+            componentViewer.setComponentArtifactId('cubx-component-viewer');
         });
     });
 </script>
