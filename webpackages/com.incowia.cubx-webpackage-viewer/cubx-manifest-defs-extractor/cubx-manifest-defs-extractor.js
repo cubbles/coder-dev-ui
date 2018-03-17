@@ -59,7 +59,7 @@
       this._initGlobalVars();
       var component = this._searchComponentInManifest(this.getComponentArtifactId(), this.getManifest());
       if (component) {
-        this.setRootDependency(this._generateRootDependencyValue(component.artifactId));
+        this.setRootDependency(this._generateRootDependencyValue(component));
         this.setComponent(component);
         this._generateDefinitions();
       } else {
@@ -75,7 +75,11 @@
       this._processedMembers = 0;
     },
 
-    _generateRootDependencyValue: function (artifactId)  {
+    _generateRootDependencyValue: function (component)  {
+      var artifactId = component.artifactId;
+      if (component.hasOwnProperty('endpoints') && component.endpoints.length > 0) {
+        artifactId += '#' + component.endpoints[0].endpointId;
+      }
       return {
         artifactId: artifactId,
         webpackageId: this._determineManifestWebpackageId(this.getManifest())
