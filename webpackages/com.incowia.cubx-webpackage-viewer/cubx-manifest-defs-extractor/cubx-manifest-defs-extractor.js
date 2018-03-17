@@ -92,7 +92,7 @@
 
     _generateDefinitions: function () {
       var component = this.getComponent();
-      component.webpackageId = this._determineManifestWebpackageId(this.getManifest())
+      component.webpackageId = this._determineManifestWebpackageId(this.getManifest());
       this._addComponentDefinition(component);
       if (this.getComponent().hasOwnProperty('connections')) {
         this._connections = this.getComponent().connections;
@@ -139,7 +139,7 @@
           components: this._componentsDefinitions,
           members: this._membersDefinitions,
           connections: this._connections,
-          componentArtifactId: this.getComponentArtifactId(),
+          componentArtifactId: this.getComponentArtifactId()
         })
       }
     },

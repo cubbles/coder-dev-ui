@@ -228,8 +228,12 @@
         var diagramContainer = $('#' + $(this).attr('data-modal-id'));
         diagramContainer.find('.modal-title').text($(this).attr('data-modal-title'));
         diagramContainer.modal('show');
-        self._updateCurrentComponent(self.getManifest()
-          .artifacts[$(this).attr('data-compound-type')][$(this).attr('data-compound-index')]);
+        var button = this;
+        setTimeout(function () {
+          var compoundType = $(button).attr('data-compound-type');
+          var compoundIndex = $(button).attr('data-compound-index');
+          self._updateCurrentComponent(self.getManifest().artifacts[compoundType][compoundIndex]);
+        }, 500);
       }
       function addFunctionButton (button, componentIndex, componentType) {
         $('[data-schemapath="root.artifacts.' + componentType + '.' + componentIndex + '"]').prepend(button);
