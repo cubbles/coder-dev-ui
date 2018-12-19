@@ -69,7 +69,7 @@
 
     _initGlobalVars: function () {
       this._componentsDefinitions = {};
-      this._membersDefinitions = {};
+      this._membersDefinitions = [];
       this._manifestCache = {};
       this._connections = [];
       this._processedMembers = 0;
@@ -123,7 +123,7 @@
     },
 
     _extractComponentsDefinitions: function () {
-      if (this.getComponent() && this.getComponent().hasOwnProperty('members')) {
+      if (this.getComponent() && !this._isElementaryComponent(this.getComponent())) {
         this.getComponent().members.forEach(function (member) {
           var memberDependency = this._determineMemberDependency(member, this.getComponent());
           this._addMemberComponentDefinition(memberDependency)
@@ -133,7 +133,7 @@
 
     _addComponentDefinition: function (componentDef) {
       this._componentsDefinitions[componentDef.artifactId] = componentDef;
-      if (this._allMembersProcessed()) {
+      if (this._isElementaryComponent(this.getComponent()) || this._allMembersProcessed()) {
         this.status = 'ready';
         this.setComponentDefinitions({
           components: this._componentsDefinitions,
@@ -166,6 +166,10 @@
         this._processedMembers ++;
         this._addComponentDefinition(this._searchComponentInManifest(dependency.artifactId, manifest));
       }
+    },
+
+    _isElementaryComponent(component) {
+      return !component.hasOwnProperty('members');
     },
 
     _determineMemberDependency: function (member, parentComponent) {
