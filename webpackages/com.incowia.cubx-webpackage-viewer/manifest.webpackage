@@ -1,7 +1,7 @@
 {
   "name": "cubx-webpackage-viewer",
   "groupId": "com.incowia",
-  "version": "1.8.0-SNAPSHOT",
+  "version": "1.7.1-SNAPSHOT",
   "modelVersion": "9.1.1",
   "docType": "webpackage",
   "author": {
@@ -683,7 +683,7 @@
             "artifactId": "cubx-manifest-defs-extractor"
           },
           {
-            "webpackageId": "cubx-generic-component-viewer@1.4.1",
+            "webpackageId": "cubx-generic-component-viewer@1.4.3",
             "artifactId": "cubx-generic-component-viewer"
           }
         ],
