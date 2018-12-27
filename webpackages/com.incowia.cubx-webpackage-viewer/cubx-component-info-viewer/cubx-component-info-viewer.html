@@ -1,55 +1,51 @@
-<link rel="import" href="cubx-component-info-viewer-style.html">
-<dom-module id="cubx-component-info-viewer">
-
-    <template>
-        <style include="cubx-component-info-viewer-style"></style>
-        <h2 id="title">{{model.title}}</h2>
-        <div>
-            <h3>Input slots</h3>
-            <table class="table table-hover">
-                <thead>
-                    <tr>
-                        <th>slotId</th>
-                        <th>type</th>
-                        <th>description</th>
-                        <th>initial value</th>
-                    </tr>
-                </thead>
-                <tbody id="i_slots_info">
-                </tbody>
-            </table>
-        </div>
-
-        <div>
-            <h3>Output slots</h3>
-            <table class="table table-hover">
-                <thead>
+<template id="cubx-component-info-viewer">
+    <style include="cubx-component-info-viewer-style"></style>
+    <h2 id="title"></h2>
+    <div>
+        <h3>Input slots</h3>
+        <table class="table table-hover">
+            <thead>
                 <tr>
                     <th>slotId</th>
                     <th>type</th>
                     <th>description</th>
-                </tr>
-                </thead>
-                <tbody id="o_slots_info">
-                </tbody>
-            </table>
-        </div>
-
-        <div>
-            <h3>Members' inits defined in this compound</h3>
-            <table class="table table-hover">
-                <thead>
-                <tr>
-                    <th>memberId</th>
-                    <th>slot</th>
                     <th>initial value</th>
                 </tr>
-                </thead>
-                <tbody id="members_inits">
-                </tbody>
-            </table>
-        </div>
-    </template>
+            </thead>
+            <tbody id="i_slots_info">
+            </tbody>
+        </table>
+    </div>
 
-    <script src="cubx-component-info-viewer.js"></script>
-</dom-module>
+    <div>
+        <h3>Output slots</h3>
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th>slotId</th>
+                <th>type</th>
+                <th>description</th>
+            </tr>
+            </thead>
+            <tbody id="o_slots_info">
+            </tbody>
+        </table>
+    </div>
+
+    <div>
+        <h3>Members' inits defined in this compound</h3>
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th>memberId</th>
+                <th>slot</th>
+                <th>initial value</th>
+            </tr>
+            </thead>
+            <tbody id="members_inits">
+            </tbody>
+        </table>
+    </div>
+</template>
+
+<script src="cubx-component-info-viewer.js"></script>
