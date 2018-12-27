@@ -117,16 +117,21 @@
           }
         ],
         "resources": [
-          "cubx-structure-viewer.html"
+          "cubx-structure-viewer.html",
+          "cubx-structure-viewer.css"
         ],
         "dependencies": [
           {
-            "webpackageId": "cubx.core.rte@2.4.0",
-            "artifactId": "cubxpolymer"
+            "webpackageId": "cubx.core.rte@3.0.0-SNAPSHOT",
+            "artifactId": "cubxcomponent"
           },
           {
-            "webpackageId": "cubx-json-editor-0.7.25@1.2.0",
+            "webpackageId": "cubx-json-editor-0.7.25@2.0.0",
             "artifactId": "cubx-json-editor"
+          },
+          {
+            "webpackageId": "jquery-2.1.4@2.0.0",
+            "artifactId": "jquery"
           }
         ]
       },
