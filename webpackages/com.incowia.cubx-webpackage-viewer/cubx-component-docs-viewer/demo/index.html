@@ -4,9 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <title>&lt;cubx-component-docs-viewer&gt; Demo</title>
-
-    <script src="../../../cubx.core.rte@2.4.0/webcomponents-lite/webcomponents-lite.js"></script>
-    <script src="../../../cubx.core.rte@2.4.0/crc-loader/js/main.js" data-crcinit-loadcif="true"></script>
+    <script src="../../../cubx.core.rte@3.0.0-SNAPSHOT/webcomponents/custom-elements-es5-adapter.js"></script>
+    <script src="../../../cubx.core.rte@3.0.0-SNAPSHOT/webcomponents/webcomponents-lite.js"></script>
+    <script src="../../../cubx.core.rte@3.0.0-SNAPSHOT/crc-loader/js/main.js" data-crcinit-loadcif="true"></script>
 
 </head>
 <body>
@@ -14,13 +14,17 @@
     <div class="row">
         <h1>&lt;cubx-component-docs-viewer&gt; Demo</h1>
     </div>
-    <div cubx-core-crc class="row">
+    <div class="row">
+        <h2>cubx-manifest-defs-extractor Docs</h2>
         <cubx-component-docs-viewer cubx-webpackage-id="this">
             <cubx-core-init style="display:none">
                 <cubx-core-slot-init slot="manifestUrl">"../../manifest.webpackage"</cubx-core-slot-init>
                 <cubx-core-slot-init slot="componentArtifactId">"cubx-manifest-defs-extractor"</cubx-core-slot-init>
             </cubx-core-init>
         </cubx-component-docs-viewer>
+    </div>
+    <div class="row">
+        <h2>cubx-webpackage-viewer Docs</h2>
         <cubx-component-docs-viewer cubx-webpackage-id="this">
             <cubx-core-init style="display:none">
                 <cubx-core-slot-init slot="manifestUrl">"../../manifest.webpackage"</cubx-core-slot-init>
