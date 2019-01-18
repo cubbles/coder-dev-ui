@@ -56,7 +56,6 @@
       tab.addClass('active');
       var tabContent =  container.find('div.tab-content > [data-tab-id=' + dataTabId + ']');
       $(tabContent).addClass('in active');
-      $(tabContent).trigger('shown.bs.tab');
     }
   };
 
