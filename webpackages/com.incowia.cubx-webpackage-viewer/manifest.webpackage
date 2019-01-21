@@ -114,6 +114,14 @@
             "direction": [
               "output"
             ]
+          },
+          {
+            "slotId": "componentVStartWorking",
+            "type": "boolean",
+            "description": "Indicates whether the componentViewer can startWorking (Valid when used within the cubx-webpackage-viewer).",
+            "direction": [
+              "output"
+            ]
           }
         ],
         "resources": [
@@ -459,6 +467,18 @@
               "slot": "scale"
             },
             "repeatedValues": true
+          },
+          {
+            "connectionId": "componentVStartWorkingCon",
+            "source": {
+              "memberIdRef": "structureViewer",
+              "slot": "componentVStartWorking"
+            },
+            "destination": {
+              "memberIdRef": "componentViewer",
+              "slot": "startWorking"
+            },
+            "repeatedValues": true
           }
         ],
         "inits": [
@@ -469,6 +489,11 @@
           {
             "slot": "viewerHeight",
             "value": "40vh",
+            "memberIdRef": "componentViewer"
+          },
+          {
+            "slot": "automaticStarting",
+            "value": false,
             "memberIdRef": "componentViewer"
           },
           {
@@ -769,6 +794,22 @@
             "direction": [
               "input"
             ]
+          },
+          {
+            "slotId": "automaticStarting",
+            "type": "boolean",
+            "description": "Indicates whether the component should start working right after the definitions change.",
+            "direction": [
+              "input"
+            ]
+          },
+          {
+            "slotId": "startWorking",
+            "type": "boolean",
+            "description": "Indicates that the component should start working. It is useful when 'automaticStarting' slot is set to false",
+            "direction": [
+              "input"
+            ]
           }
         ],
         "members": [
@@ -792,6 +833,27 @@
               "memberIdRef": "componentViewer",
               "slot": "definitions"
             }
+          },
+          {
+            "connectionId": "automaticStartCon",
+            "source": {
+              "slot": "automaticStarting"
+            },
+            "destination": {
+              "memberIdRef": "componentViewer",
+              "slot": "automaticStarting"
+            }
+          },
+          {
+            "connectionId": "startWorkingCon",
+            "source": {
+              "slot": "startWorking"
+            },
+            "destination": {
+              "memberIdRef": "componentViewer",
+              "slot": "startWorking"
+            },
+            "repeatedValues": true
           },
           {
             "connectionId": "artifactIdCon",

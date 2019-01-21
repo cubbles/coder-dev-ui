@@ -202,12 +202,10 @@
         var diagramContainer = $('#' + $(this).attr('data-modal-id'));
         diagramContainer.find('.modal-title').text($(this).attr('data-modal-title'));
         diagramContainer.modal('show');
-        var button = this;
-        setTimeout(function () {
-          var compoundType = $(button).attr('data-compound-type');
-          var compoundIndex = $(button).attr('data-compound-index');
-          self._updateCurrentComponent(self.getManifest().artifacts[compoundType][compoundIndex]);
-        }, 500);
+        var button = this;        
+        var compoundType = $(button).attr('data-compound-type');
+        var compoundIndex = $(button).attr('data-compound-index');
+        self._updateCurrentComponent(self.getManifest().artifacts[compoundType][compoundIndex]);
       }
       function addFunctionButton (button, componentIndex, componentType) {
         $('[data-schemapath="root.artifacts.' + componentType + '.' + componentIndex + '"]').prepend(button);
@@ -276,8 +274,20 @@
      */
     _updateCurrentComponent: function (component) {
       this.setCurrentComponentArtifactId(component.artifactId);
-      this._handleInitialScale(this.depTreeModalId, this.setDepsTreeVScale.bind(this));
-      this._handleInitialScale(this.componentViewModalId, this.setComponentVScale.bind(this));
+      this._handleInitialScale(this.depTreeModalId, function () { 
+        this.setDepsTreeVScale('auto');
+      }.bind(this),
+      function () {
+        this.setDepsTreeVScale('none');
+      }.bind(this));
+
+      this._handleInitialScale(this.componentViewModalId, function () {
+        this.setComponentVScale('auto');
+        this.setComponentVStartWorking(true);
+      }.bind(this),
+      function () {
+        this.setComponentVScale('none');
+      }.bind(this));
     },
 
     /**
@@ -285,17 +295,14 @@
      * @param modalId
      * @private
      */
-    _handleInitialScale: function (modalId, setScaleFunction) {
+    _handleInitialScale: function (modalId, shownCbFunction, hiddenCbFunction) {
       var modal = $('#' + modalId);
       if (modal.hasClass('in')) {
-        setScaleFunction('auto');
+        shownCbFunction();
       } else {
-        setScaleFunction('none');
-        modal.on('shown.bs.modal', function (e) {
-          if (e.target.id === modalId) {
-            setScaleFunction('auto');
-            modal.off('shown.bs.modal');
-          }
+        hiddenCbFunction();
+        modal.one('shown.bs.modal', function (e) {
+          shownCbFunction();
         });
       }
     },
