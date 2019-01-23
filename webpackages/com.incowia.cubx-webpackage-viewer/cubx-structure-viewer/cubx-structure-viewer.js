@@ -195,8 +195,8 @@
         var webpackageViewerId = self.getRuntimeId().substr(0, self.getRuntimeId().indexOf('/'));
         return window.cubx.CRC._baseUrl + webpackageViewerId +
           '/any-component-docs-viewer/index.html' +
-          '?manifest-url=' + manifestUrl +
-          '&artifact-id=' + artifactId;
+          '?manifest-url=' + encodeURIComponent(manifestUrl) +
+          '&artifact-id=' + encodeURIComponent(artifactId);
       }
       function showViewerModal () {
         var diagramContainer = $('#' + $(this).attr('data-modal-id'));
@@ -230,6 +230,8 @@
         onclick
       );
       openModalBtn.setAttribute('data-modal-id', modalId);
+      openModalBtn.setAttribute('data-toggle', 'modal');
+      openModalBtn.setAttribute('data-modal-title', buttonText);
       return openModalBtn;
     },
 
@@ -254,10 +256,8 @@
       }
       functionBton.setAttribute('type', 'button');
       functionBton.setAttribute('class', 'btn btn-primary btn-component-view');
-      functionBton.setAttribute('data-toggle', 'modal');
       functionBton.setAttribute('data-compound-index', componentIndex);
       functionBton.setAttribute('data-compound-type', componentType);
-      functionBton.setAttribute('data-modal-title', buttonText);
       var viewIcon = document.createElement('i');
       viewIcon.setAttribute('class', 'glyphicon ' + iconClass);
       functionBton.appendChild(viewIcon);
