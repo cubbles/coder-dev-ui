@@ -11,7 +11,7 @@ function $_GET (param) {
   window.location.href.replace(location.hash, '').replace(
     /[?&]+([^=&]+)=?([^&]*)?/gi, // regexp
     function (m, key, value) { // callback
-      vars[key] = value !== undefined ? value : '';
+      vars[decodeURIComponent(key)] = value !== undefined ? decodeURIComponent(value) : '';
     }
   );
   if (param) {
