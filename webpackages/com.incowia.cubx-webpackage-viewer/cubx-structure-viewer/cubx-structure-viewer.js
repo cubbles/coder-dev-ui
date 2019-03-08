@@ -49,10 +49,10 @@
       // Format for contributors
       this.getSchema().properties.contributors.format = 'table';
       // Format for list of runnables and endpoints
-      var artifacts = ['appArtifact', 'elementaryArtifact', 'compoundArtifact'];
+      var artifacts = ['appArtifact', 'elementaryArtifact', 'compoundArtifact', 'utilArtifact'];
       for (var i = 0; i < artifacts.length; i++) {
         this.getSchema().definitions[artifacts[i]].properties.runnables.format = 'table';
-        this.getSchema().definitions[artifacts[i]].properties.endpoints.format = 'tabs';
+        this.getSchema().definitions[artifacts[i]].properties.dependencies.format = 'table';
       }
       // Format for list of slots
       this.getSchema().definitions.elementaryArtifact.properties.slots.format = 'tabs';
@@ -64,6 +64,8 @@
       // Format for value of slots
       this.getSchema().definitions.compoundArtifactInitItem.properties.value.format = 'json';
       this.getSchema().definitions.elementaryArtifactSlotItem.properties.value.format = 'json';
+      // ResourceItem format
+      this.getSchema().definitions.resourceItem.format = 'json';
     },
 
     /**
