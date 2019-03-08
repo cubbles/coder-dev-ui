@@ -1,7 +1,7 @@
 {
   "name": "cubx-webpackage-viewer",
   "groupId": "com.incowia",
-  "version": "1.7.1",
+  "version": "1.7.2",
   "modelVersion": "9.1.1",
   "docType": "webpackage",
   "author": {
@@ -459,7 +459,7 @@
         "inits": [
           {
             "slot": "schemaUrl",
-            "value": "https://raw.githubusercontent.com/cubbles/cubx-webpackage-document-api/master/lib/jsonSchema/manifestWebpackage-8.3.1.schema.json"
+            "value": "https://raw.githubusercontent.com/cubbles/cubx-webpackage-document-api/master/lib/jsonSchema/manifestWebpackage-9.1.1.schema.json"
           },
           {
             "slot": "viewerHeight",
