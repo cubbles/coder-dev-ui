@@ -31,41 +31,32 @@
     },
 
     handleArtifactChange: function (artifactId, next) {
-      var docsV = document.querySelector('cubx-component-docs-viewer');
-      window.com_incowia_cubxWebpackageViewer_cubxComponentViewer.handleInitialScale(
-        'depsTreeViewerT',
-        function (scale) {
-          docsV.setDepsTreeVScale(scale);
-        });
-      window.com_incowia_cubxWebpackageViewer_cubxComponentViewer.handleInitialScale(
-        'componentViewerT',
-        function (scale) {
-          docsV.setComponentVScale(scale);
-        });
+      var container = $(this.source).find('.container'); 
+      var tab =  container.find('a[data-tab-id=componentViewer]').parent();
+      window.com_incowia_cubxWebpackageViewer_cubxComponentViewer.displayTab(tab, container);
       next(artifactId);
     },
 
-    // Aid function to handle initial scale of cubx-component-viewer and cubx-deps-tree-viewer
-    handleInitialScale: function (tabId, setScaleFunction) {
-      var tab = $('#' + tabId);
-      if ($('ul.nav-tabs li.active a').attr('id') === tabId) {
-        setScaleFunction('auto');
-      } else {
-        setScaleFunction('none');
-        tab.on('shown.bs.tab', function (e) {
-          if (e.target.id === tabId) {
-            setScaleFunction('auto');
-            tab.off('shown.bs.tab');
-          }
-        });
-      }
+    handleTabClick: function (e) {
+      var currentTab = $(e.target.parentElement);
+      var container = $(e.target.parentElement.parentElement.parentElement);
+      window.com_incowia_cubxWebpackageViewer_cubxComponentViewer.displayTab(currentTab, container);
+    },
+
+    disableActiveTabs: function (container) {
+      // Disable active tabs
+      container.find('.active').removeClass('active');
+      container.find('.in').removeClass('in');
+    },
+
+    displayTab: function (tab, container) {
+      window.com_incowia_cubxWebpackageViewer_cubxComponentViewer.disableActiveTabs(container);
+      // Enable and display current tab
+      var dataTabId = tab.find('a').data('tabId');
+      tab.addClass('active');
+      var tabContent =  container.find('div.tab-content > [data-tab-id=' + dataTabId + ']');
+      $(tabContent).addClass('in active');
     }
   };
-  // document.addEventListener('cifReady', function () {
-  //   $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
-  //     if (e.target.id === 'depsTreeViewerT') {
-  //       document.querySelector('cubx-deps-tree-viewer').setScale('auto');
-  //     }
-  //   });
-  // });
+
 })();

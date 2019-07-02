@@ -2,18 +2,35 @@
     <ajax-request  member-id-ref="manifestRequester"> </ajax-request>
     <div class="container">
         <ul class="nav nav-tabs">
-            <li class="active"><a data-toggle="tab" id="componentViewerT" href="#componentViewerD">Interface/Dataflow view</a></li>
-            <li><a data-toggle="tab" href="#componentInfoViewerD">Interface Details</a></li>
-            <li><a data-toggle="tab" id="depsTreeViewerT"href="#depsTreeViewerD">Dependency Tree</a></li>
+            <li class="active">
+                <a data-toggle="tab"
+                    data-tab-id="componentViewer"
+                    onclick="com_incowia_cubxWebpackageViewer_cubxComponentViewer.handleTabClick(event)">
+                    Interface/Dataflow view
+                </a>
+            </li>
+            <li>
+                <a data-toggle="tab"
+                    data-tab-id="componentInfoViewer"
+                    onclick="com_incowia_cubxWebpackageViewer_cubxComponentViewer.handleTabClick(event)">
+                    Interface Details
+                </a>
+            </li>
+            <li><a data-toggle="tab"
+                    data-tab-id="depsTreeViewer"
+                    onclick="com_incowia_cubxWebpackageViewer_cubxComponentViewer.handleTabClick(event)">
+                    Dependency Tree
+                </a>
+            </li>
         </ul>
         <div class="tab-content">
-            <div id="componentViewerD"  class="tab-pane fade in active">
+            <div data-tab-id="componentViewer"  class="tab-pane fade in active">
                 <cubx-component-viewer member-id-ref="componentViewer"></cubx-component-viewer>
             </div>
-            <div id="componentInfoViewerD" class="tab-pane fade">
+            <div data-tab-id="componentInfoViewer" class="tab-pane fade">
                 <cubx-component-info-viewer member-id-ref="componentInfoViewer"></cubx-component-info-viewer>
             </div>
-            <div id="depsTreeViewerD" class="tab-pane fade">
+            <div data-tab-id="depsTreeViewer" class="tab-pane fade">
                 <cubx-deps-tree-viewer member-id-ref="depsTreeViewer"></cubx-deps-tree-viewer>
             </div>
         </div>

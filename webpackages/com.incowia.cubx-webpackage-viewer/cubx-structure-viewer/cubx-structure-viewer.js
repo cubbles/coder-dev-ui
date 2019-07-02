@@ -1,16 +1,8 @@
 /* global $, JSONEditor */
 (function () {
   'use strict';
-  /**
-   * Get help:
-   * > Lifecycle callbacks:
-   * https://www.polymer-project.org/1.0/docs/devguide/registering-elements.html#lifecycle-callbacks
-   *
-   * Access the Cubbles-Component-Model:
-   * > Access slot values:
-   * slot 'a': this.getA(); | this.setA(value)
-   */
-  CubxPolymer({
+
+  CubxComponent({
     is: 'cubx-structure-viewer',
 
     structureHolderId: 'structureViewHolder',
@@ -18,27 +10,9 @@
     depTreeModalId: 'dep_tree_view_modal',
 
     /**
-     * Manipulate an element’s local DOM when the element is created.
-     */
-    created: function () {
-    },
-
-    /**
-     * Manipulate an element’s local DOM when the element is created and initialized.
-     */
-    ready: function () {
-    },
-
-    /**
-     * Manipulate an element’s local DOM when the element is attached to the document.
-     */
-    attached: function () {
-    },
-
-    /**
      * Manipulate an element’s local DOM when the cubbles framework is initialized and ready to work.
      */
-    cubxReady: function () {
+    contextReady: function () {
       this._addListenerToHideElementsButton();
     },
 
@@ -223,19 +197,17 @@
         var webpackageViewerId = self.getRuntimeId().substr(0, self.getRuntimeId().indexOf('/'));
         return window.cubx.CRC._baseUrl + webpackageViewerId +
           '/any-component-docs-viewer/index.html' +
-          '?manifest-url=' + manifestUrl +
-          '&artifact-id=' + artifactId;
+          '?manifest-url=' + encodeURIComponent(manifestUrl) +
+          '&artifact-id=' + encodeURIComponent(artifactId);
       }
       function showViewerModal () {
         var diagramContainer = $('#' + $(this).attr('data-modal-id'));
         diagramContainer.find('.modal-title').text($(this).attr('data-modal-title'));
         diagramContainer.modal('show');
-        var button = this;
-        setTimeout(function () {
-          var compoundType = $(button).attr('data-compound-type');
-          var compoundIndex = $(button).attr('data-compound-index');
-          self._updateCurrentComponent(self.getManifest().artifacts[compoundType][compoundIndex]);
-        }, 500);
+        var button = this;        
+        var compoundType = $(button).attr('data-compound-type');
+        var compoundIndex = $(button).attr('data-compound-index');
+        self._updateCurrentComponent(self.getManifest().artifacts[compoundType][compoundIndex]);
       }
       function addFunctionButton (button, componentIndex, componentType) {
         $('[data-schemapath="root.artifacts.' + componentType + '.' + componentIndex + '"]').prepend(button);
@@ -260,6 +232,8 @@
         onclick
       );
       openModalBtn.setAttribute('data-modal-id', modalId);
+      openModalBtn.setAttribute('data-toggle', 'modal');
+      openModalBtn.setAttribute('data-modal-title', buttonText);
       return openModalBtn;
     },
 
@@ -284,10 +258,8 @@
       }
       functionBton.setAttribute('type', 'button');
       functionBton.setAttribute('class', 'btn btn-primary btn-component-view');
-      functionBton.setAttribute('data-toggle', 'modal');
       functionBton.setAttribute('data-compound-index', componentIndex);
       functionBton.setAttribute('data-compound-type', componentType);
-      functionBton.setAttribute('data-modal-title', buttonText);
       var viewIcon = document.createElement('i');
       viewIcon.setAttribute('class', 'glyphicon ' + iconClass);
       functionBton.appendChild(viewIcon);
@@ -304,8 +276,20 @@
      */
     _updateCurrentComponent: function (component) {
       this.setCurrentComponentArtifactId(component.artifactId);
-      this._handleInitialScale(this.depTreeModalId, this.setDepsTreeVScale.bind(this));
-      this._handleInitialScale(this.componentViewModalId, this.setComponentVScale.bind(this));
+      this._handleInitialScale(this.depTreeModalId, function () { 
+        this.setDepsTreeVScale('auto');
+      }.bind(this),
+      function () {
+        this.setDepsTreeVScale('none');
+      }.bind(this));
+
+      this._handleInitialScale(this.componentViewModalId, function () {
+        this.setComponentVScale('auto');
+        this.setComponentVStartWorking(true);
+      }.bind(this),
+      function () {
+        this.setComponentVScale('none');
+      }.bind(this));
     },
 
     /**
@@ -313,17 +297,14 @@
      * @param modalId
      * @private
      */
-    _handleInitialScale: function (modalId, setScaleFunction) {
+    _handleInitialScale: function (modalId, shownCbFunction, hiddenCbFunction) {
       var modal = $('#' + modalId);
       if (modal.hasClass('in')) {
-        setScaleFunction('auto');
+        shownCbFunction();
       } else {
-        setScaleFunction('none');
-        modal.on('shown.bs.modal', function (e) {
-          if (e.target.id === modalId) {
-            setScaleFunction('auto');
-            modal.off('shown.bs.modal');
-          }
+        hiddenCbFunction();
+        modal.one('shown.bs.modal', function (e) {
+          shownCbFunction();
         });
       }
     },

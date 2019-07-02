@@ -1,8 +1,8 @@
 {
   "name": "cubx-webpackage-viewer",
   "groupId": "com.incowia",
-  "version": "1.7.2",
-  "modelVersion": "9.1.1",
+  "version": "2.0.0",
+  "modelVersion": "10.0.0",
   "docType": "webpackage",
   "author": {
     "name": "Edwin Gamboa",
@@ -114,19 +114,32 @@
             "direction": [
               "output"
             ]
+          },
+          {
+            "slotId": "componentVStartWorking",
+            "type": "boolean",
+            "description": "Indicates whether the componentViewer can startWorking (Valid when used within the cubx-webpackage-viewer).",
+            "direction": [
+              "output"
+            ]
           }
         ],
         "resources": [
-          "cubx-structure-viewer.html"
+          "cubx-structure-viewer.html",
+          "cubx-structure-viewer.css"
         ],
         "dependencies": [
           {
-            "webpackageId": "cubx.core.rte@2.4.0",
-            "artifactId": "cubxpolymer"
+            "webpackageId": "cubx.core.rte@3.0.0",
+            "artifactId": "cubxcomponent"
           },
           {
-            "webpackageId": "cubx-json-editor-0.7.25@1.2.0",
+            "webpackageId": "cubx-json-editor-0.7.25@2.0.0",
             "artifactId": "cubx-json-editor"
+          },
+          {
+            "webpackageId": "jquery-2.1.4@2.0.0",
+            "artifactId": "jquery"
           }
         ]
       },
@@ -141,19 +154,20 @@
           }
         ],
         "resources": [
-          "cubx-component-info-viewer.html"
+          "cubx-component-info-viewer.html",
+          "cubx-component-info-viewer.css"
         ],
         "dependencies": [
           {
-            "webpackageId": "cubx.core.rte@2.4.0",
-            "artifactId": "cubxpolymer"
+            "webpackageId": "cubx.core.rte@3.0.0",
+            "artifactId": "cubxcomponent"
           },
           {
-            "webpackageId": "bootstrap-3.3.5@1.4.0",
+            "webpackageId": "bootstrap-3.3.5@2.0.1",
             "artifactId": "bootstrap"
           },
           {
-            "webpackageId": "highlightjs-9.3.0@1.1.0",
+            "webpackageId": "highlightjs-9.3.0@2.0.0",
             "artifactId": "highlightjs-github-gist"
           }
         ],
@@ -202,13 +216,12 @@
           }
         ],
         "resources": [
-          "cubx-manifest-defs-extractor.css",
           "cubx-manifest-defs-extractor.html"
         ],
         "dependencies": [
           {
-            "webpackageId": "cubx.core.rte@2.4.0",
-            "artifactId": "cubxpolymer"
+            "webpackageId": "cubx.core.rte@3.0.0",
+            "artifactId": "cubxcomponent"
           }
         ],
         "slots": [
@@ -280,10 +293,10 @@
           },
           {
             "artifactId": "cubx-deps-tree-viewer",
-            "webpackageId": "dep-tree-viewer@1.3.1"
+            "webpackageId": "dep-tree-viewer@2.0.0"
           },
           {
-            "webpackageId": "com.incowia.ajax@0.2.6",
+            "webpackageId": "com.incowia.ajax@1.0.0",
             "artifactId": "ajax-request"
           }
         ],
@@ -454,16 +467,33 @@
               "slot": "scale"
             },
             "repeatedValues": true
+          },
+          {
+            "connectionId": "componentVStartWorkingCon",
+            "source": {
+              "memberIdRef": "structureViewer",
+              "slot": "componentVStartWorking"
+            },
+            "destination": {
+              "memberIdRef": "componentViewer",
+              "slot": "startWorking"
+            },
+            "repeatedValues": true
           }
         ],
         "inits": [
           {
             "slot": "schemaUrl",
-            "value": "https://raw.githubusercontent.com/cubbles/cubx-webpackage-document-api/master/lib/jsonSchema/manifestWebpackage-9.1.1.schema.json"
+            "value": "https://raw.githubusercontent.com/cubbles/cubx-webpackage-document-api/master/lib/jsonSchema/manifestWebpackage-10.0.0.schema.json"
           },
           {
             "slot": "viewerHeight",
             "value": "40vh",
+            "memberIdRef": "componentViewer"
+          },
+          {
+            "slot": "automaticStarting",
+            "value": false,
             "memberIdRef": "componentViewer"
           },
           {
@@ -496,12 +526,16 @@
             "artifactId": "cubx-component-info-viewer"
           },
           {
-            "webpackageId": "com.incowia.ajax@0.2.6",
+            "webpackageId": "com.incowia.ajax@1.0.0",
             "artifactId": "ajax-request"
           },
           {
             "artifactId": "cubx-deps-tree-viewer",
-            "webpackageId": "dep-tree-viewer@1.3.1"
+            "webpackageId": "dep-tree-viewer@2.0.0"
+          },
+          {
+            "webpackageId": "bootstrap-3.3.5@2.0.1",
+            "artifactId": "bootstrap"
           }
         ],
         "slots": [
@@ -683,7 +717,7 @@
             "artifactId": "cubx-manifest-defs-extractor"
           },
           {
-            "webpackageId": "cubx-generic-component-viewer@1.4.3",
+            "webpackageId": "cubx-generic-component-viewer@2.0.0",
             "artifactId": "cubx-generic-component-viewer"
           }
         ],
@@ -760,6 +794,22 @@
             "direction": [
               "input"
             ]
+          },
+          {
+            "slotId": "automaticStarting",
+            "type": "boolean",
+            "description": "Indicates whether the component should start working right after the definitions change.",
+            "direction": [
+              "input"
+            ]
+          },
+          {
+            "slotId": "startWorking",
+            "type": "boolean",
+            "description": "Indicates that the component should start working. It is useful when 'automaticStarting' slot is set to false",
+            "direction": [
+              "input"
+            ]
           }
         ],
         "members": [
@@ -783,6 +833,27 @@
               "memberIdRef": "componentViewer",
               "slot": "definitions"
             }
+          },
+          {
+            "connectionId": "automaticStartCon",
+            "source": {
+              "slot": "automaticStarting"
+            },
+            "destination": {
+              "memberIdRef": "componentViewer",
+              "slot": "automaticStarting"
+            }
+          },
+          {
+            "connectionId": "startWorkingCon",
+            "source": {
+              "slot": "startWorking"
+            },
+            "destination": {
+              "memberIdRef": "componentViewer",
+              "slot": "startWorking"
+            },
+            "repeatedValues": true
           },
           {
             "connectionId": "artifactIdCon",
@@ -912,7 +983,7 @@
       },
       {
         "artifactId": "cubx-webpackage-viewer-utils",
-        "description": "General utilities (scripts) o be used within any artifact",
+        "description": "General utilities (scripts) to be used within any artifact",
         "resources": [
           "html-import.html"
         ],
