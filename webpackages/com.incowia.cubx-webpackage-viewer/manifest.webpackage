@@ -1,7 +1,7 @@
 {
   "name": "cubx-webpackage-viewer",
   "groupId": "com.incowia",
-  "version": "2.0.0-SNAPSHOT",
+  "version": "2.0.0",
   "modelVersion": "10.0.0",
   "docType": "webpackage",
   "author": {
@@ -130,7 +130,7 @@
         ],
         "dependencies": [
           {
-            "webpackageId": "cubx.core.rte@3.0.0-SNAPSHOT",
+            "webpackageId": "cubx.core.rte@3.0.0",
             "artifactId": "cubxcomponent"
           },
           {
@@ -159,7 +159,7 @@
         ],
         "dependencies": [
           {
-            "webpackageId": "cubx.core.rte@3.0.0-SNAPSHOT",
+            "webpackageId": "cubx.core.rte@3.0.0",
             "artifactId": "cubxcomponent"
           },
           {
@@ -220,7 +220,7 @@
         ],
         "dependencies": [
           {
-            "webpackageId": "cubx.core.rte@3.0.0-SNAPSHOT",
+            "webpackageId": "cubx.core.rte@3.0.0",
             "artifactId": "cubxcomponent"
           }
         ],
@@ -293,10 +293,10 @@
           },
           {
             "artifactId": "cubx-deps-tree-viewer",
-            "webpackageId": "dep-tree-viewer@2.0.0-SNAPSHOT"
+            "webpackageId": "dep-tree-viewer@2.0.0"
           },
           {
-            "webpackageId": "com.incowia.ajax@1.0.0-SNAPSHOT",
+            "webpackageId": "com.incowia.ajax@1.0.0",
             "artifactId": "ajax-request"
           }
         ],
@@ -526,12 +526,12 @@
             "artifactId": "cubx-component-info-viewer"
           },
           {
-            "webpackageId": "com.incowia.ajax@1.0.0-SNAPSHOT",
+            "webpackageId": "com.incowia.ajax@1.0.0",
             "artifactId": "ajax-request"
           },
           {
             "artifactId": "cubx-deps-tree-viewer",
-            "webpackageId": "dep-tree-viewer@2.0.0-SNAPSHOT"
+            "webpackageId": "dep-tree-viewer@2.0.0"
           },
           {
             "webpackageId": "bootstrap-3.3.5@2.0.1",
@@ -717,7 +717,7 @@
             "artifactId": "cubx-manifest-defs-extractor"
           },
           {
-            "webpackageId": "cubx-generic-component-viewer@2.0.0-SNAPSHOT",
+            "webpackageId": "cubx-generic-component-viewer@2.0.0",
             "artifactId": "cubx-generic-component-viewer"
           }
         ],
